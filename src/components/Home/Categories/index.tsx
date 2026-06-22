@@ -1,8 +1,8 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useCallback, useRef, useEffect } from "react";
-import data from "./categoryData";
-import Image from "next/image";
+import { useCallback, useRef, useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import { mapCategoryForDisplay } from "@/lib/mappers";
 
 // Import Swiper styles
 import "swiper/css/navigation";
@@ -11,6 +11,9 @@ import SingleItem from "./SingleItem";
 
 const Categories = () => {
   const sliderRef = useRef(null);
+  const [categories, setCategories] = useState<
+    { title: string; id: number; img: string }[]
+  >([]);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -23,10 +26,17 @@ const Categories = () => {
   }, []);
 
   useEffect(() => {
-    if (sliderRef.current) {
+    api
+      .get<{ id: number; name: string; slug: string }[]>("/api/categories/")
+      .then((data) => setCategories(data.map(mapCategoryForDisplay)))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (sliderRef.current && categories.length > 0) {
       sliderRef.current.swiper.init();
     }
-  }, []);
+  }, [categories]);
 
   return (
     <section className="overflow-hidden pt-17.5">
@@ -134,7 +144,7 @@ const Categories = () => {
               },
             }}
           >
-            {data.map((item, key) => (
+            {categories.map((item, key) => (
               <SwiperSlide key={key}>
                 <SingleItem item={item} />
               </SwiperSlide>

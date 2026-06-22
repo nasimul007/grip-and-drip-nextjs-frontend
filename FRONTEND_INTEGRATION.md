@@ -19,8 +19,10 @@
 ✅ Logout button in nav bar → clears tokens + Redux state
 
 ### Step 3: Products & Categories
-⬜ Replace Home categories with `GET /api/categories/`
-⬜ Replace Home best sellers with `GET /api/products/?is_featured=true`
+✅ Replace Home categories with `GET /api/categories/`
+✅ Replace Home best sellers with `GET /api/products/?is_featured=true`
+✅ Replace Home new arrivals with `GET /api/products/?ordering=-created_at`
+✅ Wire Newsletter to `POST /api/newsletter/subscribe/`
 ⬜ Replace Shop data with `GET /api/products/` (filters, pagination)
 ⬜ Create dynamic route `shop/[slug]/page.tsx`
 ⬜ Wire ShopDetail to `GET /api/products/<slug>/`

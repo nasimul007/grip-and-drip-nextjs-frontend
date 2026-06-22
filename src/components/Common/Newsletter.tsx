@@ -1,12 +1,33 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
+import { api } from "@/lib/api";
+import toast from "react-hot-toast";
 
 const Newsletter = () => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await api.post("/api/newsletter/subscribe/", { email });
+      toast.success("Successfully subscribed!");
+      setEmail("");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Subscription failed";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="overflow-hidden">
       <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
         <div className="relative z-1 overflow-hidden rounded-xl">
-          {/* <!-- bg shapes --> */}
           <Image
             src="/images/shapes/newsletter-bg.jpg"
             alt="background illustration"
@@ -28,20 +49,24 @@ const Newsletter = () => {
             </div>
 
             <div className="max-w-[477px] w-full">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <input
                     type="email"
                     name="email"
                     id="email"
                     placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                     className="w-full bg-gray-1 border border-gray-3 outline-none rounded-md placeholder:text-dark-4 py-3 px-5"
                   />
                   <button
                     type="submit"
-                    className="inline-flex justify-center py-3 px-7 text-white bg-blue font-medium rounded-md ease-out duration-200 hover:bg-blue-dark"
+                    disabled={loading}
+                    className="inline-flex justify-center py-3 px-7 text-white bg-blue font-medium rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-50"
                   >
-                    Subscribe
+                    {loading ? "Subscribing..." : "Subscribe"}
                   </button>
                 </div>
               </form>
