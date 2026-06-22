@@ -1,12 +1,9 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-type InitialState = {
-  items: CartItem[];
-};
-
-type CartItem = {
+export type ReduxCartItem = {
   id: number;
+  cartItemId?: number;
   title: string;
   price: number;
   discountedPrice: number;
@@ -17,24 +14,55 @@ type CartItem = {
   };
 };
 
+type InitialState = {
+  items: ReduxCartItem[];
+};
+
+const LOCAL_KEY = "guest_cart";
+
+function loadLocalCart(): ReduxCartItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(LOCAL_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalCart(items: ReduxCartItem[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(items));
+  } catch {}
+}
+
 const initialState: InitialState = {
-  items: [],
+  items: typeof window !== "undefined" ? loadLocalCart() : [],
 };
 
 export const cart = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addItemToCart: (state, action: PayloadAction<CartItem>) => {
-      const { id, title, price, quantity, discountedPrice, imgs } =
+    setCartItems: (state, action: PayloadAction<ReduxCartItem[]>) => {
+      state.items = action.payload;
+    },
+    addItemToCart: (state, action: PayloadAction<ReduxCartItem>) => {
+      const { id, cartItemId, title, price, quantity, discountedPrice, imgs } =
         action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
+      const existingItem = state.items.find(
+        (item) => item.cartItemId
+          ? item.cartItemId === cartItemId
+          : item.id === id
+      );
 
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
         state.items.push({
           id,
+          cartItemId,
           title,
           price,
           quantity,
@@ -44,21 +72,23 @@ export const cart = createSlice({
       }
     },
     removeItemFromCart: (state, action: PayloadAction<number>) => {
-      const itemId = action.payload;
-      state.items = state.items.filter((item) => item.id !== itemId);
+      const id = action.payload;
+      state.items = state.items.filter(
+        (item) => item.id !== id && item.cartItemId !== id
+      );
     },
     updateCartItemQuantity: (
       state,
       action: PayloadAction<{ id: number; quantity: number }>
     ) => {
       const { id, quantity } = action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
-
+      const existingItem = state.items.find(
+        (item) => item.cartItemId === id || item.id === id
+      );
       if (existingItem) {
         existingItem.quantity = quantity;
       }
     },
-
     removeAllItemsFromCart: (state) => {
       state.items = [];
     },
@@ -74,9 +104,15 @@ export const selectTotalPrice = createSelector([selectCartItems], (items) => {
 });
 
 export const {
+  setCartItems,
   addItemToCart,
   removeItemFromCart,
   updateCartItemQuantity,
   removeAllItemsFromCart,
 } = cart.actions;
+
+export function persistGuestCart(items: ReduxCartItem[]) {
+  saveLocalCart(items);
+}
+
 export default cart.reducer;
