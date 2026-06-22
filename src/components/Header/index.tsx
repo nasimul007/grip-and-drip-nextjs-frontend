@@ -11,11 +11,15 @@ import { logout } from "@/redux/features/auth-slice";
 import { clearTokens } from "@/lib/api";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import Image from "next/image";
+import { api } from "@/lib/api";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
+  const [categoryOptions, setCategoryOptions] = useState<
+    { label: string; value: string }[]
+  >([{ label: "All Categories", value: "0" }]);
   const { openCartModal } = useCartModalContext();
 
   const dispatch = useDispatch();
@@ -45,18 +49,17 @@ const Header = () => {
 
   useEffect(() => {
     window.addEventListener("scroll", handleStickyMenu);
-  });
+    api.get<{ id: number; name: string; slug: string }[]>("/api/categories/")
+      .then((cats) => {
+        setCategoryOptions([
+          { label: "All Categories", value: "0" },
+          ...cats.map((c) => ({ label: c.name, value: String(c.id) })),
+        ]);
+      })
+      .catch(() => {});
+  }, []);
 
-  const options = [
-    { label: "All Categories", value: "0" },
-    { label: "Desktop", value: "1" },
-    { label: "Laptop", value: "2" },
-    { label: "Monitor", value: "3" },
-    { label: "Phone", value: "4" },
-    { label: "Watch", value: "5" },
-    { label: "Mouse", value: "6" },
-    { label: "Tablet", value: "7" },
-  ];
+  const options = categoryOptions;
 
   return (
     <header

@@ -7,7 +7,7 @@ import RecentlyViewdItems from "./RecentlyViewd";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { useAppSelector } from "@/redux/store";
 
-const ShopDetails = () => {
+const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
   const [activeColor, setActiveColor] = useState("blue");
   const { openPreviewModal } = usePreviewSlider();
   const [previewImg, setPreviewImg] = useState(0);
@@ -20,71 +20,46 @@ const ShopDetails = () => {
   const [activeTab, setActiveTab] = useState("tabOne");
 
   const storages = [
-    {
-      id: "gb128",
-      title: "128 GB",
-    },
-    {
-      id: "gb256",
-      title: "256 GB",
-    },
-    {
-      id: "gb512",
-      title: "521 GB",
-    },
+    { id: "gb128", title: "128 GB" },
+    { id: "gb256", title: "256 GB" },
+    { id: "gb512", title: "521 GB" },
   ];
 
   const types = [
-    {
-      id: "active",
-      title: "Active",
-    },
-
-    {
-      id: "inactive",
-      title: "Inactive",
-    },
+    { id: "active", title: "Active" },
+    { id: "inactive", title: "Inactive" },
   ];
 
   const sims = [
-    {
-      id: "dual",
-      title: "Dual",
-    },
-
-    {
-      id: "e-sim",
-      title: "E Sim",
-    },
+    { id: "dual", title: "Dual" },
+    { id: "e-sim", title: "E Sim" },
   ];
 
   const tabs = [
-    {
-      id: "tabOne",
-      title: "Description",
-    },
-    {
-      id: "tabTwo",
-      title: "Additional Information",
-    },
-    {
-      id: "tabThree",
-      title: "Reviews",
-    },
+    { id: "tabOne", title: "Description" },
+    { id: "tabTwo", title: "Additional Information" },
+    { id: "tabThree", title: "Reviews" },
   ];
 
   const colors = ["red", "blue", "orange", "pink", "purple"];
 
-  const alreadyExist = localStorage.getItem("productDetails");
   const productFromStorage = useAppSelector(
     (state) => state.productDetailsReducer.value
   );
-
-  const product = alreadyExist ? JSON.parse(alreadyExist) : productFromStorage;
+  const [fallbackProduct] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("productDetails");
+      return stored ? JSON.parse(stored) : null;
+    }
+    return null;
+  });
+  const product = apiProduct || fallbackProduct || productFromStorage;
 
   useEffect(() => {
-    localStorage.setItem("productDetails", JSON.stringify(product));
-  }, [product]);
+    if (!apiProduct && typeof window !== "undefined") {
+      localStorage.setItem("productDetails", JSON.stringify(product));
+    }
+  }, [product, apiProduct]);
 
   // pass the product here when you get the real data.
   const handlePreviewSlider = () => {

@@ -23,10 +23,10 @@
 ✅ Replace Home best sellers with `GET /api/products/?is_featured=true`
 ✅ Replace Home new arrivals with `GET /api/products/?ordering=-created_at`
 ✅ Wire Newsletter to `POST /api/newsletter/subscribe/`
-⬜ Replace Shop data with `GET /api/products/` (filters, pagination)
-⬜ Create dynamic route `shop/[slug]/page.tsx`
-⬜ Wire ShopDetail to `GET /api/products/<slug>/`
-⬜ Wire Header category dropdown to API
+✅ Replace Shop data with `GET /api/products/` (filters, pagination, sorting)
+✅ Create dynamic route `shop/[slug]/page.tsx`
+✅ Wire ShopDetail to `GET /api/products/<slug>/`
+✅ Wire Header category dropdown to API
 
 ### Step 4: Cart
 ⬜ Sync Redux cart with `GET /api/cart/` (authenticated users)

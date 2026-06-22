@@ -1,4 +1,5 @@
-import type { ProductListItem } from "./types";
+import type { ProductListItem, ProductDetail } from "./types";
+import { buildImageUrl } from "./api";
 
 const categoryImages: Record<string, string> = {
   televisions: "/images/categories/categories-01.png",
@@ -34,6 +35,24 @@ export function mapProductForDisplay(item: ProductListItem) {
     imgs: {
       thumbnails: item.primary_image ? [item.primary_image] : [],
       previews: item.primary_image ? [item.primary_image] : [],
+    },
+  };
+}
+
+export function mapProductDetailForDisplay(item: ProductDetail) {
+  const images = item.images
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((img) => buildImageUrl(img.image));
+  return {
+    title: item.name,
+    reviews: 0,
+    price: item.compare_price || item.effective_price,
+    discountedPrice: item.effective_price,
+    id: item.id,
+    slug: item.slug,
+    imgs: {
+      thumbnails: images.length ? images : [],
+      previews: images.length ? images : [],
     },
   };
 }
