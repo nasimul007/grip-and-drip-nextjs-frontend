@@ -4,10 +4,18 @@ import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import AddressModal from "./AddressModal";
 import Orders from "../Orders";
+import { useAppSelector } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/features/auth-slice";
+import { clearTokens } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const MyAccount = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [addressModal, setAddressModal] = useState(false);
+  const user = useAppSelector((state) => state.authReducer.user);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const openAddressModal = () => {
     setAddressModal(true);
@@ -15,6 +23,12 @@ const MyAccount = () => {
 
   const closeAddressModal = () => {
     setAddressModal(false);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    clearTokens();
+    router.push("/signin");
   };
 
   return (
@@ -39,9 +53,9 @@ const MyAccount = () => {
 
                   <div>
                     <p className="font-medium text-dark mb-0.5">
-                      James Septimus
+                      {user?.username || "User"}
                     </p>
-                    <p className="text-custom-xs">Member Since Sep 2020</p>
+                    <p className="text-custom-xs">Member</p>
                   </div>
                 </div>
 
@@ -219,7 +233,7 @@ const MyAccount = () => {
                     </button>
 
                     <button
-                      onClick={() => setActiveTab("logout")}
+                      onClick={handleLogout}
                       className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
                         activeTab === "logout"
                           ? "text-white bg-blue"
@@ -261,13 +275,13 @@ const MyAccount = () => {
               }`}
             >
               <p className="text-dark">
-                Hello Annie (not Annie?
-                <a
-                  href="#"
-                  className="text-red ease-out duration-200 hover:underline"
+                Hello {user?.username || "User"} (not {user?.username || "User"}?
+                <button
+                  onClick={handleLogout}
+                  className="text-red ease-out duration-200 hover:underline ml-1"
                 >
                   Log Out
-                </a>
+                </button>
                 )
               </p>
 

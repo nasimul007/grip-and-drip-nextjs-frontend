@@ -1,55 +1,53 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import SingleOrder from "./SingleOrder";
-import ordersData from "./ordersData";
+import { api } from "@/lib/api";
+import type { OrderListItem } from "@/lib/types";
 
 const Orders = () => {
-  const [orders, setOrders] = useState<any>([]);
+  const [orders, setOrders] = useState<OrderListItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/order`)
-      .then((res) => res.json())
-      .then((data) => {
-        setOrders(data.orders);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    api
+      .get<OrderListItem[]>("/api/orders/list/")
+      .then((data) => setOrders(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return (
+      <p className="py-9.5 px-4 sm:px-7.5 xl:px-10">Loading orders...</p>
+    );
+  }
 
   return (
     <>
       <div className="w-full overflow-x-auto">
         <div className="min-w-[770px]">
-          {/* <!-- order item --> */}
-          {ordersData.length > 0 && (
+          {orders.length > 0 && (
             <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex ">
-              <div className="min-w-[111px]">
+              <div className="min-w-[175px]">
                 <p className="text-custom-sm text-dark">Order</p>
               </div>
               <div className="min-w-[175px]">
                 <p className="text-custom-sm text-dark">Date</p>
               </div>
-
               <div className="min-w-[128px]">
                 <p className="text-custom-sm text-dark">Status</p>
               </div>
-
-              <div className="min-w-[213px]">
-                <p className="text-custom-sm text-dark">Title</p>
-              </div>
-
               <div className="min-w-[113px]">
                 <p className="text-custom-sm text-dark">Total</p>
               </div>
-
               <div className="min-w-[113px]">
-                <p className="text-custom-sm text-dark">Action</p>
+                <p className="text-custom-sm text-dark">Items</p>
               </div>
             </div>
           )}
-          {ordersData.length > 0 ? (
-            ordersData.map((orderItem, key) => (
-              <SingleOrder key={key} orderItem={orderItem} smallView={false} />
+          {orders.length > 0 ? (
+            orders.map((order, key) => (
+              <SingleOrder key={key} order={order} smallView={false} />
             ))
           ) : (
             <p className="py-9.5 px-4 sm:px-7.5 xl:px-10">
@@ -58,9 +56,9 @@ const Orders = () => {
           )}
         </div>
 
-        {ordersData.length > 0 &&
-          ordersData.map((orderItem, key) => (
-            <SingleOrder key={key} orderItem={orderItem} smallView={true} />
+        {orders.length > 0 &&
+          orders.map((order, key) => (
+            <SingleOrder key={key} order={order} smallView={true} />
           ))}
       </div>
     </>
