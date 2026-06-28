@@ -45,12 +45,12 @@ export default function RootLayout({
                     <QuickViewModal />
                     <CartSidebarModal />
                     <PreviewSliderModal />
+                    <CartInit />
                   </PreviewSliderProvider>
                 </ModalProvider>
               </CartModalProvider>
             </ReduxProvider>
             <ScrollToTop />
-            <CartInit />
             <Footer />
           </>
         )}

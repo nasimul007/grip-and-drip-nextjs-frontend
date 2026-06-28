@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useCallback, useRef, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { mapCategoryForDisplay } from "@/lib/mappers";
+import type { PaginatedResponse } from "@/lib/types";
 
 // Import Swiper styles
 import "swiper/css/navigation";
@@ -27,8 +28,12 @@ const Categories = () => {
 
   useEffect(() => {
     api
-      .get<{ id: number; name: string; slug: string }[]>("/api/categories/")
-      .then((data) => setCategories(data.map(mapCategoryForDisplay)))
+      .get<
+        PaginatedResponse<{ id: number; name: string; slug: string }>
+      >("/api/categories/")
+      .then((data) =>
+        setCategories(data.results.map(mapCategoryForDisplay))
+      )
       .catch(() => {});
   }, []);
 

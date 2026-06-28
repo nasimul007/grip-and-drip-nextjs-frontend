@@ -12,6 +12,7 @@ import { clearTokens } from "@/lib/api";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import Image from "next/image";
 import { api } from "@/lib/api";
+import type { PaginatedResponse } from "@/lib/types";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,11 +50,17 @@ const Header = () => {
 
   useEffect(() => {
     window.addEventListener("scroll", handleStickyMenu);
-    api.get<{ id: number; name: string; slug: string }[]>("/api/categories/")
-      .then((cats) => {
+    api
+      .get<
+        PaginatedResponse<{ id: number; name: string; slug: string }>
+      >("/api/categories/")
+      .then((data) => {
         setCategoryOptions([
           { label: "All Categories", value: "0" },
-          ...cats.map((c) => ({ label: c.name, value: String(c.id) })),
+          ...data.results.map((c) => ({
+            label: c.name,
+            value: String(c.id),
+          })),
         ]);
       })
       .catch(() => {});
