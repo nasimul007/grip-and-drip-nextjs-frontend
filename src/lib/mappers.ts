@@ -42,7 +42,8 @@ export function mapProductForDisplay(item: ProductListItem) {
 export function mapProductDetailForDisplay(item: ProductDetail) {
   const images = item.images
     .sort((a, b) => a.sort_order - b.sort_order)
-    .map((img) => buildImageUrl(img.image));
+    .map((img) => buildImageUrl(img.image))
+    .filter((url): url is string => url !== null);
   return {
     title: item.name,
     reviews: 0,

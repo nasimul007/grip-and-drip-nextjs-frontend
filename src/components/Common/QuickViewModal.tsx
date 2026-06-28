@@ -99,13 +99,17 @@ const QuickViewModal = () => {
                       className={`flex items-center justify-center w-20 h-20 overflow-hidden rounded-lg bg-gray-1 ease-out duration-200 hover:border-2 hover:border-blue ${activePreview === key && "border-2 border-blue"
                         }`}
                     >
-                      <Image
-                        src={img || ""}
-                        alt="thumbnail"
-                        width={61}
-                        height={61}
-                        className="aspect-square"
-                      />
+                      {img ? (
+                        <Image
+                          src={img}
+                          alt="thumbnail"
+                          width={61}
+                          height={61}
+                          className="aspect-square"
+                        />
+                      ) : (
+                        <div className="text-dark-4 text-xs">No Img</div>
+                      )}
                     </button>
                   ))}
                 </div>

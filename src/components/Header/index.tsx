@@ -14,13 +14,35 @@ import Image from "next/image";
 import { api } from "@/lib/api";
 import type { PaginatedResponse } from "@/lib/types";
 
+type CategoryOption = {
+  label: string;
+  value: string;
+  children?: CategoryOption[];
+};
+
+function mapToTree(
+  items: {
+    id: number;
+    name: string;
+    slug: string;
+    children: { id: number; name: string; slug: string; children: any[] }[];
+  }[]
+): CategoryOption[] {
+  return items.map((item) => ({
+    label: item.name,
+    value: String(item.id),
+    children:
+      item.children.length > 0 ? mapToTree(item.children) : undefined,
+  }));
+}
+
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
-  const [categoryOptions, setCategoryOptions] = useState<
-    { label: string; value: string }[]
-  >([{ label: "All Categories", value: "0" }]);
+  const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([
+    { label: "All Categories", value: "0" },
+  ]);
   const { openCartModal } = useCartModalContext();
 
   const dispatch = useDispatch();
@@ -52,15 +74,18 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyMenu);
     api
       .get<
-        PaginatedResponse<{ id: number; name: string; slug: string }>
+        PaginatedResponse<{
+          id: number;
+          name: string;
+          slug: string;
+          children: any[];
+        }>
       >("/api/categories/")
       .then((data) => {
+        const tree = mapToTree(data.results);
         setCategoryOptions([
           { label: "All Categories", value: "0" },
-          ...data.results.map((c) => ({
-            label: c.name,
-            value: String(c.id),
-          })),
+          ...tree,
         ]);
       })
       .catch(() => {});

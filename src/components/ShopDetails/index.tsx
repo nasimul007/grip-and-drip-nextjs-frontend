@@ -124,12 +124,16 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                           : "border-transparent"
                           }`}
                       >
-                        <Image
-                          width={50}
-                          height={50}
-                          src={item}
-                          alt="thumbnail"
-                        />
+                        {item ? (
+                          <Image
+                            width={50}
+                            height={50}
+                            src={item}
+                            alt="thumbnail"
+                          />
+                        ) : (
+                          <div className="text-dark-4 text-xs">No Img</div>
+                        )}
                       </button>
                     ))}
                   </div>

@@ -83,8 +83,8 @@ export const api = {
   delete: <T>(endpoint: string) => request<T>(endpoint, { method: "DELETE" }),
 };
 
-export function buildImageUrl(path: string | null | undefined): string {
-  if (!path) return "";
+export function buildImageUrl(path: string | null | undefined): string | null {
+  if (!path) return null;
   if (path.startsWith("http")) return path;
   return `${API_BASE}${path}`;
 }
