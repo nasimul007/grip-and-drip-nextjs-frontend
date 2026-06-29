@@ -58,7 +58,9 @@ const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
         <span className="flex items-center justify-between gap-2">
           {option.label}
           {hasChildren && (
-            <span className="text-[10px] leading-none">▶</span>
+            <svg className="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.52949 3.52999C5.78949 3.26999 6.20949 3.26999 6.46949 3.52999L11.4695 8.52999C11.7295 8.78999 11.7295 9.20999 11.4695 9.46999L6.46949 14.47C6.20949 14.73 5.78949 14.73 5.52949 14.47C5.26949 14.21 5.26949 13.79 5.52949 13.53L10.0595 8.99999L5.52949 4.46999C5.26949 4.20999 5.26949 3.78999 5.52949 3.52999Z" fill=""/>
+            </svg>
           )}
         </span>
         {isHovered && hasChildren && (
