@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Breadcrumb from "../Common/Breadcrumb";
 import CustomSelect from "./CustomSelect";
 import CategoryDropdown from "./CategoryDropdown";
@@ -20,6 +21,7 @@ const sortOptions = [
 ];
 
 const ShopWithSidebar = () => {
+  const searchParams = useSearchParams();
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
@@ -29,7 +31,9 @@ const ShopWithSidebar = () => {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [sortBy, setSortBy] = useState("-created_at");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    searchParams.get("category") || null
+  );
   const perPage = 9;
 
   useEffect(() => {

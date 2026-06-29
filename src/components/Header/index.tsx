@@ -17,6 +17,7 @@ import type { PaginatedResponse } from "@/lib/types";
 type CategoryOption = {
   label: string;
   value: string;
+  slug?: string;
   children?: CategoryOption[];
 };
 
@@ -31,6 +32,7 @@ function mapToTree(
   return items.map((item) => ({
     label: item.name,
     value: String(item.id),
+    slug: item.slug,
     children:
       item.children.length > 0 ? mapToTree(item.children) : undefined,
   }));

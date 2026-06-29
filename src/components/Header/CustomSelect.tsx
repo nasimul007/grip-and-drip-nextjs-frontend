@@ -1,9 +1,11 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 type CategoryOption = {
   label: string;
   value: string;
+  slug?: string;
   children?: CategoryOption[];
 };
 
@@ -62,6 +64,7 @@ const CategoryItem = ({
 };
 
 const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(options[0]);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -87,8 +90,12 @@ const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
   };
 
   const handleOptionClick = (option: CategoryOption) => {
-    setSelectedOption(option);
     setIsOpen(false);
+    if (option.slug) {
+      router.push(`/shop-with-sidebar?category=${option.slug}`);
+    } else {
+      router.push("/shop-with-sidebar");
+    }
   };
 
   return (
