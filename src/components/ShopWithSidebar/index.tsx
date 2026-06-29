@@ -54,6 +54,7 @@ const ShopWithSidebar = () => {
   }, [categoryId]);
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     const params = new URLSearchParams();
     params.set("page", String(page));
@@ -66,11 +67,22 @@ const ShopWithSidebar = () => {
         `/api/products/?${params.toString()}`
       )
       .then((data) => {
+        if (cancelled) return;
         setProducts(data.results.map(mapProductForDisplay));
         setTotalCount(data.count);
       })
-      .catch((e) => { console.error("Failed to fetch products:", e); setProducts([]); })
-      .finally(() => setLoading(false));
+      .catch((e) => {
+        if (cancelled) return;
+        console.error("Failed to fetch products:", e);
+        setProducts([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [page, sortBy, selectedCategory]);
 
   const totalPages = Math.ceil(totalCount / perPage);
