@@ -14,6 +14,12 @@ import { api } from "@/lib/api";
 import { mapProductForDisplay } from "@/lib/mappers";
 import type { PaginatedResponse, ProductListItem } from "@/lib/types";
 
+type CategoryData = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
 const sortOptions = [
   { label: "Latest Products", value: "-created_at" },
   { label: "Best Selling", value: "-is_featured" },
@@ -26,31 +32,30 @@ const ShopWithSidebar = () => {
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [sortBy, setSortBy] = useState("-created_at");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    searchParams.get("category") || null
-  );
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const perPage = 9;
 
   useEffect(() => {
     api
-      .get<{ id: number; name: string; slug: string }[]>("/api/categories/")
-      .then((cats) =>
-        setCategories(
-          cats.map((c) => ({
-            name: c.name,
-            slug: c.slug,
-            id: c.id,
-            products: 0,
-            isRefined: false,
-          }))
-        )
-      )
-      .catch(() => {});
+      .get<PaginatedResponse<CategoryData>>("/api/categories/")
+      .then((data) => {
+        const cats = data.results;
+        setCategories(cats);
+
+        const slug = searchParams.get("category");
+        if (slug) {
+          const matched = cats.find((c) => c.slug === slug);
+          if (matched) {
+            setSelectedCategory(String(matched.id));
+          }
+        }
+      })
+      .catch((e) => console.error("Failed to fetch categories:", e));
   }, []);
 
   useEffect(() => {
@@ -69,7 +74,7 @@ const ShopWithSidebar = () => {
         setProducts(data.results.map(mapProductForDisplay));
         setTotalCount(data.count);
       })
-      .catch(() => setProducts([]))
+      .catch((e) => { console.error("Failed to fetch products:", e); setProducts([]); })
       .finally(() => setLoading(false));
   }, [page, sortBy, selectedCategory]);
 
@@ -104,7 +109,9 @@ const ShopWithSidebar = () => {
   };
 
   const handleCategoryFilter = (slug: string) => {
-    setSelectedCategory((prev) => (prev === slug ? null : slug));
+    const matched = categories.find((c) => c.slug === slug);
+    const id = matched ? String(matched.id) : null;
+    setSelectedCategory((prev) => (prev === id ? null : id));
     setPage(1);
   };
 
