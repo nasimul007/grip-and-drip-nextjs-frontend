@@ -40,23 +40,18 @@ const ShopWithSidebar = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const perPage = 9;
 
+  const categoryId = searchParams.get("category");
+
   useEffect(() => {
     api
       .get<PaginatedResponse<CategoryData>>("/api/categories/")
-      .then((data) => {
-        const cats = data.results;
-        setCategories(cats);
-
-        const slug = searchParams.get("category");
-        if (slug) {
-          const matched = cats.find((c) => c.slug === slug);
-          if (matched) {
-            setSelectedCategory(String(matched.id));
-          }
-        }
-      })
+      .then((data) => setCategories(data.results))
       .catch((e) => console.error("Failed to fetch categories:", e));
   }, []);
+
+  useEffect(() => {
+    setSelectedCategory(categoryId || null);
+  }, [categoryId]);
 
   useEffect(() => {
     setLoading(true);

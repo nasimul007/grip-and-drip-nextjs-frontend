@@ -91,8 +91,8 @@ const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
 
   const handleOptionClick = (option: CategoryOption) => {
     setIsOpen(false);
-    if (option.slug) {
-      router.push(`/shop-with-sidebar?category=${option.slug}`);
+    if (option.value !== "0") {
+      router.push(`/shop-with-sidebar?category=${option.value}`);
     } else {
       router.push("/shop-with-sidebar");
     }
