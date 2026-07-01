@@ -18,6 +18,7 @@ type CategoryData = {
   id: number;
   name: string;
   slug: string;
+  children?: CategoryData[];
 };
 
 const sortOptions = [
@@ -37,7 +38,7 @@ const ShopWithSidebar = () => {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [sortBy, setSortBy] = useState("-created_at");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const perPage = 9;
 
   const categoryId = searchParams.get("category");
@@ -50,7 +51,7 @@ const ShopWithSidebar = () => {
   }, []);
 
   useEffect(() => {
-    setSelectedCategory(categoryId || null);
+    setSelectedCategories(categoryId ? [categoryId] : []);
   }, [categoryId]);
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const ShopWithSidebar = () => {
     params.set("page", String(page));
     params.set("page_size", String(perPage));
     if (sortBy) params.set("ordering", sortBy);
-    if (selectedCategory) params.set("category", selectedCategory);
+    selectedCategories.forEach((id) => params.append("category", id));
 
     api
       .get<PaginatedResponse<ProductListItem>>(
@@ -83,7 +84,7 @@ const ShopWithSidebar = () => {
     return () => {
       cancelled = true;
     };
-  }, [page, sortBy, selectedCategory]);
+  }, [page, sortBy, selectedCategories]);
 
   const totalPages = Math.ceil(totalCount / perPage);
 
@@ -115,10 +116,10 @@ const ShopWithSidebar = () => {
     setPage(1);
   };
 
-  const handleCategoryFilter = (slug: string) => {
-    const matched = categories.find((c) => c.slug === slug);
-    const id = matched ? String(matched.id) : null;
-    setSelectedCategory((prev) => (prev === id ? null : id));
+  const handleCategoryFilter = (id: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
+    );
     setPage(1);
   };
 
@@ -197,6 +198,7 @@ const ShopWithSidebar = () => {
                   {/* <!-- category box --> */}
                   <CategoryDropdown
                     categories={categories}
+                    selectedIds={selectedCategories}
                     onSelectCategory={handleCategoryFilter}
                   />
 

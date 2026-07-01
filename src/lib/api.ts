@@ -84,7 +84,7 @@ export const api = {
 };
 
 export function buildImageUrl(path: string | null | undefined): string | null {
-  if (!path) return null;
+  if (!path || typeof path !== 'string') return null;
   if (path.startsWith("http")) return path;
   return `${API_BASE}${path}`;
 }

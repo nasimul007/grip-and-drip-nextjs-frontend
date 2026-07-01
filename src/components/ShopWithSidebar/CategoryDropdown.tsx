@@ -2,68 +2,122 @@
 
 import { useState } from "react";
 
+type CategoryNode = {
+  id: number;
+  name: string;
+  slug: string;
+  children?: CategoryNode[];
+};
+
+const ExpandIcon = ({ expanded }: { expanded: boolean }) => (
+  <svg
+    className={`${expanded ? "rotate-90" : ""} stroke-current transition-transform duration-200`}
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M4.5 2.5L7.5 6L4.5 9.5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const CategoryItem = ({
   category,
+  depth,
+  selectedIds,
   onSelect,
 }: {
-  category: any;
-  onSelect?: (slug: string) => void;
+  category: CategoryNode;
+  depth: number;
+  selectedIds: string[];
+  onSelect?: (id: string) => void;
 }) => {
-  const [selected, setSelected] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const hasChildren = !!category.children?.length;
+  const selected = selectedIds.includes(String(category.id));
+
   return (
-    <button
-      className={`${
-        selected && "text-blue"
-      } group flex items-center justify-between ease-out duration-200 hover:text-blue `}
-      onClick={() => {
-        setSelected(!selected);
-        if (onSelect && category.slug) onSelect(category.slug);
-      }}
-    >
-      <div className="flex items-center gap-2">
-        <div
-          className={`cursor-pointer flex items-center justify-center rounded w-4 h-4 border ${
-            selected ? "border-blue bg-blue" : "bg-white border-gray-3"
-          }`}
-        >
-          <svg
-            className={selected ? "block" : "hidden"}
-            width="10"
-            height="10"
-            viewBox="0 0 10 10"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8.33317 2.5L3.74984 7.08333L1.6665 5"
-              stroke="white"
-              strokeWidth="1.94437"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-
-        <span>{category.name}</span>
-      </div>
-
-      <span
+    <div>
+      <button
+        type="button"
         className={`${
-          selected ? "text-white bg-blue" : "bg-gray-2"
-        } inline-flex rounded-[30px] text-custom-xs px-2 ease-out duration-200 group-hover:text-white group-hover:bg-blue`}
+          selected && "text-blue"
+        } group flex items-center justify-between w-full ease-out duration-200 hover:text-blue text-left`}
+        style={{ paddingLeft: depth * 16 }}
+        onClick={() => {
+          if (onSelect) onSelect(String(category.id));
+        }}
       >
-        {category.products}
-      </span>
-    </button>
+        <div className="flex items-center gap-2 min-w-0">
+          <span
+            className="flex items-center justify-center w-4 h-4 shrink-0"
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpanded(!expanded);
+            }}
+          >
+            {hasChildren && <ExpandIcon expanded={expanded} />}
+          </span>
+
+          <div
+            className={`cursor-pointer flex items-center justify-center rounded w-4 h-4 border shrink-0 ${
+              selected ? "border-blue bg-blue" : "bg-white border-gray-3"
+            }`}
+          >
+            <svg
+              className={selected ? "block" : "hidden"}
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8.33317 2.5L3.74984 7.08333L1.6665 5"
+                stroke="white"
+                strokeWidth="1.94437"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          <span className="truncate">{category.name}</span>
+        </div>
+      </button>
+
+      {expanded && hasChildren && (
+        <div>
+          {category.children!.map((child) => (
+            <CategoryItem
+              key={child.id}
+              category={child}
+              depth={depth + 1}
+              selectedIds={selectedIds}
+              onSelect={onSelect}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
 const CategoryDropdown = ({
   categories,
+  selectedIds,
   onSelectCategory,
 }: {
-  categories: any[];
-  onSelectCategory?: (slug: string) => void;
+  categories: CategoryNode[];
+  selectedIds: string[];
+  onSelectCategory?: (id: string) => void;
 }) => {
   const [toggleDropdown, setToggleDropdown] = useState(true);
 
@@ -103,17 +157,17 @@ const CategoryDropdown = ({
         </button>
       </div>
 
-      {/* dropdown && 'shadow-filter */}
-      {/* <!-- dropdown menu --> */}
       <div
         className={`flex-col gap-3 py-6 pl-6 pr-5.5 ${
           toggleDropdown ? "flex" : "hidden"
         }`}
       >
-        {categories.map((category, key) => (
+        {categories.map((category) => (
           <CategoryItem
-            key={key}
+            key={category.id}
             category={category}
+            depth={0}
+            selectedIds={selectedIds}
             onSelect={onSelectCategory}
           />
         ))}

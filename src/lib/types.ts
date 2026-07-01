@@ -57,7 +57,13 @@ export type ProductListItem = {
   id: number;
   name: string;
   slug: string;
-  primary_image: string | null;
+  primary_image: {
+    id: number;
+    image: string;
+    alt_text: string;
+    is_primary: boolean;
+    sort_order: number;
+  } | null;
   category_name: string;
   category_slug: string;
   price: number;

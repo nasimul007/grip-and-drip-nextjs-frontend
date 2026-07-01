@@ -9,6 +9,9 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
 import Image from "next/image";
+import { api } from "@/lib/api";
+import { mapProductDetailForDisplay } from "@/lib/mappers";
+import type { ProductDetail } from "@/lib/types";
 
 const SingleGridItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
@@ -16,9 +19,15 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { addItem } = useCart();
 
-  // update the QuickView state
-  const handleQuickViewUpdate = () => {
-    dispatch(updateQuickView({ ...item }));
+  // update the QuickView state with full product detail
+  const handleQuickViewUpdate = async () => {
+    try {
+      const detail = await api.get<ProductDetail>(`/api/products/${item.slug}/`);
+      dispatch(updateQuickView(mapProductDetailForDisplay(detail)));
+    } catch (err) {
+      console.error("Failed to fetch product detail:", err);
+      dispatch(updateQuickView({ ...item }));
+    }
   };
 
   // add to cart
@@ -42,7 +51,7 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   return (
     <div className="group">
       <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-white shadow-1 min-h-[270px] mb-4">
-        {item.imgs.previews[0] ? (
+        {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
           <Image src={item.imgs.previews[0]} alt="" width={250} height={250} />
         ) : (
           <div className="w-[250px] h-[250px] flex items-center justify-center text-dark-4 text-sm">

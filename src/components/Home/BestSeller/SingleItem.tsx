@@ -9,15 +9,24 @@ import { useCart } from "@/lib/useCart";
 import Image from "next/image";
 import Link from "next/link";
 import { addItemToWishlist } from "@/redux/features/wishlist-slice";
+import { api } from "@/lib/api";
+import { mapProductDetailForDisplay } from "@/lib/mappers";
+import type { ProductDetail } from "@/lib/types";
 
 const SingleItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
   const dispatch = useDispatch<AppDispatch>();
   const { addItem } = useCart();
 
-  // update the QuickView state
-  const handleQuickViewUpdate = () => {
-    dispatch(updateQuickView({ ...item }));
+  // update the QuickView state with full product detail
+  const handleQuickViewUpdate = async () => {
+    try {
+      const detail = await api.get<ProductDetail>(`/api/products/${item.slug}/`);
+      dispatch(updateQuickView(mapProductDetailForDisplay(detail)));
+    } catch (err) {
+      console.error("Failed to fetch product detail:", err);
+      dispatch(updateQuickView({ ...item }));
+    }
   };
 
   // add to cart
@@ -93,7 +102,7 @@ const SingleItem = ({ item }: { item: Product }) => {
         </div>
 
         <div className="flex justify-center items-center">
-          {item.imgs.previews[0] ? (
+          {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
             <Image src={item.imgs.previews[0]} alt="" width={280} height={280} />
           ) : (
             <div className="w-[280px] h-[280px] flex items-center justify-center text-dark-4 text-sm">

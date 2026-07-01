@@ -1,5 +1,4 @@
 import type { ProductListItem, ProductDetail } from "./types";
-import { buildImageUrl } from "./api";
 
 const categoryImages: Record<string, string> = {
   televisions: "/images/categories/categories-01.png",
@@ -33,8 +32,8 @@ export function mapProductForDisplay(item: ProductListItem) {
     id: item.id,
     slug: item.slug,
     imgs: {
-      thumbnails: item.primary_image ? [item.primary_image] : [],
-      previews: item.primary_image ? [item.primary_image] : [],
+      thumbnails: item.primary_image ? [item.primary_image.image] : [],
+      previews: item.primary_image ? [item.primary_image.image] : [],
     },
   };
 }
@@ -42,7 +41,13 @@ export function mapProductForDisplay(item: ProductListItem) {
 export function mapProductDetailForDisplay(item: ProductDetail) {
   const images = item.images
     .sort((a, b) => a.sort_order - b.sort_order)
-    .map((img) => buildImageUrl(img.image))
+    .map((img) => {
+      try {
+        return new URL(img.image).pathname;
+      } catch {
+        return img.image;
+      }
+    })
     .filter((url): url is string => url !== null);
   return {
     title: item.name,
