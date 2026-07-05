@@ -49,6 +49,7 @@ export type ProductVariant = {
   price_override: number | null;
   stock: number;
   is_active: boolean;
+  image: string | null;
   attributes: Record<string, string>;
   sort_order: number;
 };

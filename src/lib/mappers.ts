@@ -39,8 +39,12 @@ export function mapProductForDisplay(item: ProductListItem) {
 }
 
 export function mapProductDetailForDisplay(item: ProductDetail) {
-  const images = item.images
-    .sort((a, b) => a.sort_order - b.sort_order)
+  const images = [...item.images]
+    .sort((a, b) => {
+      if (a.is_primary) return -1;
+      if (b.is_primary) return 1;
+      return a.sort_order - b.sort_order;
+    })
     .map((img) => {
       try {
         return new URL(img.image).pathname;
@@ -58,7 +62,18 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
     slug: item.slug,
     description: item.description,
     attributes: item.attributes,
-    variants: item.variants,
+    variants: item.variants.map((v) => ({
+      ...v,
+      image: v.image
+        ? (() => {
+            try {
+              return new URL(v.image).pathname;
+            } catch {
+              return v.image;
+            }
+          })()
+        : null,
+    })),
     imgs: {
       thumbnails: images.length ? images : [],
       previews: images.length ? images : [],

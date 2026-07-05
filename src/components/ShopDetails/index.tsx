@@ -12,6 +12,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
   const [previewImg, setPreviewImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("tabOne");
+  const [userInteracted, setUserInteracted] = useState(false);
 
   const productFromStorage = useAppSelector(
     (state) => state.productDetailsReducer.value
@@ -79,11 +80,42 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
   const displayPrice = matchedVariant?.price_override ?? product?.price;
   const displayStock = matchedVariant?.stock ?? product?.stock;
 
+  // Variant image switching
+  const variantImage = matchedVariant?.image ?? null;
+
+  const variantImgIndex = variantImage
+    ? product.imgs?.previews?.findIndex((url: string) => url === variantImage) ?? -1
+    : -1;
+
+  const allImages = (() => {
+    const imgs = [...(product.imgs?.previews || [])];
+    if (variantImage && variantImgIndex === -1) {
+      imgs.unshift(variantImage);
+    }
+    return imgs;
+  })();
+
+  const allThumbnails = (() => {
+    const thumbs = [...(product.imgs?.thumbnails || [])];
+    if (variantImage && variantImgIndex === -1) {
+      thumbs.unshift(variantImage);
+    }
+    return thumbs;
+  })();
+
   useEffect(() => {
     if (!apiProduct && typeof window !== "undefined") {
       localStorage.setItem("productDetails", JSON.stringify(product));
     }
   }, [product, apiProduct]);
+
+  // Auto-switch main image when variant selection changes
+  useEffect(() => {
+    if (variantImage) {
+      setPreviewImg(variantImgIndex !== -1 ? variantImgIndex : 0);
+    }
+    setUserInteracted(false);
+  }, [selectedAttrs]);
 
   // pass the product here when you get the real data.
   const handlePreviewSlider = () => {
@@ -126,9 +158,9 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                         </svg>
                       </button>
 
-                      {product.imgs?.previews?.[previewImg] && (
+                      {allImages[previewImg] && (
                         <Image
-                          src={product.imgs.previews[previewImg]}
+                          src={allImages[previewImg]}
                           alt="products-details"
                           width={400}
                           height={400}
@@ -137,11 +169,13 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                     </div>
                   </div>
 
-                  {/* ?  &apos;border-blue &apos; :  &apos;border-transparent&apos; */}
                   <div className="flex flex-wrap sm:flex-nowrap gap-4.5 mt-6">
-                    {product.imgs?.thumbnails.map((item, key) => (
+                    {allThumbnails.map((item, key) => (
                       <button
-                        onClick={() => setPreviewImg(key)}
+                        onClick={() => {
+                          setPreviewImg(key);
+                          setUserInteracted(true);
+                        }}
                         key={key}
                         className={`flex items-center justify-center w-15 sm:w-25 h-15 sm:h-25 overflow-hidden rounded-lg bg-gray-2 shadow-1 ease-out duration-200 border-2 hover:border-blue ${key === previewImg
                           ? "border-blue"
