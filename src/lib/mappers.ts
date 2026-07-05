@@ -58,6 +58,7 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
     slug: item.slug,
     description: item.description,
     attributes: item.attributes,
+    variants: item.variants,
     imgs: {
       thumbnails: images.length ? images : [],
       previews: images.length ? images : [],
