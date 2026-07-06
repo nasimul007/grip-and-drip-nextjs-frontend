@@ -130,8 +130,8 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
           <section className="overflow-hidden relative pb-20 pt-[209px] sm:pt-[155px] lg:pt-[95px] xl:pt-[165px]">
             <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
               <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
-                <div className="lg:max-w-[570px] w-full">
-                  <div className="lg:min-h-[512px] rounded-lg shadow-1 bg-gray-2 p-4 sm:p-7.5 relative flex items-center justify-center">
+                <div className="lg:max-w-[570px] w-full flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 lg:min-h-[512px] rounded-lg shadow-1 bg-gray-2 p-4 sm:p-7.5 relative flex items-center justify-center">
                     <div>
                       <button
                         onClick={handlePreviewSlider}
@@ -166,7 +166,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap sm:flex-nowrap gap-4.5 mt-6">
+                  <div className="flex sm:flex-col gap-2 sm:order-first">
                     {allThumbnails.map((item, key) => (
                       <button
                         onClick={() => {
@@ -174,7 +174,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                           setUserInteracted(true);
                         }}
                         key={key}
-                        className={`flex items-center justify-center w-15 sm:w-25 h-15 sm:h-25 overflow-hidden rounded-lg bg-gray-2 shadow-1 ease-out duration-200 border-2 hover:border-blue ${key === previewImg
+                        className={`flex items-center justify-center w-15 sm:w-20 h-15 sm:h-20 overflow-hidden rounded-lg bg-gray-2 shadow-1 ease-out duration-200 border-2 hover:border-blue shrink-0 ${key === previewImg
                           ? "border-blue"
                           : "border-transparent"
                           }`}
