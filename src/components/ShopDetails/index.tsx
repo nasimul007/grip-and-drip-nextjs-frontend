@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import Newsletter from "../Common/Newsletter";
 import RecentlyViewdItems from "./RecentlyViewd";
@@ -124,13 +123,11 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
 
   return (
     <>
-      <Breadcrumb title={"Shop Details"} pages={["shop details"]} />
-
       {product.title === "" ? (
         "Please add product"
       ) : (
         <>
-          <section className="overflow-hidden relative pb-20 pt-5 lg:pt-20 xl:pt-28">
+          <section className="overflow-hidden relative pb-20 pt-[209px] sm:pt-[155px] lg:pt-[95px] xl:pt-[165px]">
             <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
               <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
                 <div className="lg:max-w-[570px] w-full">
