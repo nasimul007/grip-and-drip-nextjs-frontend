@@ -351,13 +351,15 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                   </div>
 
                   <h3 className="font-medium text-custom-1 mb-4.5">
-                    <span className="text-sm sm:text-base text-dark">
-                      Price: ${displayPrice}
-                    </span>
-                    <span className="line-through">
-                      {" "}
-                      ${product.discountedPrice}{" "}
-                    </span>
+                    <span className="text-dark">
+                      Price: ৳{displayPrice}
+                    </span> &nbsp;
+                    {displayPrice !== product.discountedPrice && (
+                      <span className="text-sm sm:text-base line-through">
+                        {" "}
+                        ৳{product.discountedPrice}{" "}
+                      </span>
+                    )}
                   </h3>
 
                   <ul className="flex flex-col gap-2">
