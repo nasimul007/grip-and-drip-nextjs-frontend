@@ -499,9 +499,9 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                         </span>
 
                         <button
-                          onClick={() => setQuantity(quantity + 1)}
+                          onClick={() => quantity < displayStock && setQuantity(quantity + 1)}
                           aria-label="button for add product"
-                          className="flex items-center justify-center w-12 h-12 ease-out duration-200 hover:text-blue"
+                          className={`flex items-center justify-center w-12 h-12 ease-out duration-200 ${quantity >= displayStock ? "opacity-40 cursor-not-allowed" : "hover:text-blue"}`}
                         >
                           <svg
                             className="fill-current"
