@@ -96,6 +96,10 @@ export type ProductDetail = {
   images: ProductImage[];
   variants: ProductVariant[];
   breadcrumb: { name: string; slug: string }[];
+  meta_title: string;
+  meta_description: string;
+  og_image: string;
+  schema_markup: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 };
