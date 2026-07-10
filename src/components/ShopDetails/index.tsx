@@ -538,9 +538,9 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                     }`}
                 >
                   <div className="max-w-[670px] w-full">
-                    <h2 className="font-medium text-2xl text-dark mb-7">
+                    {/* <h2 className="font-medium text-2xl text-dark mb-7">
                       Description
-                    </h2>
+                    </h2> */}
 
                     <div
                       className="mb-6"
