@@ -42,7 +42,7 @@ const PromoBanner = () => {
         <div className="grid gap-7.5 grid-cols-1 lg:grid-cols-2">
           <div className="relative z-1 overflow-hidden rounded-lg bg-brand-surface py-10 xl:py-16 px-4 sm:px-7.5 xl:px-10">
             <Image
-              src="/images/promo/promo-02.png"
+              src="/images/promo/Anker-Nano-3-30W-Adapter-with-Type-C.png"
               alt="promo img"
               className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-10 -z-1 opacity-40"
               width={241}

@@ -5,7 +5,6 @@ import { api } from "@/lib/api";
 import { mapCategoryForDisplay } from "@/lib/mappers";
 import type { PaginatedResponse } from "@/lib/types";
 
-import "swiper/css/navigation";
 import "swiper/css";
 import SingleItem from "./SingleItem";
 
@@ -36,11 +35,7 @@ const Categories = () => {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (sliderRef.current && categories.length > 0) {
-      sliderRef.current.swiper.init();
-    }
-  }, [categories]);
+
 
   return (
     <section className="overflow-hidden pt-17.5 bg-brand-dark">
@@ -91,7 +86,7 @@ const Categories = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <button onClick={handlePrev} className="swiper-button-prev">
+              <button onClick={handlePrev} className="category-nav-prev">
                 <svg
                   className="fill-current"
                   width="24"
@@ -109,7 +104,7 @@ const Categories = () => {
                 </svg>
               </button>
 
-              <button onClick={handleNext} className="swiper-button-next">
+              <button onClick={handleNext} className="category-nav-next">
                 <svg
                   className="fill-current"
                   width="24"
@@ -131,6 +126,8 @@ const Categories = () => {
 
           <Swiper
             ref={sliderRef}
+            loop={true}
+            loopPreventsSliding={false}
             slidesPerView={6}
             breakpoints={{
               0: {
