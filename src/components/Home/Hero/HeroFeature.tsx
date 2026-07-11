@@ -6,7 +6,7 @@ const featureData = [
   {
     img: "/images/icons/icon-01.svg",
     title: "Free Shipping",
-    description: "For all orders ৳1,000+",
+    description: "For orders above ৳2,000+",
   },
   {
     img: "/images/icons/icon-02.svg",
@@ -28,7 +28,7 @@ const featureData = [
 const HeroFeature = () => {
   return (
     <div className="max-w-[1060px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-      <div className="flex flex-wrap items-center gap-7.5 xl:gap-12.5 mt-10">
+      <div className="flex flex-wrap items-center gap-7.5 xl:gap-12.5 mt-5">
         {featureData.map((item, key) => (
           <div className="flex items-center gap-4" key={key}>
             <Image src={item.img} alt="icons" width={40} height={41} />
