@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Breadcrumb from "../Common/Breadcrumb";
 
 import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
@@ -70,11 +69,7 @@ const ShopWithoutSidebar = () => {
 
   return (
     <>
-      <Breadcrumb
-        title={"Explore All Products"}
-        pages={["shop", "/", "shop without sidebar"]}
-      />
-      <section className="overflow-hidden relative pb-20 pt-5 lg:pt-20 xl:pt-28 bg-[#f3f4f6]">
+      <section className="overflow-hidden relative pb-20 pt-40 sm:pt-30 lg:pt-28 xl:pt-42.5 bg-brand-dark">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-7.5">
             {/* // <!-- Content Start --> */}
