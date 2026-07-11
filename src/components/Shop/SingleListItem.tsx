@@ -51,13 +51,13 @@ const SingleListItem = ({ item }: { item: Product }) => {
   return (
     <div className="group rounded-lg bg-brand-card border border-brand-border">
       <div className="flex">
-        <div className="shadow-list relative overflow-hidden flex items-center justify-center max-w-[270px] w-full sm:min-h-[270px] p-4">
+        <div className="shadow-list relative overflow-hidden flex items-center justify-center w-full sm:w-[270px] h-[270px] shrink-0">
           <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
-          <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
+          <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"} className="relative block w-full h-full">
             {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-              <Image src={item.imgs.previews[0]} alt="" width={250} height={250} className="transition-transform duration-300 hover:scale-105" />
+              <Image src={item.imgs.previews[0]} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="270px" />
             ) : (
-              <div className="w-[250px] h-[250px] flex items-center justify-center text-brand-muted text-sm">
+              <div className="w-full h-full flex items-center justify-center text-brand-muted text-sm">
                 No Image
               </div>
             )}

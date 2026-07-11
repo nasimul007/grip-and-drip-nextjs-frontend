@@ -102,9 +102,9 @@ const SingleItem = ({ item }: { item: Product }) => {
           </span>
         </div>
 
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center overflow-hidden">
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-            <Image src={item.imgs.previews[0]} alt="" width={280} height={280} className="transition-transform duration-300 hover:scale-105" />
+            <Image src={item.imgs.previews[0]} alt="" width={280} height={280} className="max-w-full h-auto object-cover transition-transform duration-300 hover:scale-105" />
           ) : (
             <div className="w-[280px] h-[280px] flex items-center justify-center text-brand-muted text-sm">
               No Image

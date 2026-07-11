@@ -50,13 +50,13 @@ const SingleGridItem = ({ item }: { item: Product }) => {
 
   return (
     <div className="group">
-      <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-brand-card border border-brand-border min-h-[270px] mb-4">
+      <div className="relative overflow-hidden rounded-lg bg-brand-card border border-brand-border mb-4 aspect-[1/1]">
         <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
-        <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
+        <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"} className="relative block w-full h-full">
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-            <Image src={item.imgs.previews[0]} alt="" width={250} height={250} className="transition-transform duration-300 hover:scale-105" />
+            <Image src={item.imgs.previews[0]} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw" />
           ) : (
-            <div className="w-[250px] h-[250px] flex items-center justify-center text-brand-muted text-sm">
+            <div className="w-full h-full flex items-center justify-center text-brand-muted text-sm">
               No Image
             </div>
           )}
