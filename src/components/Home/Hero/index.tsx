@@ -39,7 +39,7 @@ const Hero = () => {
                       </p>
                       <span className="flex items-center gap-3">
                         <span className="font-medium text-heading-5 text-brand-accent">
-                          From ৳2,499
+                          From ৳4,000
                         </span>
                       </span>
                     </div>
@@ -47,7 +47,7 @@ const Hero = () => {
 
                   <div>
                     <Image
-                      src="/images/hero/hero-03.png"
+                      src="/images/hero/All_Speakers.png"
                       alt="speaker image"
                       width={123}
                       height={161}
@@ -79,7 +79,7 @@ const Hero = () => {
 
                   <div>
                     <Image
-                      src="/images/hero/hero-02.png"
+                      src="/images/hero/anker-chargers.webp"
                       alt="charger image"
                       width={123}
                       height={161}
