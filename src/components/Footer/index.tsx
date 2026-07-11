@@ -5,12 +5,12 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="overflow-hidden">
+    <footer className="overflow-hidden bg-brand-surface">
       <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
         {/* <!-- footer menu start --> */}
         <div className="flex flex-wrap xl:flex-nowrap gap-10 xl:gap-19 xl:justify-between pt-17.5 xl:pt-22.5 pb-10 xl:pb-15">
           <div className="max-w-[330px] w-full">
-            <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
+            <h2 className="mb-7.5 text-custom-1 font-medium text-white">
               Help & Support
             </h2>
 
@@ -32,11 +32,11 @@ const Footer = () => {
                     />
                   </svg>
                 </span>
-                685 Market Street,Las Vegas, LA 95820,United States.
+                Gadget & Widget, Dhaka, Bangladesh.
               </li>
 
               <li>
-                <a href="#" className="flex items-center gap-4.5">
+                <a href="#" className="flex items-center gap-4.5 text-white hover:text-brand-accent">
                   <svg
                     width="24"
                     height="24"
@@ -91,7 +91,7 @@ const Footer = () => {
               <a
                 href="#"
                 aria-label="Facebook Social Link"
-                className="flex ease-out duration-200 hover:text-blue"
+                className="flex ease-out duration-200 text-brand-muted hover:text-brand-accent"
               >
                 <svg
                   className="fill-current"
@@ -103,12 +103,12 @@ const Footer = () => {
                 >
                   <path
                     d="M8.99984 0.666504C7.48706 0.666504 6.09165 1.04648 4.81361 1.80644C3.53557 2.54019 2.51836 3.5491 1.76197 4.83317C1.03166 6.11724 0.666504 7.51923 0.666504 9.03915C0.666504 10.428 0.966452 11.7252 1.56635 12.9307C2.19233 14.1099 3.04 15.0926 4.10938 15.8788C5.17876 16.6649 6.37855 17.1497 7.70876 17.3332V11.4763H5.59608V9.03915H7.70876V7.19166C7.70876 6.16965 7.98262 5.37038 8.53035 4.79386C9.10417 4.21734 9.8736 3.92908 10.8386 3.92908C11.4646 3.92908 12.0906 3.98149 12.7166 4.08632V6.16965H11.6602C11.1908 6.16965 10.8386 6.30068 10.6039 6.56273C10.3952 6.79858 10.2909 7.09994 10.2909 7.46682V9.03915H12.6383L12.2471 11.4763H10.2909V17.3332C11.6472 17.1235 12.86 16.6256 13.9294 15.8395C14.9988 15.0533 15.8334 14.0706 16.4333 12.8913C17.0332 11.6859 17.3332 10.4018 17.3332 9.03915C17.3332 7.51923 16.955 6.11724 16.1986 4.83317C15.4683 3.5491 14.4641 2.54019 13.1861 1.80644C11.908 1.04648 10.5126 0.666504 8.99984 0.666504Z"
-                    fill=""
+                    fill="currentColor"
                   />
                   <path
                     opacity="0.04"
                     d="M7.70887 11.4764V17.3333H10.291V11.4764H12.2472L12.6384 9.03926H10.291V7.46693C10.291 7.10006 10.3954 6.7987 10.604 6.56285C10.8388 6.30079 11.1909 6.16977 11.6604 6.16977H12.7167V4.08643C12.0907 3.98161 11.4647 3.9292 10.8388 3.9292C9.87371 3.9292 9.10428 4.21746 8.53046 4.79398C7.98273 5.3705 7.70887 6.16977 7.70887 7.19178V9.03926H5.59619V11.4764H7.70887Z"
-                    fill=""
+                    fill="currentColor"
                   />
                 </svg>
               </a>
@@ -116,7 +116,7 @@ const Footer = () => {
               <a
                 href="#"
                 aria-label="Twitter Social Link"
-                className="flex ease-out duration-200 hover:text-blue"
+                className="flex ease-out duration-200 text-brand-muted hover:text-brand-accent"
               >
                 <svg
                   className="fill-current"
@@ -136,7 +136,7 @@ const Footer = () => {
               <a
                 href="#"
                 aria-label="Instagram Social Link"
-                className="flex ease-out duration-200 hover:text-blue"
+                className="flex ease-out duration-200 text-brand-muted hover:text-brand-accent"
               >
                 <svg
                   className="fill-current"
@@ -171,7 +171,7 @@ const Footer = () => {
               <a
                 href="#"
                 aria-label="Linkedin Social Link"
-                className="flex ease-out duration-200 hover:text-blue"
+                className="flex ease-out duration-200 hover:text-brand-accent"
               >
                 <svg
                   className="fill-current"
@@ -197,33 +197,33 @@ const Footer = () => {
           </div>
 
           <div className="w-full sm:w-auto">
-            <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
+            <h2 className="mb-7.5 text-custom-1 font-medium text-white">
               Account
             </h2>
 
             <ul className="flex flex-col gap-3.5">
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   My Account
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Login / Register
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Cart
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Wishlist
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Shop
                 </a>
               </li>
@@ -231,33 +231,33 @@ const Footer = () => {
           </div>
 
           <div className="w-full sm:w-auto">
-            <h2 className="mb-7.5 text-custom-1 font-medium text-dark">
+            <h2 className="mb-7.5 text-custom-1 font-medium text-white">
               Quick Link
             </h2>
 
             <ul className="flex flex-col gap-3">
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Refund Policy
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Terms of Use
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
-                  FAQ’s
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
+                  FAQ&rsquo;s
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 text-white hover:text-brand-accent" href="#">
                   Contact
                 </a>
               </li>
@@ -265,12 +265,12 @@ const Footer = () => {
           </div>
 
           <div className="w-full sm:w-auto">
-            <h2 className="mb-7.5 text-custom-1 font-medium text-dark lg:text-right">
+            <h2 className="mb-7.5 text-custom-1 font-medium text-white lg:text-right">
               Download App
             </h2>
 
-            <p className="lg:text-right text-custom-sm mb-4">
-              Save $3 With App & New User only
+            <p className="lg:text-right text-custom-sm text-brand-muted mb-4">
+              Save with App & New User only
             </p>
 
             <ul className="flex flex-col lg:items-end gap-3">
@@ -334,11 +334,11 @@ const Footer = () => {
       </div>
 
       {/* <!-- footer bottom start --> */}
-      <div className="py-5 xl:py-7.5 bg-gray-1">
+      <div className="py-5 xl:py-7.5 bg-brand-dark">
         <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-5 flex-wrap items-center justify-between">
-            <p className="text-dark font-medium">
-              &copy; {year}. All rights reserved by PimjoLabs.
+            <p className="text-brand-muted font-medium">
+              &copy; {year}. Gadget & Widget. All rights reserved.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">

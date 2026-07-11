@@ -1,13 +1,13 @@
 import type { ProductListItem, ProductDetail } from "./types";
 
 const categoryImages: Record<string, string> = {
-  televisions: "/images/categories/categories-01.png",
-  "laptop & pc": "/images/categories/categories-02.png",
-  "mobile & tablets": "/images/categories/categories-03.png",
-  "games & videos": "/images/categories/categories-04.png",
-  "home appliances": "/images/categories/categories-05.png",
-  "health & sports": "/images/categories/categories-06.png",
-  watches: "/images/categories/categories-07.png",
+  charger: "/images/categories/categories-01.png",
+  earphone: "/images/categories/categories-02.png",
+  cable: "/images/categories/categories-03.png",
+  speaker: "/images/categories/categories-04.png",
+  headphone: "/images/categories/categories-05.png",
+  smartwatch: "/images/categories/categories-06.png",
+  accessory: "/images/categories/categories-07.png",
 };
 
 export function mapCategoryForDisplay(apiCategory: {

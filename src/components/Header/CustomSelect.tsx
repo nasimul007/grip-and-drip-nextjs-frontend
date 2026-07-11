@@ -45,7 +45,7 @@ const CategoryItem = ({
       </span>
       {isHovered && hasChildren && (
         <div
-          className="absolute left-full top-0 z-50 shadow-2 border border-gray-3 bg-white rounded-md py-2.5 min-w-[180px]"
+          className="absolute left-full top-0 z-50 shadow-2 border border-brand-border bg-brand-card rounded-md py-2.5 min-w-[180px]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >

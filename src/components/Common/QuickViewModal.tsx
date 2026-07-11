@@ -62,14 +62,14 @@ const QuickViewModal = () => {
   return (
     <div
       className={`${isModalOpen ? "z-99999" : "hidden"
-        } fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-dark/70 sm:px-8 px-4 py-5`}
+        } fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-black/80 sm:px-8 px-4 py-5`}
     >
       <div className="flex items-center justify-center ">
-        <div className="w-full max-w-[1100px] rounded-xl shadow-3 bg-white p-7.5 relative modal-content">
+        <div className="w-full max-w-[1100px] rounded-xl shadow-3 bg-brand-card p-7.5 relative modal-content">
           <button
             onClick={() => closeModal()}
             aria-label="button for close modal"
-            className="absolute top-0 right-0 sm:top-6 sm:right-6 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-meta text-body hover:text-dark"
+            className="absolute top-0 right-0 sm:top-6 sm:right-6 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-brand-surface text-brand-muted hover:text-white"
           >
             <svg
               className="fill-current"
@@ -96,7 +96,7 @@ const QuickViewModal = () => {
                     <button
                       onClick={() => setActivePreview(key)}
                       key={key}
-                      className={`flex items-center justify-center w-20 h-20 overflow-hidden rounded-lg bg-gray-1 ease-out duration-200 hover:border-2 hover:border-blue ${activePreview === key && "border-2 border-blue"
+                      className={`flex items-center justify-center w-20 h-20 overflow-hidden rounded-lg bg-brand-surface ease-out duration-200 hover:border-2 hover:border-brand-accent ${activePreview === key && "border-2 border-brand-accent"
                         }`}
                     >
                       {img ? (
@@ -108,18 +108,18 @@ const QuickViewModal = () => {
                           className="aspect-square"
                         />
                       ) : (
-                        <div className="text-dark-4 text-xs">No Img</div>
+                        <div className="text-brand-muted text-xs">No Img</div>
                       )}
                     </button>
                   ))}
                 </div>
 
-                <div className="relative z-1 overflow-hidden flex items-center justify-center w-full sm:min-h-[508px] bg-gray-1 rounded-lg border border-gray-3">
+                <div className="relative z-1 overflow-hidden flex items-center justify-center w-full sm:min-h-[508px] bg-brand-surface rounded-lg border border-brand-border">
                   <div>
                     <button
                       onClick={handlePreviewSlider}
                       aria-label="button for zoom"
-                      className="gallery__Image w-10 h-10 rounded-[5px] bg-white shadow-1 flex items-center justify-center ease-out duration-200 text-dark hover:text-blue absolute top-4 lg:top-8 right-4 lg:right-8 z-50"
+                      className="gallery__Image w-10 h-10 rounded-[5px] bg-brand-card shadow-1 flex items-center justify-center ease-out duration-200 text-white hover:text-brand-accent absolute top-4 lg:top-8 right-4 lg:right-8 z-50"
                     >
                       <svg
                         className="fill-current"
@@ -156,7 +156,7 @@ const QuickViewModal = () => {
                 SALE 20% OFF
               </span>
 
-              <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
+              <h3 className="font-semibold text-xl xl:text-heading-5 text-white mb-4">
                 {product.title}
               </h3>
 
@@ -271,8 +271,8 @@ const QuickViewModal = () => {
                   </div>
 
                   <span>
-                    <span className="font-medium text-dark"> 4.7 Rating </span>
-                    <span className="text-dark-2"> (5 reviews) </span>
+                    <span className="font-medium text-white"> 4.7 Rating </span>
+                    <span className="text-white-2"> (5 reviews) </span>
                   </span>
                 </div>
 
@@ -301,7 +301,7 @@ const QuickViewModal = () => {
                     </defs>
                   </svg>
 
-                  <span className="font-medium text-dark"> In Stock </span>
+                  <span className="font-medium text-white"> In Stock </span>
                 </div>
               </div>
 
@@ -312,16 +312,16 @@ const QuickViewModal = () => {
 
               <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
                 <div>
-                  <h4 className="font-semibold text-lg text-dark mb-3.5">
+                  <h4 className="font-semibold text-lg text-white mb-3.5">
                     Price
                   </h4>
 
                   <span className="flex items-center gap-2">
-                    <span className="font-semibold text-dark text-xl xl:text-heading-4">
+                    <span className="font-semibold text-white text-xl xl:text-heading-4">
                       ৳{product.discountedPrice}
                     </span>
                     {product.price !== product.discountedPrice && (
-                      <span className="font-medium text-dark-4 text-lg xl:text-2xl line-through">
+                      <span className="font-medium text-brand-muted text-lg xl:text-2xl line-through">
                         ৳{product.price}
                       </span>
                     )}
@@ -329,7 +329,7 @@ const QuickViewModal = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-lg text-dark mb-3.5">
+                  <h4 className="font-semibold text-lg text-white mb-3.5">
                     Quantity
                   </h4>
 
@@ -337,7 +337,7 @@ const QuickViewModal = () => {
                     <button
                       onClick={() => quantity > 1 && setQuantity(quantity - 1)}
                       aria-label="button for remove product"
-                      className="flex items-center justify-center w-10 h-10 rounded-[5px] bg-gray-2 text-dark ease-out duration-200 hover:text-blue"
+                      className="flex items-center justify-center w-10 h-10 rounded-[5px] bg-gray-2 text-white ease-out duration-200 hover:text-brand-accent"
                       disabled={quantity < 0 && true}
                     >
                       <svg
@@ -358,7 +358,7 @@ const QuickViewModal = () => {
                     </button>
 
                     <span
-                      className="flex items-center justify-center w-20 h-10 rounded-[5px] border border-gray-4 bg-white font-medium text-dark"
+                      className="flex items-center justify-center w-20 h-10 rounded-[5px] border border-gray-4 bg-brand-card font-medium text-white"
                       x-text="quantity"
                     >
                       {quantity}
@@ -367,7 +367,7 @@ const QuickViewModal = () => {
                     <button
                       onClick={() => setQuantity(quantity + 1)}
                       aria-label="button for add product"
-                      className="flex items-center justify-center w-10 h-10 rounded-[5px] bg-gray-2 text-dark ease-out duration-200 hover:text-blue"
+                      className="flex items-center justify-center w-10 h-10 rounded-[5px] bg-gray-2 text-white ease-out duration-200 hover:text-brand-accent"
                     >
                       <svg
                         className="fill-current"
@@ -399,7 +399,7 @@ const QuickViewModal = () => {
                 <button
                   disabled={quantity === 0 && true}
                   onClick={() => handleAddToCart()}
-                  className={`inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark
+                  className={`inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent-dark
                   `}
                 >
                   Add to Cart

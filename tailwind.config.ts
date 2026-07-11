@@ -96,6 +96,15 @@ const config: Config = {
         DEFAULT: "#F27430",
         dark: "#E1580E",
       },
+      brand: {
+        dark: "#0A0A0F",
+        surface: "#1A1A1E",
+        card: "#242428",
+        accent: "#00D4AA",
+        hover: "#00B894",
+        muted: "#A0A0A8",
+        border: "#2A2A30",
+      },
     },
     screens: {
       xsm: "375px",

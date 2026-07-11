@@ -2,11 +2,11 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 
-// Import Swiper styles
 import "swiper/css/pagination";
 import "swiper/css";
 
 import Image from "next/image";
+import Link from "next/link";
 
 const HeroCarousal = () => {
   return (
@@ -27,36 +27,39 @@ const HeroCarousal = () => {
         <div className="flex items-center pt-6 sm:pt-0 flex-col-reverse sm:flex-row">
           <div className="max-w-[394px] py-10 sm:py-15 lg:py-24.5 pl-4 sm:pl-7.5 lg:pl-12.5">
             <div className="flex items-center gap-4 mb-7.5 sm:mb-10">
-              <span className="block font-semibold text-heading-3 sm:text-heading-1 text-blue">
-                30%
+              <span className="block font-semibold text-heading-3 sm:text-heading-1 text-brand-accent">
+                5%
               </span>
-              <span className="block text-dark text-sm sm:text-custom-1 sm:leading-[24px]">
-                Sale
+              <span className="block text-white text-sm sm:text-custom-1 sm:leading-[24px]">
+                Launch
                 <br />
-                Off
+                Offer
               </span>
             </div>
 
-            <h1 className="font-semibold text-dark text-xl sm:text-3xl mb-3">
-              <a href="#">True Wireless Noise Cancelling Headphone</a>
+            <h1 className="font-semibold text-white text-xl sm:text-3xl mb-3">
+              <Link href="/shop-with-sidebar">
+                Welcome to Gadget & Widget
+              </Link>
             </h1>
 
-            <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at ipsum at risus euismod lobortis in
+            <p className="text-[#A0A0A8]">
+              Bangladesh&apos;s premier destination for authentic tech accessories.
+              Use code <span className="font-semibold text-brand-accent">GRIP5</span> at checkout for 5% off your first order.
             </p>
 
-            <a
-              href="#"
-              className="inline-flex font-medium text-white text-custom-sm rounded-md bg-dark py-3 px-9 ease-out duration-200 hover:bg-blue mt-10"
+            <Link
+              href="/shop-with-sidebar"
+              className="inline-flex font-medium text-white text-custom-sm rounded-md bg-brand-accent py-3 px-9 ease-out duration-200 hover:bg-brand-hover mt-10"
             >
-              Shop Now
-            </a>
+              Explore Now
+            </Link>
           </div>
 
           <div>
             <Image
-              src="/images/hero/hero-01.png"
-              alt="headphone"
+              src="/images/hero/hero-05.png"
+              alt="Gadget & Widget"
               width={351}
               height={358}
             />
@@ -64,41 +67,85 @@ const HeroCarousal = () => {
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        {" "}
         <div className="flex items-center pt-6 sm:pt-0 flex-col-reverse sm:flex-row">
           <div className="max-w-[394px] py-10 sm:py-15 lg:py-26 pl-4 sm:pl-7.5 lg:pl-12.5">
             <div className="flex items-center gap-4 mb-7.5 sm:mb-10">
-              <span className="block font-semibold text-heading-3 sm:text-heading-1 text-blue">
-                30%
+              <span className="block font-semibold text-heading-3 sm:text-heading-1 text-brand-accent">
+                New
               </span>
-              <span className="block text-dark text-sm sm:text-custom-1 sm:leading-[24px]">
-                Sale
+              <span className="block text-white text-sm sm:text-custom-1 sm:leading-[24px]">
+                Tech
                 <br />
-                Off
+                Arrivals
               </span>
             </div>
 
-            <h1 className="font-semibold text-dark text-xl sm:text-3xl mb-3">
-              <a href="#">True Wireless Noise Cancelling Headphone</a>
+            <h1 className="font-semibold text-white text-xl sm:text-3xl mb-3">
+              <Link href="/shop-with-sidebar">
+                Premium Chargers & Cables
+              </Link>
             </h1>
 
-            <p>
-              Lorem ipsum dolor sit, consectetur elit nunc suscipit non ipsum
-              nec suscipit.
+            <p className="text-[#A0A0A8]">
+              Fast charging solutions for all your devices. From Apple to Samsung,
+              Anker to Soundcore — we&apos;ve got you covered.
             </p>
 
-            <a
-              href="#"
-              className="inline-flex font-medium text-white text-custom-sm rounded-md bg-dark py-3 px-9 ease-out duration-200 hover:bg-blue mt-10"
+            <Link
+              href="/shop-with-sidebar"
+              className="inline-flex font-medium text-white text-custom-sm rounded-md bg-brand-accent py-3 px-9 ease-out duration-200 hover:bg-brand-hover mt-10"
             >
               Shop Now
-            </a>
+            </Link>
           </div>
 
           <div>
             <Image
-              src="/images/hero/hero-01.png"
-              alt="headphone"
+              src="/images/hero/hero-06.png"
+              alt="Premium accessories"
+              width={351}
+              height={358}
+            />
+          </div>
+        </div>
+      </SwiperSlide>
+      <SwiperSlide>
+        <div className="flex items-center pt-6 sm:pt-0 flex-col-reverse sm:flex-row">
+          <div className="max-w-[394px] py-10 sm:py-15 lg:py-26 pl-4 sm:pl-7.5 lg:pl-12.5">
+            <div className="flex items-center gap-4 mb-7.5 sm:mb-10">
+              <span className="block font-semibold text-heading-3 sm:text-heading-1 text-brand-accent">
+                Audio
+              </span>
+              <span className="block text-white text-sm sm:text-custom-1 sm:leading-[24px]">
+                Zone
+                <br />
+                &nbsp;
+              </span>
+            </div>
+
+            <h1 className="font-semibold text-white text-xl sm:text-3xl mb-3">
+              <Link href="/shop-with-sidebar">
+                Wireless Audio Collection
+              </Link>
+            </h1>
+
+            <p className="text-[#A0A0A8]">
+              Discover premium sound with JBL, Sony, Soundcore, and CMF
+              earphones & headphones. Experience music like never before.
+            </p>
+
+            <Link
+              href="/shop-with-sidebar"
+              className="inline-flex font-medium text-white text-custom-sm rounded-md bg-brand-accent py-3 px-9 ease-out duration-200 hover:bg-brand-hover mt-10"
+            >
+              Browse Audio
+            </Link>
+          </div>
+
+          <div>
+            <Image
+              src="/images/hero/hero-0111.png"
+              alt="Audio collection"
               width={351}
               height={358}
             />

@@ -19,7 +19,6 @@ const ProductItem = ({ item }: { item: Product }) => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  // update the QuickView state with full product detail
   const handleQuickViewUpdate = async () => {
     try {
       const detail = await api.get<ProductDetail>(`/api/products/${item.slug}/`);
@@ -30,7 +29,6 @@ const ProductItem = ({ item }: { item: Product }) => {
     }
   };
 
-  // add to cart
   const handleAddToCart = () => {
     dispatch(
       addItemToCart({
@@ -56,11 +54,11 @@ const ProductItem = ({ item }: { item: Product }) => {
 
   return (
     <div className="group">
-      <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-[#F6F7FB] min-h-[270px] mb-4">
+      <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-brand-card min-h-[270px] mb-4">
         {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
           <Image src={item.imgs.previews[0]} alt="" width={250} height={250} />
         ) : (
-          <div className="w-[250px] h-[250px] flex items-center justify-center text-dark-4 text-sm">
+          <div className="w-[250px] h-[250px] flex items-center justify-center text-brand-muted text-sm">
             No Image
           </div>
         )}
@@ -73,7 +71,7 @@ const ProductItem = ({ item }: { item: Product }) => {
             }}
             id="newOne"
             aria-label="button for quick view"
-            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-blue"
+            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-white bg-brand-card hover:text-brand-accent"
           >
             <svg
               className="fill-current"
@@ -100,7 +98,7 @@ const ProductItem = ({ item }: { item: Product }) => {
 
           <button
             onClick={() => handleAddToCart()}
-            className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
+            className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-brand-accent text-white ease-out duration-200 hover:bg-brand-hover"
           >
             Add to cart
           </button>
@@ -109,7 +107,7 @@ const ProductItem = ({ item }: { item: Product }) => {
             onClick={() => handleItemToWishList()}
             aria-label="button for favorite select"
             id="favOne"
-            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-blue"
+            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-white bg-brand-card hover:text-brand-accent"
           >
             <svg
               className="fill-current"
@@ -164,11 +162,11 @@ const ProductItem = ({ item }: { item: Product }) => {
           />
         </div>
 
-        <p className="text-custom-sm">({item.reviews})</p>
+        <p className="text-custom-sm text-brand-muted">({item.reviews})</p>
       </div>
 
       <h3
-        className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5"
+        className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5"
         onClick={() => handleProductDetails()}
       >
         <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
@@ -178,9 +176,9 @@ const ProductItem = ({ item }: { item: Product }) => {
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-dark">৳{item.discountedPrice}</span>
+        <span className="text-white">৳{item.discountedPrice}</span>
         {item.price !== item.discountedPrice && (
-          <span className="text-dark-4 line-through">৳{item.price}</span>
+          <span className="text-brand-muted line-through">৳{item.price}</span>
         )}
       </span>
     </div>

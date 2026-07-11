@@ -18,7 +18,6 @@ const SingleItem = ({ item }: { item: Product }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { addItem } = useCart();
 
-  // update the QuickView state with full product detail
   const handleQuickViewUpdate = async () => {
     try {
       const detail = await api.get<ProductDetail>(`/api/products/${item.slug}/`);
@@ -29,7 +28,6 @@ const SingleItem = ({ item }: { item: Product }) => {
     }
   };
 
-  // add to cart
   const handleAddToCart = () => {
     addItem({
       ...item,
@@ -49,7 +47,7 @@ const SingleItem = ({ item }: { item: Product }) => {
 
   return (
     <div className="group">
-      <div className="relative overflow-hidden rounded-lg bg-[#F6F7FB] min-h-[403px]">
+      <div className="relative overflow-hidden rounded-lg bg-brand-card min-h-[403px]">
         <div className="text-center px-4 py-7.5">
           <div className="flex items-center justify-center gap-2.5 mb-2">
             <div className="flex items-center gap-1">
@@ -85,10 +83,10 @@ const SingleItem = ({ item }: { item: Product }) => {
               />
             </div>
 
-            <p className="text-custom-sm">({item.reviews})</p>
+            <p className="text-custom-sm text-brand-muted">({item.reviews})</p>
           </div>
 
-          <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
+          <h3 className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5">
             <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
               {" "}
               {item.title}{" "}
@@ -96,9 +94,9 @@ const SingleItem = ({ item }: { item: Product }) => {
           </h3>
 
           <span className="flex items-center justify-center gap-2 font-medium text-lg">
-            <span className="text-dark">৳{item.discountedPrice}</span>
+            <span className="text-white">৳{item.discountedPrice}</span>
             {item.price !== item.discountedPrice && (
-              <span className="text-dark-4 line-through">৳{item.price}</span>
+              <span className="text-brand-muted line-through">৳{item.price}</span>
             )}
           </span>
         </div>
@@ -107,7 +105,7 @@ const SingleItem = ({ item }: { item: Product }) => {
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
             <Image src={item.imgs.previews[0]} alt="" width={280} height={280} />
           ) : (
-            <div className="w-[280px] h-[280px] flex items-center justify-center text-dark-4 text-sm">
+            <div className="w-[280px] h-[280px] flex items-center justify-center text-brand-muted text-sm">
               No Image
             </div>
           )}
@@ -121,7 +119,7 @@ const SingleItem = ({ item }: { item: Product }) => {
             }}
             aria-label="button for quick view"
             id="bestOne"
-            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-white hover:bg-blue"
+            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-white bg-brand-card border border-brand-border hover:text-brand-accent hover:border-brand-accent"
           >
             <svg
               className="fill-current"
@@ -150,7 +148,7 @@ const SingleItem = ({ item }: { item: Product }) => {
             onClick={() => handleAddToCart()}
             aria-label="button for add to cart"
             id="addCartOne"
-            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-white hover:bg-blue"
+            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-white bg-brand-accent hover:bg-brand-hover"
           >
             <svg
               className="fill-current"
@@ -187,7 +185,7 @@ const SingleItem = ({ item }: { item: Product }) => {
             }}
             aria-label="button for add to fav"
             id="addFavOne"
-            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-white hover:bg-blue"
+            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-white bg-brand-card border border-brand-border hover:text-brand-accent hover:border-brand-accent"
           >
             <svg
               className="fill-current"
