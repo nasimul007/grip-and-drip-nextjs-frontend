@@ -79,7 +79,7 @@ const ShopWithoutSidebar = () => {
           <div className="flex gap-7.5">
             {/* // <!-- Content Start --> */}
             <div className="w-full">
-              <div className="rounded-lg bg-white shadow-1 pl-3 pr-2.5 py-2.5 mb-6">
+              <div className="rounded-lg bg-brand-card border border-brand-border pl-3 pr-2.5 py-2.5 mb-6">
                 <div className="flex items-center justify-between">
                   {/* <!-- top bar left --> */}
                   <div className="flex flex-wrap items-center gap-4">
@@ -90,7 +90,7 @@ const ShopWithoutSidebar = () => {
 
                     <p>
                       Showing{" "}
-                      <span className="text-dark">
+                      <span className="text-white">
                         {products.length} of {totalCount}
                       </span>{" "}
                       Products
@@ -104,9 +104,9 @@ const ShopWithoutSidebar = () => {
                       aria-label="button for product grid tab"
                       className={`${
                         productStyle === "grid"
-                          ? "bg-blue border-blue text-white"
-                          : "text-dark bg-gray-1 border-gray-3"
-                      } flex items-center justify-center w-10.5 h-9 rounded-[5px] border ease-out duration-200 hover:bg-blue hover:border-blue hover:text-white`}
+                          ? "bg-brand-accent border-brand-accent text-white"
+                          : "text-white bg-brand-card border-brand-border"
+                      } flex items-center justify-center w-10.5 h-9 rounded-[5px] border ease-out duration-200 hover:bg-brand-hover hover:border-brand-accent hover:text-white`}
                     >
                       <svg
                         className="fill-current"
@@ -148,9 +148,9 @@ const ShopWithoutSidebar = () => {
                       aria-label="button for product list tab"
                       className={`${
                         productStyle === "list"
-                          ? "bg-blue border-blue text-white"
-                          : "text-dark bg-gray-1 border-gray-3"
-                      } flex items-center justify-center w-10.5 h-9 rounded-[5px] border ease-out duration-200 hover:bg-blue hover:border-blue hover:text-white`}
+                          ? "bg-brand-accent border-brand-accent text-white"
+                          : "text-white bg-brand-card border-brand-border"
+                      } flex items-center justify-center w-10.5 h-9 rounded-[5px] border ease-out duration-200 hover:bg-brand-hover hover:border-brand-accent hover:text-white`}
                     >
                       <svg
                         className="fill-current"
@@ -180,7 +180,7 @@ const ShopWithoutSidebar = () => {
 
               {/* <!-- Products Grid Tab Content Start --> */}
               {loading ? (
-                <div className="text-center py-10 text-dark-4">
+                <div className="text-center py-10 text-brand-muted">
                   Loading products...
                 </div>
               ) : (
@@ -192,7 +192,7 @@ const ShopWithoutSidebar = () => {
                   }`}
                 >
                   {products.length === 0 && (
-                    <p className="text-dark-4 col-span-full text-center py-10">
+                    <p className="text-brand-muted col-span-full text-center py-10">
                       No products found.
                     </p>
                   )}
@@ -210,7 +210,7 @@ const ShopWithoutSidebar = () => {
               {/* <!-- Products Pagination Start --> */}
               {totalPages > 1 && (
                 <div className="flex justify-center mt-15">
-                  <div className="bg-white shadow-1 rounded-md p-2">
+                  <div className="bg-brand-card border border-brand-border rounded-md p-2">
                     <ul className="flex items-center">
                       <li>
                         <button
@@ -218,7 +218,7 @@ const ShopWithoutSidebar = () => {
                           type="button"
                           disabled={page <= 1}
                           onClick={() => setPage(page - 1)}
-                          className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-blue disabled:text-gray-4 disabled:hover:bg-transparent disabled:hover:text-gray-4"
+                          className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-brand-hover disabled:text-brand-muted disabled:hover:bg-transparent disabled:hover:text-brand-muted"
                         >
                           <svg
                             className="fill-current"
@@ -239,7 +239,7 @@ const ShopWithoutSidebar = () => {
                       {pageNumbers.map((num, i) =>
                         num === "..." ? (
                           <li key={`dot-${i}`}>
-                            <span className="flex py-1.5 px-3.5 text-dark-4">
+                            <span className="flex py-1.5 px-3.5 text-brand-muted">
                               ...
                             </span>
                           </li>
@@ -249,8 +249,8 @@ const ShopWithoutSidebar = () => {
                               onClick={() => setPage(num as number)}
                               className={`flex py-1.5 px-3.5 duration-200 rounded-[3px] ${
                                 page === num
-                                  ? "bg-blue text-white"
-                                  : "hover:text-white hover:bg-blue text-dark"
+                                  ? "bg-brand-accent text-white"
+                                  : "hover:text-white hover:bg-brand-hover text-white"
                               }`}
                             >
                               {num}
@@ -265,7 +265,7 @@ const ShopWithoutSidebar = () => {
                           type="button"
                           disabled={page >= totalPages}
                           onClick={() => setPage(page + 1)}
-                          className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-blue disabled:text-gray-4 disabled:hover:bg-transparent disabled:hover:text-gray-4"
+                          className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-brand-hover disabled:text-brand-muted disabled:hover:bg-transparent disabled:hover:text-brand-muted"
                         >
                           <svg
                             className="fill-current"

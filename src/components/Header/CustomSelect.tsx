@@ -113,6 +113,12 @@ const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
         {selectedOption.label}
       </div>
       <div className={`select-items ${isOpen ? "" : "select-hide"}`}>
+        <div
+          className="select-item relative"
+          onClick={() => { router.push("/shop-with-sidebar"); setIsOpen(false); }}
+        >
+          All Product
+        </div>
         {options.slice(1).map((option) => (
           <CategoryItem
             key={option.value}

@@ -131,12 +131,12 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
             <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
               <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
                 <div className="lg:max-w-[570px] w-full flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1 lg:min-h-[512px] rounded-lg shadow-1 bg-gray-2 p-4 sm:p-7.5 relative flex items-center justify-center">
+                  <div className="flex-1 lg:min-h-[512px] rounded-lg border border-brand-border bg-brand-surface p-4 sm:p-7.5 relative flex items-center justify-center">
                     <div>
                       <button
                         onClick={handlePreviewSlider}
                         aria-label="button for zoom"
-                        className="gallery__Image w-11 h-11 rounded-[5px] bg-gray-1 shadow-1 flex items-center justify-center ease-out duration-200 text-dark hover:text-blue absolute top-4 lg:top-6 right-4 lg:right-6 z-50"
+                        className="gallery__Image w-11 h-11 rounded-[5px] bg-brand-card border border-brand-border flex items-center justify-center ease-out duration-200 text-white hover:text-brand-accent absolute top-4 lg:top-6 right-4 lg:right-6 z-50"
                       >
                         <svg
                           className="fill-current"
@@ -174,8 +174,8 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                           setUserInteracted(true);
                         }}
                         key={key}
-                        className={`flex items-center justify-center w-15 sm:w-20 h-15 sm:h-20 overflow-hidden rounded-lg bg-gray-2 shadow-1 ease-out duration-200 border-2 hover:border-blue shrink-0 ${key === previewImg
-                          ? "border-blue"
+                        className={`flex items-center justify-center w-15 sm:w-20 h-15 sm:h-20 overflow-hidden rounded-lg bg-brand-surface border border-brand-border ease-out duration-200 border-2 hover:border-brand-accent shrink-0 ${key === previewImg
+                          ? "border-brand-accent"
                           : "border-transparent"
                           }`}
                       >
@@ -187,7 +187,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             alt="thumbnail"
                           />
                         ) : (
-                          <div className="text-dark-4 text-xs">No Img</div>
+                          <div className="text-brand-muted text-xs">No Img</div>
                         )}
                       </button>
                     ))}
@@ -197,7 +197,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                 {/* <!-- product content --> */}
                 <div className="max-w-[539px] w-full">
                   <div className="flex items-center justify-between mb-3">
-                    <h2 className="font-semibold text-xl sm:text-2xl xl:text-custom-3 text-dark">
+                    <h2 className="font-semibold text-xl sm:text-2xl xl:text-custom-3 text-white">
                       {product.title}
                     </h2>
 
@@ -348,7 +348,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                   </div>
 
                   <h3 className="font-medium text-custom-1 mb-4.5">
-                    <span className="text-dark">
+                    <span className="text-white">
                       Price: ৳{displayPrice}
                     </span> &nbsp;
                     {displayPrice !== product.discountedPrice && (
@@ -364,11 +364,11 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
 
                   <form onSubmit={(e) => e.preventDefault()}>
                     {allAttrKeys.length > 0 && (
-                      <div className="flex flex-col gap-4.5 border-y border-gray-3 mt-7.5 mb-9 py-9">
+                      <div className="flex flex-col gap-4.5 border-y border-brand-border mt-7.5 mb-9 py-9">
                         {Object.entries(variantAttrOptions).map(([attrKey, options]) => (
                           <div key={attrKey} className="flex items-center gap-4">
                             <div className="min-w-[65px]">
-                              <h4 className="font-medium text-dark capitalize">{attrKey}:</h4>
+                              <h4 className="font-medium text-white capitalize">{attrKey}:</h4>
                             </div>
                             <div className="flex items-center gap-2.5 flex-wrap">
                               {options.map((opt: any) => (
@@ -408,8 +408,8 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                                       />
                                       <div
                                         className={`px-4 py-2 rounded-md border text-sm font-medium transition ${selectedAttrs[attrKey] === opt.id
-                                          ? "border-blue bg-blue text-white"
-                                          : "border-gray-3 bg-white text-dark hover:border-blue"
+                                          ? "border-brand-accent bg-brand-accent text-white"
+                                          : "border-brand-border bg-brand-card text-white hover:border-brand-accent"
                                         }`}
                                       >
                                         {opt.title}
@@ -425,10 +425,10 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                     )}
 
                     <div className="flex flex-wrap items-center gap-4.5">
-                      <div className="flex items-center rounded-md border border-gray-3">
+                      <div className="flex items-center rounded-md border border-brand-border">
                         <button
                           aria-label="button for remove product"
-                          className="flex items-center justify-center w-12 h-12 ease-out duration-200 hover:text-blue"
+                          className="flex items-center justify-center w-12 h-12 ease-out duration-200 hover:text-brand-accent"
                           onClick={() =>
                             quantity > 1 && setQuantity(quantity - 1)
                           }
@@ -448,14 +448,14 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                           </svg>
                         </button>
 
-                        <span className="flex items-center justify-center w-16 h-12 border-x border-gray-4">
+                        <span className="flex items-center justify-center w-16 h-12 border-x border-brand-border">
                           {quantity}
                         </span>
 
                         <button
                           onClick={() => quantity < displayStock && setQuantity(quantity + 1)}
                           aria-label="button for add product"
-                          className={`flex items-center justify-center w-12 h-12 ease-out duration-200 ${quantity >= displayStock ? "opacity-40 cursor-not-allowed" : "hover:text-blue"}`}
+                          className={`flex items-center justify-center w-12 h-12 ease-out duration-200 ${quantity >= displayStock ? "opacity-40 cursor-not-allowed" : "hover:text-brand-accent"}`}
                         >
                           <svg
                             className="fill-current"
@@ -479,14 +479,14 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
 
                       <a
                         href="#"
-                        className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                        className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover"
                       >
                         Purchase Now
                       </a>
 
                       <a
                         href="#"
-                        className="flex items-center justify-center w-12 h-12 rounded-md border border-gray-3 ease-out duration-200 hover:text-white hover:bg-dark hover:border-transparent"
+                        className="flex items-center justify-center w-12 h-12 rounded-md border border-brand-border ease-out duration-200 hover:text-white hover:bg-brand-hover hover:border-transparent"
                       >
                         <svg
                           className="fill-current"
@@ -511,17 +511,17 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
             </div>
           </section>
 
-          <section className="overflow-hidden bg-gray-2 py-10">
+          <section className="overflow-hidden bg-brand-surface py-10">
             <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
               {/* <!--== tab header start ==--> */}
-              <div className="flex flex-wrap items-center bg-white rounded-[10px] shadow-1 gap-5 xl:gap-12.5 py-4.5 px-4 sm:px-6">
+              <div className="flex flex-wrap items-center bg-brand-card rounded-[10px] border border-brand-border gap-5 xl:gap-12.5 py-4.5 px-4 sm:px-6">
                 {tabs.map((item, key) => (
                   <button
                     key={key}
                     onClick={() => setActiveTab(item.id)}
-                    className={`font-medium lg:text-lg ease-out duration-200 hover:text-blue relative before:h-0.5 before:bg-blue before:absolute before:left-0 before:bottom-0 before:ease-out before:duration-200 hover:before:w-full ${activeTab === item.id
-                      ? "text-blue before:w-full"
-                      : "text-dark before:w-0"
+                    className={`font-medium lg:text-lg ease-out duration-200 hover:text-brand-accent relative before:h-0.5 before:bg-brand-accent before:absolute before:left-0 before:bottom-0 before:ease-out before:duration-200 hover:before:w-full ${activeTab === item.id
+                      ? "text-brand-accent before:w-full"
+                      : "text-white before:w-0"
                       }`}
                   >
                     {item.title}
@@ -538,7 +538,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                     }`}
                 >
                   <div className="max-w-[670px] w-full">
-                    {/* <h2 className="font-medium text-2xl text-dark mb-7">
+                    {/* <h2 className="font-medium text-2xl text-white mb-7">
                       Description
                     </h2> */}
 
@@ -556,24 +556,24 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
               {/* <!-- tab content two start --> */}
               <div>
                 <div
-                  className={`rounded-xl bg-white shadow-1 p-4 sm:p-6 mt-10 ${activeTab === "tabTwo" ? "block" : "hidden"
+                  className={`rounded-xl bg-brand-card border border-brand-border p-4 sm:p-6 mt-10 ${activeTab === "tabTwo" ? "block" : "hidden"
                     }`}
                 >
                   {Object.keys(product.attributes || {}).length > 0 ? (
                     Object.entries(product.attributes as Record<string, string>).map(([key, value]) => (
-                      <div key={key} className="rounded-md even:bg-gray-1 flex py-4 px-4 sm:px-5">
+                      <div key={key} className="rounded-md even:bg-brand-card flex py-4 px-4 sm:px-5">
                         <div className="max-w-[450px] min-w-[140px] w-full">
-                          <p className="text-sm sm:text-base text-dark capitalize">
+                          <p className="text-sm sm:text-base text-white capitalize">
                             {key.replace(/_/g, " ")}
                           </p>
                         </div>
                         <div className="w-full">
-                          <p className="text-sm sm:text-base text-dark">{value}</p>
+                          <p className="text-sm sm:text-base text-white">{value}</p>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <p className="text-dark-4 text-sm">
+                    <p className="text-brand-muted text-sm">
                       No additional information available.
                     </p>
                   )}
@@ -588,13 +588,13 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                     }`}
                 >
                   <div className="max-w-[570px] w-full">
-                    <h2 className="font-medium text-2xl text-dark mb-9">
+                    <h2 className="font-medium text-2xl text-white mb-9">
                       03 Review for this product
                     </h2>
 
                     <div className="flex flex-col gap-6">
                       {/* <!-- review item --> */}
-                      <div className="rounded-xl bg-white shadow-1 p-4 sm:p-6">
+                      <div className="rounded-xl bg-brand-card border border-brand-border p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                           <a href="#" className="flex items-center gap-4">
                             <div className="w-12.5 h-12.5 rounded-full overflow-hidden">
@@ -608,7 +608,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             </div>
 
                             <div>
-                              <h3 className="font-medium text-dark">
+                              <h3 className="font-medium text-white">
                                 Davis Dorwart
                               </h3>
                               <p className="text-custom-sm">
@@ -700,7 +700,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                           </div>
                         </div>
 
-                        <p className="text-dark mt-6">
+                        <p className="text-white mt-6">
                           “Lorem ipsum dolor sit amet, adipiscing elit. Donec
                           malesuada justo vitaeaugue suscipit beautiful
                           vehicula’’
@@ -708,7 +708,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                       </div>
 
                       {/* <!-- review item --> */}
-                      <div className="rounded-xl bg-white shadow-1 p-4 sm:p-6">
+                      <div className="rounded-xl bg-brand-card border border-brand-border p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                           <a href="#" className="flex items-center gap-4">
                             <div className="w-12.5 h-12.5 rounded-full overflow-hidden">
@@ -722,7 +722,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             </div>
 
                             <div>
-                              <h3 className="font-medium text-dark">
+                              <h3 className="font-medium text-white">
                                 Davis Dorwart
                               </h3>
                               <p className="text-custom-sm">
@@ -814,7 +814,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                           </div>
                         </div>
 
-                        <p className="text-dark mt-6">
+                        <p className="text-white mt-6">
                           “Lorem ipsum dolor sit amet, adipiscing elit. Donec
                           malesuada justo vitaeaugue suscipit beautiful
                           vehicula’’
@@ -822,7 +822,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                       </div>
 
                       {/* <!-- review item --> */}
-                      <div className="rounded-xl bg-white shadow-1 p-4 sm:p-6">
+                      <div className="rounded-xl bg-brand-card border border-brand-border p-4 sm:p-6">
                         <div className="flex items-center justify-between">
                           <a href="#" className="flex items-center gap-4">
                             <div className="w-12.5 h-12.5 rounded-full overflow-hidden">
@@ -836,7 +836,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             </div>
 
                             <div>
-                              <h3 className="font-medium text-dark">
+                              <h3 className="font-medium text-white">
                                 Davis Dorwart
                               </h3>
                               <p className="text-custom-sm">
@@ -928,7 +928,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                           </div>
                         </div>
 
-                        <p className="text-dark mt-6">
+                        <p className="text-white mt-6">
                           “Lorem ipsum dolor sit amet, adipiscing elit. Donec
                           malesuada justo vitaeaugue suscipit beautiful
                           vehicula’’
@@ -939,7 +939,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
 
                   <div className="max-w-[550px] w-full">
                     <form>
-                      <h2 className="font-medium text-2xl text-dark mb-3.5">
+                      <h2 className="font-medium text-2xl text-white mb-3.5">
                         Add a Review
                       </h2>
 
@@ -1000,7 +1000,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             </svg>
                           </span>
 
-                          <span className="cursor-pointer text-gray-5">
+                          <span className="cursor-pointer text-brand-muted">
                             <svg
                               className="fill-current"
                               width="15"
@@ -1016,7 +1016,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             </svg>
                           </span>
 
-                          <span className="cursor-pointer text-gray-5">
+                          <span className="cursor-pointer text-brand-muted">
                             <svg
                               className="fill-current"
                               width="15"
@@ -1034,7 +1034,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                         </div>
                       </div>
 
-                      <div className="rounded-xl bg-white shadow-1 p-4 sm:p-6">
+                      <div className="rounded-xl bg-brand-card border border-brand-border p-4 sm:p-6">
                         <div className="mb-5">
                           <label htmlFor="comments" className="block mb-2.5">
                             Comments
@@ -1045,14 +1045,14 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             id="comments"
                             rows={5}
                             placeholder="Your comments"
-                            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                            className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                           ></textarea>
 
                           <span className="flex items-center justify-between mt-2.5">
-                            <span className="text-custom-sm text-dark-4">
+                            <span className="text-custom-sm text-brand-muted">
                               Maximum
                             </span>
-                            <span className="text-custom-sm text-dark-4">
+                            <span className="text-custom-sm text-brand-muted">
                               0/250
                             </span>
                           </span>
@@ -1069,7 +1069,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                               name="name"
                               id="name"
                               placeholder="Your name"
-                              className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                              className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                             />
                           </div>
 
@@ -1083,14 +1083,14 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                               name="email"
                               id="email"
                               placeholder="Your email"
-                              className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                              className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                             />
                           </div>
                         </div>
 
                         <button
                           type="submit"
-                          className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                          className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover"
                         >
                           Submit Reviews
                         </button>

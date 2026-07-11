@@ -48,8 +48,8 @@ const CategoryItem = ({
       <button
         type="button"
         className={`${
-          selected && "text-blue"
-        } group flex items-center justify-between w-full ease-out duration-200 hover:text-blue text-left`}
+          selected && "text-brand-accent"
+        } group flex items-center justify-between w-full ease-out duration-200 hover:text-brand-accent text-left`}
         style={{ paddingLeft: depth * 16 }}
         onClick={() => {
           if (onSelect) onSelect(String(category.id));
@@ -68,7 +68,7 @@ const CategoryItem = ({
 
           <div
             className={`cursor-pointer flex items-center justify-center rounded w-4 h-4 border shrink-0 ${
-              selected ? "border-blue bg-blue" : "bg-white border-gray-3"
+              selected ? "border-brand-accent bg-brand-accent" : "bg-brand-card border-brand-border"
             }`}
           >
             <svg
@@ -122,7 +122,7 @@ const CategoryDropdown = ({
   const [toggleDropdown, setToggleDropdown] = useState(true);
 
   return (
-    <div className="bg-white shadow-1 rounded-lg">
+    <div className="bg-brand-card border border-brand-border rounded-lg">
       <div
         onClick={(e) => {
           e.preventDefault();
@@ -132,10 +132,10 @@ const CategoryDropdown = ({
           toggleDropdown && "shadow-filter"
         }`}
       >
-        <p className="text-dark">Category</p>
+        <p className="text-white">Category</p>
         <button
           aria-label="button for category dropdown"
-          className={`text-dark ease-out duration-200 ${
+          className={`text-white ease-out duration-200 ${
             toggleDropdown && "rotate-180"
           }`}
         >

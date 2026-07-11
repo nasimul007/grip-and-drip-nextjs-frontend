@@ -11,17 +11,17 @@ const PriceDropdown = () => {
   });
 
   return (
-    <div className="bg-white shadow-1 rounded-lg">
+    <div className="bg-brand-card border border-brand-border rounded-lg">
       <div
         onClick={() => setToggleDropdown(!toggleDropdown)}
         className="cursor-pointer flex items-center justify-between py-3 pl-6 pr-5.5"
       >
-        <p className="text-dark">Price</p>
+        <p className="text-white">Price</p>
         <button
           onClick={() => setToggleDropdown(!toggleDropdown)}
           id="price-dropdown-btn"
           aria-label="button for price dropdown"
-          className={`text-dark ease-out duration-200 ${
+          className={`text-white ease-out duration-200 ${
             toggleDropdown && 'rotate-180'
           }`}
         >
@@ -60,18 +60,18 @@ const PriceDropdown = () => {
             />
 
             <div className="price-amount flex items-center justify-between pt-4">
-              <div className="text-custom-xs text-dark-4 flex rounded border border-gray-3/80">
-                <span className="block border-r border-gray-3/80 px-2.5 py-1.5">
-                  $
+              <div className="text-custom-xs text-brand-muted flex rounded border border-brand-border">
+                <span className="block border-r border-brand-border px-2.5 py-1.5">
+                  ৳
                 </span>
                 <span id="minAmount" className="block px-3 py-1.5">
                   {selectedPrice.from}
                 </span>
               </div>
 
-              <div className="text-custom-xs text-dark-4 flex rounded border border-gray-3/80">
-                <span className="block border-r border-gray-3/80 px-2.5 py-1.5">
-                  $
+              <div className="text-custom-xs text-brand-muted flex rounded border border-brand-border">
+                <span className="block border-r border-brand-border px-2.5 py-1.5">
+                  ৳
                 </span>
                 <span id="maxAmount" className="block px-3 py-1.5">
                   {selectedPrice.to}

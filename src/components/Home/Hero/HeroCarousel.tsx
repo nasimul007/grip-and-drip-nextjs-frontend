@@ -101,7 +101,7 @@ const HeroCarousal = () => {
 
           <div>
             <Image
-              src="/images/hero/hero-08.png"
+              src="/images/hero/apple-charger.png"
               alt="Premium accessories"
               width={351}
               height={358}
