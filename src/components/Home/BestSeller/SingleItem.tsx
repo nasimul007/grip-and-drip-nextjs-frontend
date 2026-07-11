@@ -48,6 +48,7 @@ const SingleItem = ({ item }: { item: Product }) => {
   return (
     <div className="group">
       <div className="relative overflow-hidden rounded-lg bg-brand-card min-h-[403px]">
+        <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
         <div className="text-center px-4 py-7.5">
           <div className="flex items-center justify-center gap-2.5 mb-2">
             <div className="flex items-center gap-1">
@@ -103,7 +104,7 @@ const SingleItem = ({ item }: { item: Product }) => {
 
         <div className="flex justify-center items-center">
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-            <Image src={item.imgs.previews[0]} alt="" width={280} height={280} />
+            <Image src={item.imgs.previews[0]} alt="" width={280} height={280} className="transition-transform duration-300 hover:scale-105" />
           ) : (
             <div className="w-[280px] h-[280px] flex items-center justify-center text-brand-muted text-sm">
               No Image

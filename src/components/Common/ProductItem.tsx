@@ -55,9 +55,10 @@ const ProductItem = ({ item }: { item: Product }) => {
   return (
     <div className="group">
       <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-brand-card min-h-[270px] mb-4">
+        <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
         <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-            <Image src={item.imgs.previews[0]} alt="" width={250} height={250} />
+            <Image src={item.imgs.previews[0]} alt="" width={250} height={250} className="transition-transform duration-300 hover:scale-105" />
           ) : (
             <div className="w-[250px] h-[250px] flex items-center justify-center text-brand-muted text-sm">
               No Image

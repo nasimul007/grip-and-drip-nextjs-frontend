@@ -52,9 +52,10 @@ const SingleListItem = ({ item }: { item: Product }) => {
     <div className="group rounded-lg bg-brand-card border border-brand-border">
       <div className="flex">
         <div className="shadow-list relative overflow-hidden flex items-center justify-center max-w-[270px] w-full sm:min-h-[270px] p-4">
+          <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
           <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
             {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-              <Image src={item.imgs.previews[0]} alt="" width={250} height={250} />
+              <Image src={item.imgs.previews[0]} alt="" width={250} height={250} className="transition-transform duration-300 hover:scale-105" />
             ) : (
               <div className="w-[250px] h-[250px] flex items-center justify-center text-brand-muted text-sm">
                 No Image
