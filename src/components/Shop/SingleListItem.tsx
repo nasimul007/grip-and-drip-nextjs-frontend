@@ -128,7 +128,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
 
         <div className="w-full flex flex-col gap-5 sm:flex-row sm:items-center justify-center sm:justify-between py-5 px-4 sm:px-7.5 lg:pl-11 lg:pr-12">
           <div>
-            <h3 className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5">
+            <h3 className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5 line-clamp-1" title={item.title}>
               <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
                 {" "}
                 {item.title}{" "}

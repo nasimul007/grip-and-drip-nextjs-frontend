@@ -168,9 +168,10 @@ const ProductItem = ({ item }: { item: Product }) => {
         <p className="text-custom-sm text-brand-muted">({item.reviews})</p>
       </div>
 
-      <h3
-        className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5"
-        onClick={() => handleProductDetails()}
+        <h3
+          className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5 line-clamp-1"
+          title={item.title}
+          onClick={() => handleProductDetails()}
       >
         <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
           {" "}
