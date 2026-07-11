@@ -10,9 +10,13 @@ import { mapProductForDisplay } from "@/lib/mappers";
 import type { PaginatedResponse, ProductListItem } from "@/lib/types";
 
 const sortOptions = [
+  { label: "Price: Low to High", value: "price" },
+  { label: "Price: High to Low", value: "-price" },
+  { label: "Name: A-Z", value: "name" },
+  { label: "Name: Z-A", value: "-name" },
   { label: "Latest Products", value: "-created_at" },
-  { label: "Best Selling", value: "-is_featured" },
   { label: "Old Products", value: "created_at" },
+  { label: "Best Selling", value: "-is_featured" },
 ];
 
 const ShopWithoutSidebar = () => {
@@ -81,6 +85,7 @@ const ShopWithoutSidebar = () => {
                     <CustomSelect
                       options={sortOptions}
                       onChange={handleSort}
+                      defaultValue={sortBy}
                     />
 
                     <p>

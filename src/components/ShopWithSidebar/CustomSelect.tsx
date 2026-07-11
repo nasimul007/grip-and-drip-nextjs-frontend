@@ -3,12 +3,16 @@ import React, { useState, useEffect, useRef } from "react";
 const CustomSelect = ({
   options,
   onChange,
+  defaultValue,
 }: {
   options: { label: string; value: string }[];
   onChange?: (option: { label: string; value: string }) => void;
+  defaultValue?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const [selectedOption, setSelectedOption] = useState(
+    options.find((o) => o.value === defaultValue) || options[0]
+  );
   const selectRef = useRef(null);
 
   // Function to close the dropdown when a click occurs outside the component
@@ -52,7 +56,7 @@ const CustomSelect = ({
         {selectedOption.label}
       </div>
       <div className={`select-items ${isOpen ? "" : "select-hide"}`}>
-        {options.slice(1).map((option, index) => (
+        {options.map((option, index) => (
           <div
             key={index}
             onClick={() => handleOptionClick(option)}
