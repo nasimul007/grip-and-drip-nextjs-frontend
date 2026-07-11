@@ -42,7 +42,8 @@ const ShopWithSidebar = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState({ from: 0, to: 0 });
   const [selectedBrand, setSelectedBrand] = useState("");
-        const perPage = 12;
+  const [resetCounter, setResetCounter] = useState(0);
+  const perPage = 12;
 
   const categoryId = searchParams.get("category");
 
@@ -139,6 +140,14 @@ const ShopWithSidebar = () => {
     setPage(1);
   };
 
+  const handleCleanAll = () => {
+    setSelectedCategories([]);
+    setPriceRange({ from: 0, to: 0 });
+    setSelectedBrand("");
+    setPage(1);
+    setResetCounter((c) => c + 1);
+  };
+
   const uniqueBrands = Array.from(new Set(products.map((p) => p.brand).filter(Boolean))) as string[];
 
   const pageNumbers: (number | "...")[] = [];
@@ -205,12 +214,18 @@ const ShopWithSidebar = () => {
                   <div className="bg-brand-card border border-brand-border rounded-lg py-4 px-5">
                     <div className="flex items-center justify-between">
                       <p>Filters:</p>
-                      <button className="text-brand-accent">Clean All</button>
+                      <button
+                        type="button"
+                        onClick={handleCleanAll}
+                        className="text-brand-accent"
+                      >
+                        Clear All
+                      </button>
                     </div>
                   </div>
 
                   {/* // <!-- price range box --> */}
-                  <PriceDropdown onPriceChange={handlePriceChange} />
+                  <PriceDropdown key={resetCounter} onPriceChange={handlePriceChange} />
 
                   {/* <!-- category box --> */}
                   <CategoryDropdown
