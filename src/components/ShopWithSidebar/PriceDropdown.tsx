@@ -2,13 +2,31 @@ import { useState } from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-const PriceDropdown = () => {
+const PriceDropdown = ({ onPriceChange }: { onPriceChange?: (min: number, max: number) => void }) => {
   const [toggleDropdown, setToggleDropdown] = useState(true);
+  const MAX_PRICE = 100000;
 
   const [selectedPrice, setSelectedPrice] = useState({
     from: 0,
-    to: 100,
+    to: MAX_PRICE,
   });
+
+  const [minStr, setMinStr] = useState("0");
+  const [maxStr, setMaxStr] = useState(String(MAX_PRICE));
+
+  const commitMin = (raw: string) => {
+    const val = Math.max(0, Math.min(Number(raw) || 0, selectedPrice.to));
+    setSelectedPrice((prev) => ({ ...prev, from: val }));
+    setMinStr(String(val));
+    if (onPriceChange) onPriceChange(val, selectedPrice.to);
+  };
+
+  const commitMax = (raw: string) => {
+    const val = Math.max(selectedPrice.from, Math.min(Number(raw) || 0, MAX_PRICE));
+    setSelectedPrice((prev) => ({ ...prev, to: val }));
+    setMaxStr(String(val));
+    if (onPriceChange) onPriceChange(selectedPrice.from, val);
+  };
 
   return (
     <div className="bg-brand-card border border-brand-border rounded-lg">
@@ -51,31 +69,43 @@ const PriceDropdown = () => {
               id="range-slider-gradient"
               className="margin-lg"
               step={'any'}
-              onInput={(e) =>
-                setSelectedPrice({
-                  from: Math.floor(e[0]),
-                  to: Math.ceil(e[1]),
-                })
-              }
+              max={MAX_PRICE}
+              value={[selectedPrice.from, selectedPrice.to]}
+              onInput={(e) => {
+                const from = Math.floor(e[0]);
+                const to = Math.ceil(e[1]);
+                setSelectedPrice({ from, to });
+                setMinStr(String(from));
+                setMaxStr(String(to));
+                if (onPriceChange) onPriceChange(from, to);
+              }}
             />
 
-            <div className="price-amount flex items-center justify-between pt-4">
-              <div className="text-custom-xs text-brand-muted flex rounded border border-brand-border">
-                <span className="block border-r border-brand-border px-2.5 py-1.5">
-                  ৳
-                </span>
-                <span id="minAmount" className="block px-3 py-1.5">
-                  {selectedPrice.from}
-                </span>
+            <div className="price-amount flex items-center justify-between pt-4 gap-2">
+              <div className="flex items-center flex-1 min-w-0 rounded border border-brand-border bg-brand-card">
+                <span className="shrink-0 px-2 py-1.5 text-white">৳</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={minStr}
+                  onChange={(e) => setMinStr(e.target.value)}
+                  onBlur={(e) => commitMin(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && commitMin(e.currentTarget.value)}
+                  className="w-full min-w-0 bg-transparent text-white px-1 py-1.5 outline-none"
+                />
               </div>
-
-              <div className="text-custom-xs text-brand-muted flex rounded border border-brand-border">
-                <span className="block border-r border-brand-border px-2.5 py-1.5">
-                  ৳
-                </span>
-                <span id="maxAmount" className="block px-3 py-1.5">
-                  {selectedPrice.to}
-                </span>
+              <span className="shrink-0 text-brand-muted">—</span>
+              <div className="flex items-center flex-1 min-w-0 rounded border border-brand-border bg-brand-card">
+                <span className="shrink-0 px-2 py-1.5 text-white">৳</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={maxStr}
+                  onChange={(e) => setMaxStr(e.target.value)}
+                  onBlur={(e) => commitMax(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && commitMax(e.currentTarget.value)}
+                  className="w-full min-w-0 bg-transparent text-white px-1 py-1.5 outline-none"
+                />
               </div>
             </div>
           </div>

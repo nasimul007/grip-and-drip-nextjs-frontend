@@ -3,10 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import CustomSelect from "./CustomSelect";
 import CategoryDropdown from "./CategoryDropdown";
-import GenderDropdown from "./GenderDropdown";
-import SizeDropdown from "./SizeDropdown";
-import ColorsDropdwon from "./ColorsDropdwon";
 import PriceDropdown from "./PriceDropdown";
+import BrandDropdown from "./BrandDropdown";
 import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
 import { api } from "@/lib/api";
@@ -42,6 +40,8 @@ const ShopWithSidebar = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [sortBy, setSortBy] = useState("-created_at");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState({ from: 0, to: 0 });
+  const [selectedBrand, setSelectedBrand] = useState("");
         const perPage = 12;
 
   const categoryId = searchParams.get("category");
@@ -65,6 +65,9 @@ const ShopWithSidebar = () => {
     params.set("page_size", String(perPage));
     if (sortBy) params.set("ordering", sortBy);
     selectedCategories.forEach((id) => params.append("category", id));
+    if (priceRange.from > 0) params.set("price__gte", String(priceRange.from));
+    if (priceRange.to > 0) params.set("price__lte", String(priceRange.to));
+    if (selectedBrand) params.set("brand", selectedBrand);
 
     api
       .get<PaginatedResponse<ProductListItem>>(
@@ -87,7 +90,7 @@ const ShopWithSidebar = () => {
     return () => {
       cancelled = true;
     };
-  }, [page, sortBy, selectedCategories]);
+  }, [page, sortBy, selectedCategories, priceRange, selectedBrand]);
 
   const totalPages = Math.ceil(totalCount / perPage);
 
@@ -125,6 +128,18 @@ const ShopWithSidebar = () => {
     );
     setPage(1);
   };
+
+  const handlePriceChange = (min: number, max: number) => {
+    setPriceRange({ from: min, to: max });
+    setPage(1);
+  };
+
+  const handleBrandSelect = (brand: string) => {
+    setSelectedBrand(brand);
+    setPage(1);
+  };
+
+  const uniqueBrands = Array.from(new Set(products.map((p) => p.brand).filter(Boolean))) as string[];
 
   const pageNumbers: (number | "...")[] = [];
   if (totalPages <= 7) {
@@ -194,6 +209,9 @@ const ShopWithSidebar = () => {
                     </div>
                   </div>
 
+                  {/* // <!-- price range box --> */}
+                  <PriceDropdown onPriceChange={handlePriceChange} />
+
                   {/* <!-- category box --> */}
                   <CategoryDropdown
                     categories={categories}
@@ -201,14 +219,12 @@ const ShopWithSidebar = () => {
                     onSelectCategory={handleCategoryFilter}
                   />
 
-                  {/* // <!-- size box --> */}
-                  <SizeDropdown />
-
-                  {/* // <!-- color box --> */}
-                  <ColorsDropdwon />
-
-                  {/* // <!-- price range box --> */}
-                  <PriceDropdown />
+                  {/* // <!-- brand box --> */}
+                  <BrandDropdown
+                    brands={uniqueBrands}
+                    selectedBrand={selectedBrand}
+                    onSelectBrand={handleBrandSelect}
+                  />
                 </div>
               </form>
             </div>
