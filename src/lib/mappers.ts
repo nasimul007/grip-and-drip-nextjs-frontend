@@ -1,13 +1,13 @@
 import type { ProductListItem, ProductDetail } from "./types";
 
 const categoryImages: Record<string, string> = {
-  charger: "/images/categories/categories-01.png",
-  earphone: "/images/categories/categories-02.png",
-  cable: "/images/categories/categories-03.png",
-  speaker: "/images/categories/categories-04.png",
-  headphone: "/images/categories/categories-05.png",
-  smartwatch: "/images/categories/categories-06.png",
-  accessory: "/images/categories/categories-07.png",
+  charger: "/images/categories/charger-cat.png",
+  earphone: "/images/categories/app-earphone.png",
+  cable: "/images/categories/cables1.png",
+  speaker: "/images/categories/speaker.png",
+  headphone: "/images/categories/jbl-headphone.png",
+  smartwatch: "/images/categories/amz-smartwatch.png",
+  accessory: "/images/categories/accessory.png",
 };
 
 export function mapCategoryForDisplay(apiCategory: {
@@ -19,7 +19,7 @@ export function mapCategoryForDisplay(apiCategory: {
   return {
     title: apiCategory.name,
     id: apiCategory.id,
-    img: categoryImages[key] || "/images/categories/categories-01.png",
+    img: categoryImages[key] || "/images/categories/accessory.webp",
   };
 }
 
