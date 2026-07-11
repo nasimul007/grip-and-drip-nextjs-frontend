@@ -55,13 +55,15 @@ const ProductItem = ({ item }: { item: Product }) => {
   return (
     <div className="group">
       <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-brand-card min-h-[270px] mb-4">
-        {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-          <Image src={item.imgs.previews[0]} alt="" width={250} height={250} />
-        ) : (
-          <div className="w-[250px] h-[250px] flex items-center justify-center text-brand-muted text-sm">
-            No Image
-          </div>
-        )}
+        <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
+          {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
+            <Image src={item.imgs.previews[0]} alt="" width={250} height={250} />
+          ) : (
+            <div className="w-[250px] h-[250px] flex items-center justify-center text-brand-muted text-sm">
+              No Image
+            </div>
+          )}
+        </Link>
 
         <div className="absolute left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">
           <button
