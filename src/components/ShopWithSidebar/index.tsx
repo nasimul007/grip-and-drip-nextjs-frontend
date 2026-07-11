@@ -39,7 +39,7 @@ const ShopWithSidebar = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [sortBy, setSortBy] = useState("-created_at");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const perPage = 9;
+        const perPage = 12;
 
   const categoryId = searchParams.get("category");
 
