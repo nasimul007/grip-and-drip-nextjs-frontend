@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
@@ -20,6 +21,8 @@ const sortOptions = [
 ];
 
 const ShopWithoutSidebar = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [productStyle, setProductStyle] = useState("grid");
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,6 +30,7 @@ const ShopWithoutSidebar = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [sortBy, setSortBy] = useState("-created_at");
   const perPage = 12;
+  const searchQuery = searchParams.get("q") || "";
 
   useEffect(() => {
     setLoading(true);
@@ -34,6 +38,7 @@ const ShopWithoutSidebar = () => {
     params.set("page", String(page));
     params.set("page_size", String(perPage));
     if (sortBy) params.set("ordering", sortBy);
+    if (searchQuery) params.set("search", searchQuery);
 
     api
       .get<PaginatedResponse<ProductListItem>>(
@@ -45,7 +50,7 @@ const ShopWithoutSidebar = () => {
       })
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
-  }, [page, sortBy]);
+  }, [page, sortBy, searchQuery]);
 
   const totalPages = Math.ceil(totalCount / perPage);
 
@@ -178,6 +183,23 @@ const ShopWithoutSidebar = () => {
                 </div>
               </div>
 
+              {searchQuery && (
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <p className="text-brand-muted text-sm">
+                    Showing results for{" "}
+                    <span className="text-white font-medium">
+                      &ldquo;{searchQuery}&rdquo;
+                    </span>
+                  </p>
+                  <button
+                    onClick={() => router.push("/shop-without-sidebar")}
+                    className="text-brand-accent hover:underline text-sm"
+                  >
+                    Clear
+                  </button>
+                </div>
+              )}
+
               {/* <!-- Products Grid Tab Content Start --> */}
               {loading ? (
                 <div className="text-center py-10 text-brand-muted">
@@ -193,7 +215,9 @@ const ShopWithoutSidebar = () => {
                 >
                   {products.length === 0 && (
                     <p className="text-brand-muted col-span-full text-center py-10">
-                      No products found.
+                      {searchQuery
+                        ? `No products found for "${searchQuery}". Try different keywords.`
+                        : "No products found."}
                     </p>
                   )}
                   {products.map((item, key) =>

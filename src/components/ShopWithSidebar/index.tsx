@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import CustomSelect from "./CustomSelect";
 import CategoryDropdown from "./CategoryDropdown";
 import PriceDropdown from "./PriceDropdown";
@@ -29,6 +29,7 @@ const sortOptions = [
 ];
 
 const ShopWithSidebar = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
@@ -46,6 +47,7 @@ const ShopWithSidebar = () => {
   const perPage = 12;
 
   const categoryId = searchParams.get("category");
+  const searchQuery = searchParams.get("q") || "";
 
   useEffect(() => {
     api
@@ -69,6 +71,7 @@ const ShopWithSidebar = () => {
     if (priceRange.from > 0) params.set("price__gte", String(priceRange.from));
     if (priceRange.to > 0) params.set("price__lte", String(priceRange.to));
     if (selectedBrand) params.set("brand", selectedBrand);
+    if (searchQuery) params.set("search", searchQuery);
 
     api
       .get<PaginatedResponse<ProductListItem>>(
@@ -91,7 +94,7 @@ const ShopWithSidebar = () => {
     return () => {
       cancelled = true;
     };
-  }, [page, sortBy, selectedCategories, priceRange, selectedBrand]);
+  }, [page, sortBy, selectedCategories, priceRange, selectedBrand, searchQuery]);
 
   const totalPages = Math.ceil(totalCount / perPage);
 
@@ -347,6 +350,23 @@ const ShopWithSidebar = () => {
                 </div>
               </div>
 
+              {searchQuery && (
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <p className="text-brand-muted text-sm">
+                    Showing results for{" "}
+                    <span className="text-white font-medium">
+                      &ldquo;{searchQuery}&rdquo;
+                    </span>
+                  </p>
+                  <button
+                    onClick={() => router.push("/shop-with-sidebar")}
+                    className="text-brand-accent hover:underline text-sm"
+                  >
+                    Clear
+                  </button>
+                </div>
+              )}
+
               {/* <!-- Products Grid Tab Content Start --> */}
               {loading ? (
                 <div className="text-center py-10 text-white-4">
@@ -362,7 +382,9 @@ const ShopWithSidebar = () => {
                 >
                   {products.length === 0 && (
                     <p className="text-white-4 col-span-full text-center py-10">
-                      No products found.
+                      {searchQuery
+                        ? `No products found for "${searchQuery}". Try different keywords.`
+                        : "No products found."}
                     </p>
                   )}
                   {products.map((item, key) =>

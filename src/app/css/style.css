@@ -215,3 +215,13 @@ input[type='search']::-webkit-search-results-decoration {
 .common-carousel .swiper-pagination-bullet-active {
   @apply bg-brand-accent;
 }
+
+/* Animate bounce for search suggestions loader */
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}

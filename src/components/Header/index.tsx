@@ -1,7 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import CustomSelect from "./CustomSelect";
+import SearchSuggestions from "./SearchSuggestions";
 import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
 import { useAppSelector } from "@/redux/store";
@@ -39,7 +41,10 @@ function mapToTree(
 }
 
 const Header = () => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([
@@ -95,6 +100,24 @@ const Header = () => {
 
   const options = categoryOptions;
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) return;
+    setShowSuggestions(false);
+    router.push(`/shop-with-sidebar?q=${encodeURIComponent(q)}`);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <header
       className={`fixed left-0 top-0 w-full z-9999 bg-brand-surface transition-all ease-in-out duration-300 ${
@@ -119,8 +142,8 @@ const Header = () => {
               />
             </Link>
 
-            <div className="max-w-[475px] w-full">
-              <form>
+            <div className="max-w-[475px] w-full" ref={searchRef}>
+              <form onSubmit={handleSearch}>
                 <div className="flex items-center">
                   <CustomSelect options={options} />
 
@@ -128,7 +151,11 @@ const Header = () => {
                     {/* <!-- divider --> */}
                     <span className="absolute left-0 top-1/2 -translate-y-1/2 inline-block w-px h-5.5 bg-gray-4"></span>
                     <input
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setShowSuggestions(true);
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
                       value={searchQuery}
                       type="search"
                       name="search"
@@ -139,6 +166,7 @@ const Header = () => {
                     />
 
                     <button
+                      type="submit"
                       id="search-btn"
                       aria-label="Search"
                       className="flex items-center justify-center absolute right-3 top-1/2 -translate-y-1/2 ease-in duration-200 hover:text-blue"
@@ -157,6 +185,12 @@ const Header = () => {
                         />
                       </svg>
                     </button>
+
+                    <SearchSuggestions
+                      query={searchQuery}
+                      isOpen={showSuggestions}
+                      onClose={() => setShowSuggestions(false)}
+                    />
                   </div>
                 </div>
               </form>
