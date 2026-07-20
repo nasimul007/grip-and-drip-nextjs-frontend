@@ -433,7 +433,7 @@ const Header = () => {
                       >
                           <Link
                             href={menuItem.path}
-                            className="hover:text-brand-accent text-custom-sm font-medium text-white flex xl:py-2"
+                            className="hover:text-brand-accent text-custom-sm font-medium text-white flex xl:py-1"
                         >
                           {menuItem.title}
                         </Link>
@@ -449,7 +449,7 @@ const Header = () => {
             {/* // <!--=== Nav Right Start ===--> */}
             <div className="hidden xl:block">
               <ul className="flex items-center gap-5.5">
-                <li className="py-2">
+                <li className="py-1">
                   <a
                     href="#"
                     className="flex items-center gap-1.5 font-medium text-custom-sm text-white hover:text-brand-accent"
@@ -475,7 +475,7 @@ const Header = () => {
                   </a>
                 </li>
 
-                <li className="py-2">
+                <li className="py-1">
                   <Link
                     href="/wishlist"
                     className="flex items-center gap-1.5 font-medium text-custom-sm text-white hover:text-brand-accent"
@@ -497,7 +497,7 @@ const Header = () => {
                   </Link>
                 </li>
                 {isAuthenticated && (
-                  <li className="py-2">
+                  <li className="py-1">
                     <button
                       onClick={handleLogout}
                       className="flex items-center gap-1.5 font-medium text-custom-sm text-white hover:text-brand-accent"
