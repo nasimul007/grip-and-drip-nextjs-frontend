@@ -128,16 +128,16 @@ const Header = () => {
         {/* <!-- header top start --> */}
         <div
           className={`flex flex-col lg:flex-row gap-5 items-end lg:items-center xl:justify-between ease-out duration-200 ${
-                    `py-4`
+                    `py-2`
           }`}
         >
           {/* <!-- header top left --> */}
           <div className="xl:w-auto flex-col sm:flex-row w-full flex sm:justify-between sm:items-center gap-5 sm:gap-10">
             <Link className="flex-shrink-0" href="/">
               <Image
-                src="/images/logo/logo.svg"
+                src="/images/logo/g_w_dark_side_by_side01-removebg-preview.png"
                 alt="Logo"
-                width={219}
+                width={250}
                 height={36}
               />
             </Link>
