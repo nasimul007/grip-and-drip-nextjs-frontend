@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
@@ -20,6 +20,62 @@ const QuickViewModal = () => {
 
   // get the product data
   const product = useAppSelector((state) => state.quickViewReducer.value);
+
+  const [selectedAttrs, setSelectedAttrs] = useState<Record<string, string>>({});
+
+  const allAttrKeys = useMemo(() => {
+    return Array.from(
+      new Set(
+        (product?.variants || []).flatMap(
+          (v: any) => Object.keys(v.attributes || {})
+        )
+      )
+    ) as string[];
+  }, [product?.variants]);
+
+  const variantAttrOptions = useMemo(() => {
+    return Object.fromEntries(
+      allAttrKeys.map((key: string) => [
+        key,
+        Array.from(
+          new Set(
+            (product?.variants || [])
+              .map((v: any) => v.attributes?.[key])
+              .filter(Boolean)
+          )
+        ).map((val: string) => ({
+          id: val.toLowerCase().replace(/\s+/g, "-"),
+          title: val,
+        })),
+      ])
+    );
+  }, [allAttrKeys, product?.variants]);
+
+  useEffect(() => {
+    if (allAttrKeys.length > 0 && Object.keys(selectedAttrs).length === 0) {
+      const initial: Record<string, string> = {};
+      allAttrKeys.forEach((key) => {
+        const options = variantAttrOptions[key];
+        if (options?.length) {
+          initial[key] = options[0].id;
+        }
+      });
+      setSelectedAttrs(initial);
+    }
+  }, [allAttrKeys, variantAttrOptions]);
+
+  const matchedVariant = useMemo(() => {
+    if (Object.keys(selectedAttrs).length === 0) return null;
+    return product?.variants?.find((v: any) =>
+      Object.entries(selectedAttrs).every(
+        ([key, val]) =>
+          v.attributes?.[key]?.toLowerCase().replace(/\s+/g, "-") === val
+      )
+    );
+  }, [product?.variants, selectedAttrs]);
+
+  const displayPrice = matchedVariant?.price_override ?? product?.discountedPrice;
+  const displayStock = matchedVariant?.stock ?? product?.stock;
 
   const [activePreview, setActivePreview] = useState(0);
 
@@ -152,9 +208,11 @@ const QuickViewModal = () => {
             </div>
 
             <div className="max-w-[445px] w-full">
-              <span className="inline-block text-custom-xs font-medium text-white py-1 px-3 bg-green mb-6.5">
-                SALE 20% OFF
-              </span>
+              {product.price > displayPrice && (
+                <span className="inline-block text-custom-xs font-medium text-white py-1 px-3 bg-green mb-6.5">
+                  SALE {Math.round(((product.price - displayPrice) / product.price) * 100)}% OFF
+                </span>
+              )}
 
               <h3 className="font-semibold text-xl xl:text-heading-5 text-white mb-4">
                 {product.title}
@@ -271,8 +329,7 @@ const QuickViewModal = () => {
                   </div>
 
                   <span>
-                    <span className="font-medium text-white"> 4.7 Rating </span>
-                    <span className="text-white-2"> (5 reviews) </span>
+                    <span className="font-medium text-white"> {product.reviews > 0 ? `${product.reviews} Review${product.reviews > 1 ? 's' : ''}` : 'No reviews'} </span>
                   </span>
                 </div>
 
@@ -301,14 +358,73 @@ const QuickViewModal = () => {
                     </defs>
                   </svg>
 
-                  <span className="font-medium text-white"> In Stock </span>
+                  <span className={`font-medium ${displayStock > 0 ? 'text-green' : 'text-red'}`}>
+                    {displayStock > 0 ? 'In Stock' : 'Out of Stock'}
+                  </span>
                 </div>
               </div>
 
-              <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has.
-              </p>
+              {product.description && (
+                <p
+                  className="text-brand-muted text-sm leading-relaxed line-clamp-3"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
+              )}
+
+              {allAttrKeys.length > 0 && (
+                <div className="flex flex-col gap-4.5 border-y border-brand-border mt-5 mb-5 py-5">
+                  {Object.entries(variantAttrOptions).map(([attrKey, options]) => (
+                    <div key={attrKey} className="flex items-center gap-4">
+                      <div className="min-w-[65px]">
+                        <h4 className="font-medium text-white capitalize text-sm">{attrKey}:</h4>
+                      </div>
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        {options.map((opt: any) => (
+                          <label key={opt.id} className="cursor-pointer select-none flex items-center">
+                            {attrKey === "color" ? (
+                              <div className="relative">
+                                <input
+                                  type="radio"
+                                  name={attrKey}
+                                  className="sr-only"
+                                  onChange={() =>
+                                    setSelectedAttrs((prev) => ({ ...prev, [attrKey]: opt.id }))
+                                  }
+                                />
+                                <div
+                                  className={`flex items-center justify-center w-5.5 h-5.5 rounded-full ${selectedAttrs[attrKey] === opt.id ? "border" : ""}`}
+                                  style={{ borderColor: opt.title }}
+                                >
+                                  <span className="block w-3 h-3 rounded-full" style={{ backgroundColor: opt.title }} />
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="relative">
+                                <input
+                                  type="radio"
+                                  name={attrKey}
+                                  className="sr-only"
+                                  onChange={() =>
+                                    setSelectedAttrs((prev) => ({ ...prev, [attrKey]: opt.id }))
+                                  }
+                                />
+                                <div
+                                  className={`px-4 py-2 rounded-md border text-sm font-medium transition ${selectedAttrs[attrKey] === opt.id
+                                    ? "border-brand-accent bg-brand-accent text-white"
+                                    : "border-brand-border bg-brand-card text-white hover:border-brand-accent"
+                                  }`}
+                                >
+                                  {opt.title}
+                                </div>
+                              </div>
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
                 <div>
@@ -318,9 +434,9 @@ const QuickViewModal = () => {
 
                   <span className="flex items-center gap-2">
                     <span className="font-semibold text-white text-xl xl:text-heading-4">
-                      ৳{product.discountedPrice}
+                      ৳{displayPrice}
                     </span>
-                    {product.price !== product.discountedPrice && (
+                    {product.price !== displayPrice && (
                       <span className="font-medium text-brand-muted text-lg xl:text-2xl line-through">
                         ৳{product.price}
                       </span>
@@ -333,60 +449,52 @@ const QuickViewModal = () => {
                     Quantity
                   </h4>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center rounded-md border border-brand-border">
                     <button
                       onClick={() => quantity > 1 && setQuantity(quantity - 1)}
                       aria-label="button for remove product"
-                      className="flex items-center justify-center w-10 h-10 rounded-[5px] bg-gray-2 text-white ease-out duration-200 hover:text-brand-accent"
-                      disabled={quantity < 0 && true}
+                      className="flex items-center justify-center w-12 h-12 ease-out duration-200 hover:text-brand-accent"
                     >
                       <svg
                         className="fill-current"
-                        width="16"
-                        height="2"
-                        viewBox="0 0 16 2"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M-8.548e-08 0.977778C-3.82707e-08 0.437766 0.437766 3.82707e-08 0.977778 8.548e-08L15.0222 1.31328e-06C15.5622 1.36049e-06 16 0.437767 16 0.977779C16 1.51779 15.5622 1.95556 15.0222 1.95556L0.977778 1.95556C0.437766 1.95556 -1.32689e-07 1.51779 -8.548e-08 0.977778Z"
+                          d="M3.33301 10.0001C3.33301 9.53984 3.7061 9.16675 4.16634 9.16675H15.833C16.2932 9.16675 16.6663 9.53984 16.6663 10.0001C16.6663 10.4603 16.2932 10.8334 15.833 10.8334H4.16634C3.7061 10.8334 3.33301 10.4603 3.33301 10.0001Z"
                           fill=""
                         />
                       </svg>
                     </button>
 
                     <span
-                      className="flex items-center justify-center w-20 h-10 rounded-[5px] border border-gray-4 bg-brand-card font-medium text-white"
-                      x-text="quantity"
+                      className="flex items-center justify-center w-16 h-12 border-x border-brand-border font-medium text-white"
                     >
                       {quantity}
                     </span>
 
                     <button
-                      onClick={() => setQuantity(quantity + 1)}
+                      onClick={() => quantity < displayStock && setQuantity(quantity + 1)}
                       aria-label="button for add product"
-                      className="flex items-center justify-center w-10 h-10 rounded-[5px] bg-gray-2 text-white ease-out duration-200 hover:text-brand-accent"
+                      className={`flex items-center justify-center w-12 h-12 ease-out duration-200 ${quantity >= displayStock ? "opacity-40 cursor-not-allowed" : "hover:text-brand-accent"}`}
                     >
                       <svg
                         className="fill-current"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M8.08889 0C8.6289 2.36047e-08 9.06667 0.437766 9.06667 0.977778L9.06667 15.0222C9.06667 15.5622 8.6289 16 8.08889 16C7.54888 16 7.11111 15.5622 7.11111 15.0222L7.11111 0.977778C7.11111 0.437766 7.54888 -2.36047e-08 8.08889 0Z"
+                          d="M3.33301 10C3.33301 9.5398 3.7061 9.16671 4.16634 9.16671H15.833C16.2932 9.16671 16.6663 9.5398 16.6663 10C16.6663 10.4603 16.2932 10.8334 15.833 10.8334H4.16634C3.7061 10.8334 3.33301 10.4603 3.33301 10Z"
                           fill=""
                         />
                         <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M0 7.91111C4.72093e-08 7.3711 0.437766 6.93333 0.977778 6.93333L15.0222 6.93333C15.5622 6.93333 16 7.3711 16 7.91111C16 8.45112 15.5622 8.88889 15.0222 8.88889L0.977778 8.88889C0.437766 8.88889 -4.72093e-08 8.45112 0 7.91111Z"
+                          d="M9.99967 16.6667C9.53944 16.6667 9.16634 16.2936 9.16634 15.8334L9.16634 4.16671C9.16634 3.70647 9.53944 3.33337 9.99967 3.33337C10.4599 3.33337 10.833 3.70647 10.833 4.16671L10.833 15.8334C10.833 16.2936 10.4599 16.6667 9.99967 16.6667Z"
                           fill=""
                         />
                       </svg>
@@ -397,12 +505,11 @@ const QuickViewModal = () => {
 
               <div className="flex flex-wrap items-center gap-4">
                 <button
-                  disabled={quantity === 0 && true}
+                  disabled={displayStock === 0}
                   onClick={() => handleAddToCart()}
-                  className={`inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent-dark
-                  `}
+                  className={`inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent-dark ${displayStock === 0 ? "opacity-40 cursor-not-allowed" : ""}`}
                 >
-                  Add to Cart
+                  {displayStock > 0 ? "Add to Cart" : "Out of Stock"}
                 </button>
 
                 <button

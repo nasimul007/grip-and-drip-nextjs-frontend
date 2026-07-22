@@ -61,6 +61,9 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
     id: item.id,
     slug: item.slug,
     description: item.description,
+    stock: item.stock,
+    sku: item.sku,
+    brand: item.brand,
     attributes: item.attributes,
     variants: item.variants.map((v) => ({
       ...v,
