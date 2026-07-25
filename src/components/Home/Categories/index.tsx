@@ -129,6 +129,7 @@ const Categories = () => {
             loop={true}
             loopPreventsSliding={false}
             slidesPerView={6}
+            spaceBetween={20}
             breakpoints={{
               0: {
                 slidesPerView: 3,
