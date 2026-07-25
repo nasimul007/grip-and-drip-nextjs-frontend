@@ -131,7 +131,7 @@ const Categories = () => {
             slidesPerView={6}
             breakpoints={{
               0: {
-                slidesPerView: 2,
+                slidesPerView: 3,
               },
               1000: {
                 slidesPerView: 4,

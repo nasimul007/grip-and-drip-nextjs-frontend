@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <section className="overflow-hidden pb-5 lg:pb-7.5 pt-40 sm:pt-30 lg:pt-28 xl:pt-28.5 bg-brand-dark">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-        <div className="flex flex-wrap gap-5">
+        <div className="flex flex-wrap gap-5 mt-10 sm:mt-0">
           <div className="xl:max-w-[757px] w-full">
             <div className="relative z-1 rounded-[10px] bg-brand-surface overflow-hidden">
               <Image
