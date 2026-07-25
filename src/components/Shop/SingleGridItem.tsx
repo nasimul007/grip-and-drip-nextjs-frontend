@@ -49,8 +49,8 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   };
 
   return (
-    <div className="group">
-      <div className="relative overflow-hidden rounded-lg bg-brand-card border border-brand-border mb-4 aspect-[1/1]">
+    <div className="group bg-brand-card border border-brand-border rounded-lg overflow-hidden">
+      <div className="relative overflow-hidden aspect-[1/1]">
         <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
         <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"} className="relative block w-full h-full">
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
@@ -127,56 +127,58 @@ const SingleGridItem = ({ item }: { item: Product }) => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5 mb-2">
-        <div className="flex items-center gap-1">
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
+      <div className="p-4">
+        <div className="flex items-center gap-2.5 mb-2">
+          <div className="flex items-center gap-1">
+            <Image
+              src="/images/icons/icon-star.svg"
+              alt="star icon"
+              width={15}
+              height={15}
+            />
+            <Image
+              src="/images/icons/icon-star.svg"
+              alt="star icon"
+              width={15}
+              height={15}
+            />
+            <Image
+              src="/images/icons/icon-star.svg"
+              alt="star icon"
+              width={15}
+              height={15}
+            />
+            <Image
+              src="/images/icons/icon-star.svg"
+              alt="star icon"
+              width={15}
+              height={15}
+            />
+            <Image
+              src="/images/icons/icon-star.svg"
+              alt="star icon"
+              width={15}
+              height={15}
+            />
+          </div>
+
+          <p className="text-custom-sm">({item.reviews})</p>
         </div>
 
-        <p className="text-custom-sm">({item.reviews})</p>
+        <h3 className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5 line-clamp-1" title={item.title}>
+          <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
+            {" "}
+            {item.title}{" "}
+          </Link>
+        </h3>
+
+        <span className="flex items-center gap-2 font-medium text-lg">
+          <span className="text-white">৳{item.discountedPrice}</span>
+          {item.price !== item.discountedPrice && (
+            <span className="text-brand-muted line-through">৳{item.price}</span>
+          )}
+        </span>
       </div>
-
-      <h3 className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5 line-clamp-1" title={item.title}>
-        <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
-          {" "}
-          {item.title}{" "}
-        </Link>
-      </h3>
-
-      <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-white">৳{item.discountedPrice}</span>
-        {item.price !== item.discountedPrice && (
-          <span className="text-brand-muted line-through">৳{item.price}</span>
-        )}
-      </span>
     </div>
   );
 };
