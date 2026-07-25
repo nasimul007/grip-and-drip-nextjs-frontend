@@ -55,7 +55,7 @@ const CustomSelect = ({
       >
         {selectedOption.label}
       </div>
-      <div className={`select-items ${isOpen ? "" : "select-hide"}`}>
+      <div className={`select-items ${isOpen ? "" : "select-hide"}`} style={{ zIndex: 10001 }}>
         {options.map((option, index) => (
           <div
             key={index}
