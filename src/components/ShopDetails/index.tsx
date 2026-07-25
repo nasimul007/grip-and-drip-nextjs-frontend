@@ -127,7 +127,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
         "Please add product"
       ) : (
         <>
-          <section className="overflow-hidden relative pb-5 pt-[209px] sm:pt-[155px] lg:pt-[95px] xl:pt-[165px]">
+          <section className="overflow-hidden relative pb-5 pt-[209px] sm:pt-[155px] lg:pt-[95px] xl:pt-[120px]">
             <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
               <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
                 <div className="lg:max-w-[570px] w-full flex flex-col sm:flex-row gap-4">
