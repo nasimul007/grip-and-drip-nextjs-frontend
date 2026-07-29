@@ -5,9 +5,11 @@ import Newsletter from "../Common/Newsletter";
 import RecentlyViewdItems from "./RecentlyViewd";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { useAppSelector } from "@/redux/store";
+import { useCart } from "@/lib/useCart";
 
 const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
   const { openPreviewModal } = usePreviewSlider();
+  const { addItem } = useCart();
   const [previewImg, setPreviewImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("tabOne");
@@ -477,8 +479,24 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                         </button>
                       </div>
 
+                      <button
+                        onClick={() =>
+                          addItem({
+                            id: product.id,
+                            title: product.title,
+                            price: product.price,
+                            discountedPrice: displayPrice || product.discountedPrice,
+                            quantity,
+                            imgs: product.imgs,
+                          })
+                        }
+                        className="inline-flex font-medium text-white bg-brand-card border border-brand-border py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent hover:border-brand-accent"
+                      >
+                        Add to Cart
+                      </button>
+
                       <a
-                        href="#"
+                        href="/checkout"
                         className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover"
                       >
                         Purchase Now

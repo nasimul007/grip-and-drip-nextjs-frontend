@@ -14,7 +14,7 @@ const ShippingMethod = ({ rates, selectedRate, onSelect }: any) => {
 
       <div className="p-4 sm:p-8.5">
         <div className="flex flex-col gap-4">
-          {rates.map((rate: any) => (
+          {(rates || []).map((rate: any) => (
             <label
               key={rate.id}
               htmlFor={`shipping_${rate.id}`}

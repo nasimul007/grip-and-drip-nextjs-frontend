@@ -45,9 +45,10 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    api.get<ShippingRate[]>("/api/shipping-rates/").then((data) => {
-      setRates(data);
-      if (data.length > 0) setSelectedRate(data[0]);
+    api.get("/api/shipping-rates/").then((data: any) => {
+      const ratesList = Array.isArray(data) ? data : data?.results || [];
+      setRates(ratesList);
+      if (ratesList.length > 0) setSelectedRate(ratesList[0]);
     });
   }, []);
 
