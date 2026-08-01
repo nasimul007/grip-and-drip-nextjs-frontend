@@ -134,14 +134,14 @@ const Checkout = () => {
 
               <div className="max-w-[455px] w-full">
                 <div className="bg-white shadow-1 rounded-[10px]">
-                  <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
+                  <div className="border-b border-gray-3 py-3 px-4 sm:px-8.5">
                     <h3 className="font-medium text-xl text-dark">
                       Your Order
                     </h3>
                   </div>
 
                   <div className="pt-2.5 pb-8.5 px-4 sm:px-8.5">
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
+                    <div className="flex items-center justify-between py-3 border-b border-gray-3">
                       <div>
                         <h4 className="font-medium text-dark">Product</h4>
                       </div>
@@ -156,7 +156,7 @@ const Checkout = () => {
                       cartItems.map((item) => (
                         <div
                           key={item.lineKey || `${item.id}:${item.variantName || ""}`}
-                          className="flex items-center justify-between py-5 border-b border-gray-3"
+                          className="flex items-center justify-between py-3 border-b border-gray-3"
                         >
                           <div className="flex items-center gap-4">
                             <div className="flex items-center justify-center rounded-[5px] bg-gray-2 max-w-[70px] w-full h-16 overflow-hidden">
@@ -199,7 +199,7 @@ const Checkout = () => {
                     )}
 
                     {cartItems.length > 0 && (
-                      <div className="flex items-center justify-between py-5 border-b border-gray-3">
+                      <div className="flex items-center justify-between py-3 border-b border-gray-3">
                         <div>
                           <p className="text-dark">Shipping Fee</p>
                         </div>

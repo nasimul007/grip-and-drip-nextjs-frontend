@@ -1,38 +1,21 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import OrderSummary from "./OrderSummary";
 import { useAppSelector } from "@/redux/store";
 import { useCart } from "@/lib/useCart";
 import SingleItem from "./SingleItem";
 import Breadcrumb from "../Common/Breadcrumb";
 import Link from "next/link";
-import { api } from "@/lib/api";
-import type { ShippingRate } from "@/lib/types";
 
 const Cart = () => {
   const cartItems = useAppSelector((state) => state.cartReducer.items);
   const { clearCart } = useCart();
 
-  const [selectedRate, setSelectedRate] = useState<ShippingRate | null>(null);
-
-  useEffect(() => {
-    api.get("/api/shipping-rates/").then((data: any) => {
-      const ratesList = Array.isArray(data) ? data : data?.results || [];
-      if (ratesList.length > 0) setSelectedRate(ratesList[0]);
-    });
-  }, []);
-
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.discountedPrice * item.quantity,
     0
   );
-  const shippingCost =
-    selectedRate &&
-    selectedRate.free_shipping_minimum &&
-    subtotal >= selectedRate.free_shipping_minimum
-      ? 0
-      : selectedRate?.charge || 0;
-  const total = subtotal + shippingCost;
+  const total = subtotal;
 
   return (
     <>
@@ -51,7 +34,7 @@ const Cart = () => {
               </button>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
+            <div className="flex flex-col lg:flex-row gap-5 xl:gap-7">
               <div className="w-full lg:flex-[1.9] lg:min-w-0">
                 <div className="flex flex-col gap-5">
                   {cartItems.map((item) => (
@@ -67,7 +50,6 @@ const Cart = () => {
                 <OrderSummary
                   cartItems={cartItems}
                   subtotal={subtotal}
-                  shippingCost={shippingCost}
                   total={total}
                 />
               </div>

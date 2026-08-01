@@ -78,18 +78,29 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
 
         <div className="flex flex-wrap items-center justify-between gap-4 mt-3">
           <div>
-            <p className="text-dark font-medium">
-              ৳{(item.discountedPrice * item.quantity).toFixed(2)}
-            </p>
-            {item.price !== item.discountedPrice && (
-              <p className="text-custom-sm text-dark-4 line-through">
-                ৳{(item.price * item.quantity).toFixed(2)}
+            <div className="flex items-center gap-2">
+              <p className="text-dark font-medium">
+                ৳{item.discountedPrice.toFixed(2)}
               </p>
-            )}
-            {atMaxStock && (
-              <p className="text-custom-xs text-yellow-dark mt-1">
-                Max stock: {item.stock}
-              </p>
+              {item.price !== item.discountedPrice && (
+                <p className="text-custom-sm text-dark-4 line-through">
+                  ৳{item.price.toFixed(2)}
+                </p>
+              )}
+            </div>
+
+            {item.quantity > 1 && (
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-custom-sm text-dark-4">Total:</p>
+                <p className="text-dark font-medium">
+                  ৳{(item.discountedPrice * item.quantity).toFixed(2)}
+                </p>
+                {item.price !== item.discountedPrice && (
+                  <p className="text-custom-sm text-dark-4 line-through">
+                    ৳{(item.price * item.quantity).toFixed(2)}
+                  </p>
+                )}
+              </div>
             )}
           </div>
 
