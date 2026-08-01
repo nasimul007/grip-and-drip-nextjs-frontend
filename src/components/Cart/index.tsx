@@ -1,16 +1,38 @@
 "use client";
-import React from "react";
-import Discount from "./Discount";
+import React, { useEffect, useState } from "react";
 import OrderSummary from "./OrderSummary";
 import { useAppSelector } from "@/redux/store";
 import { useCart } from "@/lib/useCart";
 import SingleItem from "./SingleItem";
 import Breadcrumb from "../Common/Breadcrumb";
 import Link from "next/link";
+import { api } from "@/lib/api";
+import type { ShippingRate } from "@/lib/types";
 
 const Cart = () => {
   const cartItems = useAppSelector((state) => state.cartReducer.items);
   const { clearCart } = useCart();
+
+  const [selectedRate, setSelectedRate] = useState<ShippingRate | null>(null);
+
+  useEffect(() => {
+    api.get("/api/shipping-rates/").then((data: any) => {
+      const ratesList = Array.isArray(data) ? data : data?.results || [];
+      if (ratesList.length > 0) setSelectedRate(ratesList[0]);
+    });
+  }, []);
+
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.discountedPrice * item.quantity,
+    0
+  );
+  const shippingCost =
+    selectedRate &&
+    selectedRate.free_shipping_minimum &&
+    subtotal >= selectedRate.free_shipping_minimum
+      ? 0
+      : selectedRate?.charge || 0;
+  const total = subtotal + shippingCost;
 
   return (
     <>
@@ -20,51 +42,35 @@ const Cart = () => {
       </section>
       {/* <!-- ===== Breadcrumb Section End ===== --> */}
       {cartItems.length > 0 ? (
-        <section className="overflow-hidden py-20 bg-gray-2">
+        <section className="pt-4 py-20 bg-gray-2">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="flex flex-wrap items-center justify-between gap-5 mb-7.5">
               <h2 className="font-medium text-dark text-2xl">Your Cart</h2>
-              <button onClick={() => clearCart()} className="text-blue">Clear Shopping Cart</button>
+              <button onClick={() => clearCart()} className="text-blue">
+                Clear Shopping Cart
+              </button>
             </div>
 
-            <div className="bg-white rounded-[10px] shadow-1">
-              <div className="w-full overflow-x-auto">
-                <div className="min-w-[1170px]">
-                  {/* <!-- table header --> */}
-                  <div className="flex items-center py-5.5 px-7.5">
-                    <div className="min-w-[400px]">
-                      <p className="text-dark">Product</p>
-                    </div>
-
-                    <div className="min-w-[180px]">
-                      <p className="text-dark">Price</p>
-                    </div>
-
-                    <div className="min-w-[275px]">
-                      <p className="text-dark">Quantity</p>
-                    </div>
-
-                    <div className="min-w-[200px]">
-                      <p className="text-dark">Subtotal</p>
-                    </div>
-
-                    <div className="min-w-[50px]">
-                      <p className="text-dark text-right">Action</p>
-                    </div>
-                  </div>
-
-                  {/* <!-- cart item --> */}
-                  {cartItems.length > 0 &&
-                    cartItems.map((item, key) => (
-                      <SingleItem item={item} key={key} />
-                    ))}
+            <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
+              <div className="w-full lg:flex-[1.9] lg:min-w-0">
+                <div className="flex flex-col gap-5">
+                  {cartItems.map((item) => (
+                    <SingleItem
+                      item={item}
+                      key={item.lineKey || `${item.id}:${item.variantName || ""}`}
+                    />
+                  ))}
                 </div>
               </div>
-            </div>
 
-            <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11 mt-9">
-              <Discount />
-              <OrderSummary />
+              <div className="w-full lg:flex-1 lg:max-w-[420px] lg:min-w-0">
+                <OrderSummary
+                  cartItems={cartItems}
+                  subtotal={subtotal}
+                  shippingCost={shippingCost}
+                  total={total}
+                />
+              </div>
             </div>
           </div>
         </section>

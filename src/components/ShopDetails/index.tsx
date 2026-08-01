@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Newsletter from "../Common/Newsletter";
 import RecentlyViewdItems from "./RecentlyViewd";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
@@ -10,6 +11,7 @@ import { useCart } from "@/lib/useCart";
 const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
   const { openPreviewModal } = usePreviewSlider();
   const { addItem } = useCart();
+  const router = useRouter();
   const [previewImg, setPreviewImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("tabOne");
@@ -485,22 +487,40 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             id: product.id,
                             title: product.title,
                             price: product.price,
-                            discountedPrice: displayPrice || product.discountedPrice,
+                            discountedPrice: Number(displayPrice || product.discountedPrice),
                             quantity,
+                            stock: displayStock,
+                            slug: product.slug,
+                            variantName: matchedVariant?.name,
                             imgs: product.imgs,
                           })
                         }
-                        className="inline-flex font-medium text-white bg-brand-card border border-brand-border py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent hover:border-brand-accent"
+                        disabled={displayStock <= 0}
+                        className="inline-flex font-medium text-white bg-brand-card border border-brand-border py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent hover:border-brand-accent disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         Add to Cart
                       </button>
 
-                      <a
-                        href="/checkout"
-                        className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover"
+                      <button
+                        onClick={async () => {
+                          await addItem({
+                            id: product.id,
+                            title: product.title,
+                            price: product.price,
+                            discountedPrice: Number(displayPrice || product.discountedPrice),
+                            quantity,
+                            stock: displayStock,
+                            slug: product.slug,
+                            variantName: matchedVariant?.name,
+                            imgs: product.imgs,
+                          });
+                          router.push("/cart");
+                        }}
+                        disabled={displayStock <= 0}
+                        className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         Purchase Now
-                      </a>
+                      </button>
 
                       <a
                         href="#"

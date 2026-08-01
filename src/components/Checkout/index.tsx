@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import Breadcrumb from "../Common/Breadcrumb";
 import Login from "./Login";
 import Shipping from "./Shipping";
@@ -104,7 +106,7 @@ const Checkout = () => {
   return (
     <>
       <Breadcrumb title={"Checkout"} pages={["checkout"]} />
-      <section className="overflow-hidden py-20 bg-gray-2">
+      <section className="overflow-hidden pt-4 pb-20 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
@@ -150,47 +152,79 @@ const Checkout = () => {
                       </div>
                     </div>
 
-                    {cartItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between py-5 border-b border-gray-3"
-                      >
-                        <div>
-                          <p className="text-dark">
-                            {item.title} x {item.quantity}
+                    {cartItems.length > 0 ? (
+                      cartItems.map((item) => (
+                        <div
+                          key={item.lineKey || `${item.id}:${item.variantName || ""}`}
+                          className="flex items-center justify-between py-5 border-b border-gray-3"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center justify-center rounded-[5px] bg-gray-2 max-w-[70px] w-full h-16 overflow-hidden">
+                              {item.imgs?.thumbnails[0] ? (
+                                <Image
+                                  width={70}
+                                  height={70}
+                                  src={item.imgs.thumbnails[0]}
+                                  alt="product"
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <span className="text-dark-4 text-xs">
+                                  No Image
+                                </span>
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-dark">{item.title}</p>
+                              <p className="text-dark-4 text-custom-sm">
+                                ৳{item.discountedPrice.toFixed(2)} × {item.quantity}
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-dark text-right">
+                            ৳{(item.discountedPrice * item.quantity).toFixed(2)}
                           </p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="py-8 text-center">
+                        <p className="text-dark-4 mb-4">Your cart is empty!</p>
+                        <Link
+                          href="/shop-with-sidebar"
+                          className="inline-flex font-medium text-white bg-blue py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                        >
+                          Continue Shopping
+                        </Link>
+                      </div>
+                    )}
+
+                    {cartItems.length > 0 && (
+                      <div className="flex items-center justify-between py-5 border-b border-gray-3">
+                        <div>
+                          <p className="text-dark">Shipping Fee</p>
                         </div>
                         <div>
                           <p className="text-dark text-right">
-                            ${(item.discountedPrice * item.quantity).toFixed(2)}
+                            {shippingCost === 0
+                              ? "Free"
+                              : `৳${shippingCost.toFixed(2)}`}
                           </p>
                         </div>
                       </div>
-                    ))}
+                    )}
 
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <p className="text-dark">Shipping Fee</p>
+                    {cartItems.length > 0 && (
+                      <div className="flex items-center justify-between pt-5">
+                        <div>
+                          <p className="font-medium text-lg text-dark">Total</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-lg text-dark text-right">
+                            ৳{total.toFixed(2)}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-dark text-right">
-                          {shippingCost === 0
-                            ? "Free"
-                            : `$${shippingCost.toFixed(2)}`}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-5">
-                      <div>
-                        <p className="font-medium text-lg text-dark">Total</p>
-                      </div>
-                      <div>
-                        <p className="font-medium text-lg text-dark text-right">
-                          ${total.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
 

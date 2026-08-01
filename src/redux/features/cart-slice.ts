@@ -8,11 +8,25 @@ export type ReduxCartItem = {
   price: number;
   discountedPrice: number;
   quantity: number;
+  stock?: number;
+  slug?: string;
+  variantName?: string;
+  lineKey?: string;
   imgs?: {
     thumbnails: string[];
     previews: string[];
   };
 };
+
+export function makeLineKey(item: {
+  id: number;
+  cartItemId?: number;
+  variantName?: string;
+}): string {
+  return item.cartItemId
+    ? String(item.cartItemId)
+    : `${item.id}:${item.variantName || ""}`;
+}
 
 type InitialState = {
   items: ReduxCartItem[];
@@ -24,7 +38,13 @@ function loadLocalCart(): ReduxCartItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(LOCAL_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const items: ReduxCartItem[] = raw ? JSON.parse(raw) : [];
+    return items.map((item) => ({
+      ...item,
+      price: Number(item.price),
+      discountedPrice: Number(item.discountedPrice),
+      lineKey: item.lineKey || makeLineKey(item),
+    }));
   } catch {
     return [];
   }
@@ -49,44 +69,66 @@ export const cart = createSlice({
       state.items = action.payload;
     },
     addItemToCart: (state, action: PayloadAction<ReduxCartItem>) => {
-      const { id, cartItemId, title, price, quantity, discountedPrice, imgs } =
-        action.payload;
-      const existingItem = state.items.find(
-        (item) => item.cartItemId
-          ? item.cartItemId === cartItemId
-          : item.id === id
+      const {
+        id,
+        cartItemId,
+        title,
+        price,
+        quantity,
+        discountedPrice,
+        imgs,
+        variantName,
+        stock,
+        slug,
+      } = action.payload;
+      const lineKey = action.payload.lineKey || makeLineKey(action.payload);
+
+      if (stock !== undefined && Number(stock) === 0) return;
+
+      const existingItem = state.items.find((item) =>
+        item.lineKey ? item.lineKey === lineKey : item.id === id
       );
 
       if (existingItem) {
-        existingItem.quantity += quantity;
+        existingItem.quantity = Math.min(
+          existingItem.quantity + quantity,
+          existingItem.stock ?? Infinity
+        );
       } else {
         state.items.push({
           id,
           cartItemId,
           title,
-          price,
+          price: Number(price),
           quantity,
-          discountedPrice,
+          discountedPrice: Number(discountedPrice),
           imgs,
+          variantName,
+          stock,
+          slug,
+          lineKey,
         });
       }
     },
-    removeItemFromCart: (state, action: PayloadAction<number>) => {
-      const id = action.payload;
+    removeItemFromCart: (state, action: PayloadAction<string>) => {
+      const lineKey = action.payload;
       state.items = state.items.filter(
-        (item) => item.id !== id && item.cartItemId !== id
+        (item) => (item.lineKey || makeLineKey(item)) !== lineKey
       );
     },
     updateCartItemQuantity: (
       state,
-      action: PayloadAction<{ id: number; quantity: number }>
+      action: PayloadAction<{ lineKey: string; quantity: number }>
     ) => {
-      const { id, quantity } = action.payload;
+      const { lineKey, quantity } = action.payload;
       const existingItem = state.items.find(
-        (item) => item.cartItemId === id || item.id === id
+        (item) => (item.lineKey || makeLineKey(item)) === lineKey
       );
       if (existingItem) {
-        existingItem.quantity = quantity;
+        existingItem.quantity = Math.min(
+          quantity,
+          existingItem.stock ?? Infinity
+        );
       }
     },
     removeAllItemsFromCart: (state) => {

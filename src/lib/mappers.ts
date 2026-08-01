@@ -27,10 +27,11 @@ export function mapProductForDisplay(item: ProductListItem) {
   return {
     title: item.name,
     reviews: 0,
-    price: item.compare_price || item.effective_price,
-    discountedPrice: item.effective_price,
+    price: Number(item.compare_price) || Number(item.effective_price),
+    discountedPrice: Number(item.effective_price),
     id: item.id,
     slug: item.slug,
+    stock: item.stock,
     imgs: {
       thumbnails: item.primary_image ? [item.primary_image.image] : [],
       previews: item.primary_image ? [item.primary_image.image] : [],
@@ -56,8 +57,8 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
   return {
     title: item.name,
     reviews: 0,
-    price: item.compare_price || item.effective_price,
-    discountedPrice: item.effective_price,
+    price: Number(item.compare_price) || Number(item.effective_price),
+    discountedPrice: Number(item.effective_price),
     id: item.id,
     slug: item.slug,
     description: item.description,

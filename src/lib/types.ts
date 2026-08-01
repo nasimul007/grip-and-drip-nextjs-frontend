@@ -121,6 +121,7 @@ export type CartItem = {
   quantity: number;
   variant_name: string;
   total: number;
+  stock?: number;
   created_at: string;
 };
 

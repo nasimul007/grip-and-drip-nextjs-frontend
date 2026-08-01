@@ -46,12 +46,12 @@ const ShippingMethod = ({ rates, selectedRate, onSelect }: any) => {
                   <p className="text-dark">
                     {rate.charge === 0
                       ? "Free"
-                      : `$${rate.charge.toFixed(2)}`}
+                      : `৳${rate.charge.toFixed(2)}`}
                   </p>
                 </div>
                 {rate.free_shipping_minimum && (
                   <p className="text-custom-xs text-dark-4">
-                    Free shipping on orders over ${rate.free_shipping_minimum}
+                    Free shipping on orders over ৳{rate.free_shipping_minimum}
                   </p>
                 )}
               </div>

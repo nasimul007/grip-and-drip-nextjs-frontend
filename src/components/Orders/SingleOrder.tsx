@@ -47,7 +47,7 @@ const SingleOrder = ({ order, smallView }: { order: OrderListItem; smallView: bo
             </span>
           </div>
           <div className="min-w-[113px]">
-            <p className="text-custom-sm text-dark">${order.total.toFixed(2)}</p>
+            <p className="text-custom-sm text-dark">৳{order.total.toFixed(2)}</p>
           </div>
           <div className="min-w-[113px]">
             <p className="text-custom-sm text-dark">{order.item_count}</p>
@@ -82,7 +82,7 @@ const SingleOrder = ({ order, smallView }: { order: OrderListItem; smallView: bo
               </span>
             </p>
             <p className="text-custom-sm text-dark">
-              <span className="font-bold pr-2">Total:</span> ${order.total.toFixed(2)}
+              <span className="font-bold pr-2">Total:</span> ৳{order.total.toFixed(2)}
             </p>
             <p className="text-custom-sm text-dark">
               <span className="font-bold pr-2">Items:</span> {order.item_count}

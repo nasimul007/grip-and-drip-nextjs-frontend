@@ -1,12 +1,13 @@
 import React from "react";
 import { useCart } from "@/lib/useCart";
+import { makeLineKey } from "@/redux/features/cart-slice";
 import Image from "next/image";
 
 const SingleItem = ({ item }) => {
   const { removeItem } = useCart();
 
   const handleRemoveFromCart = () => {
-    removeItem(item.id);
+    removeItem(item.lineKey || makeLineKey(item));
   };
 
   return (

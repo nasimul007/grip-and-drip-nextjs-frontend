@@ -9,6 +9,7 @@ import {
   removeAllItemsFromCart,
   setCartItems,
   persistGuestCart,
+  makeLineKey,
   type ReduxCartItem,
 } from "@/redux/features/cart-slice";
 import { api } from "@/lib/api";
@@ -18,13 +19,18 @@ import { buildImageUrl } from "@/lib/api";
 function mapAPICartItemToRedux(
   item: import("@/lib/types").CartItem
 ): ReduxCartItem {
+  const anyItem = item as any;
   return {
     id: item.product_id,
     cartItemId: item.id,
+    lineKey: String(item.id),
     title: item.product_name,
-    price: item.price,
-    discountedPrice: item.price,
+    price: Number(item.price),
+    discountedPrice: Number(item.price),
     quantity: item.quantity,
+    variantName: item.variant_name || undefined,
+    slug: item.product_slug,
+    stock: anyItem.stock != null ? Number(anyItem.stock) : undefined,
     imgs: {
       thumbnails: item.product_image ? [buildImageUrl(item.product_image)] : [],
       previews: item.product_image ? [buildImageUrl(item.product_image)] : [],
@@ -56,8 +62,14 @@ export function useCart() {
       price: number;
       discountedPrice: number;
       quantity: number;
+      stock?: number;
+      slug?: string;
+      variantName?: string;
       imgs?: ReduxCartItem["imgs"];
     }) => {
+      if (item.stock !== undefined && Number(item.stock) === 0) return;
+      const lineKey = makeLineKey(item);
+      const cartItem: ReduxCartItem = { ...item, lineKey };
       if (isAuthenticated) {
         try {
           await api.post("/api/cart/add/", {
@@ -67,23 +79,21 @@ export function useCart() {
           await fetchCart();
         } catch {
           /* fallback to local */
-          dispatch(addItemToCart(item));
+          dispatch(addItemToCart(cartItem));
         }
       } else {
-        dispatch(addItemToCart(item));
-        persistGuestCart([...items, item as ReduxCartItem]);
+        dispatch(addItemToCart(cartItem));
+        persistGuestCart([...items, cartItem]);
       }
     },
     [isAuthenticated, dispatch, fetchCart, items]
   );
 
   const updateQuantity = useCallback(
-    async (id: number, quantity: number) => {
+    async (lineKey: string, quantity: number) => {
+      const match = items.find((i) => (i.lineKey || makeLineKey(i)) === lineKey);
       if (isAuthenticated) {
         try {
-          const match = items.find(
-            (i) => i.cartItemId === id || i.id === id
-          );
           if (match?.cartItemId) {
             await api.patch(`/api/cart/items/${match.cartItemId}/`, {
               quantity,
@@ -91,13 +101,13 @@ export function useCart() {
           }
           await fetchCart();
         } catch {
-          dispatch(updateCartItemQuantity({ id, quantity }));
+          dispatch(updateCartItemQuantity({ lineKey, quantity }));
         }
       } else {
-        dispatch(updateCartItemQuantity({ id, quantity }));
+        dispatch(updateCartItemQuantity({ lineKey, quantity }));
         persistGuestCart(
           items.map((i) =>
-            i.id === id || i.cartItemId === id ? { ...i, quantity } : i
+            (i.lineKey || makeLineKey(i)) === lineKey ? { ...i, quantity } : i
           )
         );
       }
@@ -106,22 +116,22 @@ export function useCart() {
   );
 
   const removeItem = useCallback(
-    async (id: number) => {
+    async (lineKey: string) => {
+      const match = items.find((i) => (i.lineKey || makeLineKey(i)) === lineKey);
       if (isAuthenticated) {
         try {
-          const match = items.find(
-            (i) => i.cartItemId === id || i.id === id
-          );
           if (match?.cartItemId) {
             await api.delete(`/api/cart/items/${match.cartItemId}/`);
           }
           await fetchCart();
         } catch {
-          dispatch(removeItemFromCart(id));
+          dispatch(removeItemFromCart(lineKey));
         }
       } else {
-        dispatch(removeItemFromCart(id));
-        persistGuestCart(items.filter((i) => i.id !== id));
+        dispatch(removeItemFromCart(lineKey));
+        persistGuestCart(
+          items.filter((i) => (i.lineKey || makeLineKey(i)) !== lineKey)
+        );
       }
     },
     [isAuthenticated, dispatch, fetchCart, items]

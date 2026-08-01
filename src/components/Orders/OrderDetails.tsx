@@ -43,7 +43,7 @@ const OrderDetails = ({ orderItem }: { orderItem: Order }) => {
         </div>
         <div className="min-w-[113px]">
           <p className="text-custom-sm text-dark">
-            ${orderItem.total.toFixed(2)}
+            ৳{orderItem.total.toFixed(2)}
           </p>
         </div>
       </div>
@@ -52,7 +52,7 @@ const OrderDetails = ({ orderItem }: { orderItem: Order }) => {
         <p className="font-bold mb-2">Items:</p>
         {orderItem.items.map((item, i) => (
           <p key={i} className="text-custom-sm text-dark">
-            {item.product_name} x {item.quantity} — $
+            {item.product_name} x {item.quantity} — ৳
             {(item.price * item.quantity).toFixed(2)}
           </p>
         ))}
