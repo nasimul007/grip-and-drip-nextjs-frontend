@@ -15,7 +15,6 @@ const Cart = () => {
     (sum, item) => sum + item.discountedPrice * item.quantity,
     0
   );
-  const total = subtotal;
 
   return (
     <>
@@ -50,7 +49,6 @@ const Cart = () => {
                 <OrderSummary
                   cartItems={cartItems}
                   subtotal={subtotal}
-                  total={total}
                 />
               </div>
             </div>
