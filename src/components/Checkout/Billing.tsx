@@ -12,13 +12,24 @@ type LocationSelectProps = {
   options: Option[];
   disabled?: boolean;
   loading?: boolean;
+  error?: string;
   placeholder: string;
   wrapperClassName?: string;
   onChange: React.ChangeEventHandler<HTMLSelectElement>;
 };
 
 const inputClass =
-  "rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
+  "rounded-md bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
+
+const fieldClass = (error?: string) =>
+  `${inputClass} border ${
+    error ? "border-red" : "border-brand-border"
+  }`;
+
+const FieldError = ({ message }: { message?: string }) =>
+  message ? (
+    <p className="text-red text-custom-sm mt-1">{message}</p>
+  ) : null;
 
 const LocationSelect = ({
   name,
@@ -29,6 +40,7 @@ const LocationSelect = ({
   options,
   disabled,
   loading,
+  error,
   placeholder,
   wrapperClassName = "mb-5",
   onChange,
@@ -43,7 +55,7 @@ const LocationSelect = ({
       value={value}
       onChange={onChange}
       disabled={disabled || loading}
-      className={inputClass}
+      className={fieldClass(error)}
     >
       <option value="">
         {loading ? "Loading..." : placeholder}
@@ -54,6 +66,7 @@ const LocationSelect = ({
         </option>
       ))}
     </select>
+    <FieldError message={error} />
   </div>
 );
 
@@ -70,7 +83,7 @@ async function fetchOptions(addressId?: string): Promise<Option[]> {
   }));
 }
 
-const Billing = ({ formData, onChange }: any) => {
+const Billing = ({ formData, onChange, errors = {} }: any) => {
   const [divisions, setDivisions] = useState<Option[]>([]);
   const [cities, setCities] = useState<Option[]>([]);
   const [areas, setAreas] = useState<Option[]>([]);
@@ -166,8 +179,9 @@ const Billing = ({ formData, onChange }: any) => {
             value={formData.fullName}
             onChange={onChange}
             placeholder="Jhon Deo"
-            className={inputClass}
+            className={fieldClass(errors.fullName)}
           />
+          <FieldError message={errors.fullName} />
         </div>
 
         <div className="mb-5">
@@ -180,8 +194,9 @@ const Billing = ({ formData, onChange }: any) => {
             id="phone"
             value={formData.phone}
             onChange={onChange}
-            className={inputClass}
+            className={fieldClass(errors.phone)}
           />
+          <FieldError message={errors.phone} />
         </div>
 
         <div className="mb-5.5">
@@ -194,7 +209,7 @@ const Billing = ({ formData, onChange }: any) => {
             id="email"
             value={formData.email}
             onChange={onChange}
-            className={inputClass}
+            className={fieldClass(undefined)}
           />
         </div>
 
@@ -208,6 +223,7 @@ const Billing = ({ formData, onChange }: any) => {
           options={divisions}
           loading={loadingDivisions}
           placeholder="Select Division"
+          error={errors.division}
           wrapperClassName="mb-0"
           onChange={handleDivisionChange}
         />
@@ -222,6 +238,7 @@ const Billing = ({ formData, onChange }: any) => {
           disabled={!formData.division}
           loading={loadingCities}
           placeholder={formData.division ? "Select City" : "Select Division first"}
+          error={errors.city}
           wrapperClassName="mb-0"
           onChange={handleCityChange}
         />
@@ -236,6 +253,7 @@ const Billing = ({ formData, onChange }: any) => {
           disabled={!formData.city}
           loading={loadingAreas}
           placeholder={formData.city ? "Select Area" : "Select City first"}
+          error={errors.area}
           wrapperClassName="mb-0"
           onChange={onChange}
         />
@@ -252,8 +270,9 @@ const Billing = ({ formData, onChange }: any) => {
             value={formData.address}
             onChange={onChange}
             placeholder="House number and street name"
-            className={inputClass}
+            className={fieldClass(errors.address)}
           />
+          <FieldError message={errors.address} />
         </div>
       </div>
     </div>

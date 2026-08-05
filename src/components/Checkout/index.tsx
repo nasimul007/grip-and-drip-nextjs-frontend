@@ -15,15 +15,13 @@ import type { ShippingRate } from "@/lib/types";
 
 const Checkout = () => {
   const router = useRouter();
-  const isAuthenticated = useAppSelector(
-    (state) => state.authReducer.isAuthenticated
-  );
   const cartItems = useAppSelector((state) => state.cartReducer.items);
   const { clearCart } = useCart();
 
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -38,7 +36,14 @@ const Checkout = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => {
+      if (!prev[name]) return prev;
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
   };
 
   useEffect(() => {
@@ -65,20 +70,22 @@ const Checkout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isAuthenticated) {
-      router.push("/signin");
-      return;
-    }
-    if (!shippingRate) return;
-    if (
-      !formData.fullName ||
-      !formData.address ||
-      !formData.division ||
-      !formData.city ||
-      !formData.area ||
-      !formData.phone
-    ) {
-      alert("Please fill in all required fields.");
+
+    const newErrors: Record<string, string> = {};
+    if (!formData.fullName.trim())
+      newErrors.fullName = "Full Name is required.";
+    if (!formData.phone.trim()) newErrors.phone = "Phone is required.";
+    if (!formData.address.trim())
+      newErrors.address = "Address is required.";
+    if (!formData.division) newErrors.division = "Please select a Division.";
+    if (!formData.city) newErrors.city = "Please select a City.";
+    if (!formData.area) newErrors.area = "Please select an Area.";
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    if (!shippingRate) {
+      alert("Shipping rates not loaded. Please try again.");
       return;
     }
 
@@ -98,6 +105,7 @@ const Checkout = () => {
           country: "Bangladesh",
         },
       });
+      setErrors({});
       await clearCart();
       router.push("/mail-success");
     } catch (err: any) {
@@ -116,7 +124,7 @@ const Checkout = () => {
             <div className="flex flex-col lg:flex-row gap-5 xl:gap-7">
               <div className="w-full lg:flex-[1.9] lg:min-w-0">
                 <Login />
-                <Billing formData={formData} onChange={handleChange} />
+                <Billing formData={formData} onChange={handleChange} errors={errors} />
                 <div className="bg-brand-card border border-brand-border rounded-[10px] p-4 sm:p-8.5 mt-7.5">
                   <div>
                     <label htmlFor="notes" className="block mb-2.5">
