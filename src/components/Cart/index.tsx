@@ -24,11 +24,11 @@ const Cart = () => {
       </section>
       {/* <!-- ===== Breadcrumb Section End ===== --> */}
       {cartItems.length > 0 ? (
-        <section className="pt-4 py-20 bg-gray-2">
+        <section className="pt-4 py-20 bg-brand-dark">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="flex flex-wrap items-center justify-between gap-5 mb-7.5">
-              <h2 className="font-medium text-dark text-2xl">Your Cart</h2>
-              <button onClick={() => clearCart()} className="text-blue">
+              <h2 className="font-medium text-white text-2xl">Your Cart</h2>
+              <button onClick={() => clearCart()} className="text-brand-accent">
                 Clear Shopping Cart
               </button>
             </div>
@@ -92,7 +92,7 @@ const Cart = () => {
 
             <Link
               href="/shop-with-sidebar"
-              className="w-96 mx-auto flex justify-center font-medium text-white bg-dark py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-opacity-95"
+              className="w-96 mx-auto flex justify-center font-medium text-white bg-brand-accent py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
             >
               Continue Shopping
             </Link>

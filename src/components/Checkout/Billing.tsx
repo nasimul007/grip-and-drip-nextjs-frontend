@@ -18,7 +18,7 @@ type LocationSelectProps = {
 };
 
 const inputClass =
-  "rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20 disabled:opacity-60";
+  "rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
 
 const LocationSelect = ({
   name,
@@ -150,11 +150,11 @@ const Billing = ({ formData, onChange }: any) => {
 
   return (
     <div className="mt-9">
-      <h2 className="font-medium text-dark text-xl sm:text-2xl mb-5.5">
+      <h2 className="font-medium text-white text-xl sm:text-2xl mb-5.5">
         Billing details
       </h2>
 
-      <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5">
+      <div className="bg-brand-card border border-brand-border rounded-[10px] p-4 sm:p-8.5">
         <div className="mb-5">
           <label htmlFor="fullName" className="block mb-2.5">
             Full Name <span className="text-red">*</span>

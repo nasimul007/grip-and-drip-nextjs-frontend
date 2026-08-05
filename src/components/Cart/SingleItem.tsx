@@ -36,7 +36,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
 
   const productHref = item.slug ? `/shop/${item.slug}` : "#";
   const Thumb = (
-    <div className="flex items-center justify-center rounded-[5px] bg-gray-2 max-w-[90px] w-full h-24 overflow-hidden shrink-0">
+    <div className="flex items-center justify-center rounded-[5px] bg-brand-surface max-w-[90px] w-full h-24 overflow-hidden shrink-0">
       {item.imgs?.thumbnails[0] ? (
         <Image
           width={200}
@@ -46,13 +46,13 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
           className="object-cover"
         />
       ) : (
-        <span className="text-dark-4 text-xs">No Image</span>
+        <span className="text-brand-muted text-xs">No Image</span>
       )}
     </div>
   );
 
   return (
-    <div className="flex flex-wrap sm:flex-nowrap items-center gap-5 bg-white shadow-1 rounded-[10px] p-4 sm:p-6 border border-gray-3">
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-5 bg-brand-card rounded-[10px] p-4 sm:p-6 border border-brand-border">
       {item.slug ? (
         <Link href={productHref} className="shrink-0">
           {Thumb}
@@ -62,7 +62,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
       )}
 
       <div className="w-full min-w-0 flex-1">
-        <h3 className="text-dark ease-out duration-200 hover:text-blue">
+        <h3 className="text-white ease-out duration-200 hover:text-brand-accent">
           {item.slug ? (
             <Link href={productHref}>{item.title}</Link>
           ) : (
@@ -71,7 +71,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
         </h3>
 
         {item.variantName && (
-          <p className="text-custom-sm text-dark-4 mt-1">
+          <p className="text-custom-sm text-brand-muted mt-1">
             Variant: {item.variantName}
           </p>
         )}
@@ -79,11 +79,11 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
         <div className="flex flex-wrap items-center justify-between gap-4 mt-3">
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-dark font-medium">
+              <p className="text-white font-medium">
                 ৳{item.discountedPrice.toFixed(2)}
               </p>
               {item.price !== item.discountedPrice && (
-                <p className="text-custom-sm text-dark-4 line-through">
+                <p className="text-custom-sm text-brand-muted line-through">
                   ৳{item.price.toFixed(2)}
                 </p>
               )}
@@ -91,12 +91,12 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
 
             {item.quantity > 1 && (
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-custom-sm text-dark-4">Total:</p>
-                <p className="text-dark font-medium">
+                <p className="text-custom-sm text-brand-muted">Total:</p>
+                <p className="text-white font-medium">
                   ৳{(item.discountedPrice * item.quantity).toFixed(2)}
                 </p>
                 {item.price !== item.discountedPrice && (
-                  <p className="text-custom-sm text-dark-4 line-through">
+                  <p className="text-custom-sm text-brand-muted line-through">
                     ৳{(item.price * item.quantity).toFixed(2)}
                   </p>
                 )}
@@ -105,12 +105,12 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center rounded-md border border-gray-3">
+            <div className="flex items-center rounded-md border border-brand-border">
               <button
                 onClick={handleDecreaseQuantity}
                 disabled={updating || item.quantity <= 1}
                 aria-label="Decrease quantity"
-                className="flex items-center justify-center w-10 h-10 ease-out duration-200 hover:text-blue disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center justify-center w-10 h-10 ease-out duration-200 hover:text-brand-accent disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <svg
                   className="fill-current"
@@ -124,7 +124,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
                 </svg>
               </button>
 
-              <span className="flex items-center justify-center w-12 h-10 border-x border-gray-4 text-sm">
+              <span className="flex items-center justify-center w-12 h-10 border-x border-brand-border text-sm">
                 {updating ? "..." : item.quantity}
               </span>
 
@@ -132,7 +132,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
                 onClick={handleIncreaseQuantity}
                 disabled={updating || atMaxStock}
                 aria-label="Increase quantity"
-                className="flex items-center justify-center w-10 h-10 ease-out duration-200 hover:text-blue disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center justify-center w-10 h-10 ease-out duration-200 hover:text-brand-accent disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <svg
                   className="fill-current"
@@ -154,7 +154,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
               onClick={handleRemoveFromCart}
               disabled={updating}
               aria-label="Remove product from cart"
-              className="flex items-center justify-center rounded-md w-10 h-10 bg-gray-2 border border-gray-3 text-dark ease-out duration-200 hover:bg-red-light-6 hover:border-red-light-4 hover:text-red disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center justify-center rounded-md w-10 h-10 bg-brand-surface border border-brand-border text-brand-muted ease-out duration-200 hover:bg-red hover:border-red hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <svg
                 className="fill-current"

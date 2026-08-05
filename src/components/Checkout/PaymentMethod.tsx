@@ -9,9 +9,9 @@ const PaymentMethod = () => {
   const [transactionId, setTransactionId] = useState("");
 
   return (
-    <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
-      <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
-        <h3 className="font-medium text-xl text-dark">Payment Method</h3>
+    <div className="bg-brand-card border border-brand-border rounded-[10px] mt-7.5">
+      <div className="border-b border-brand-border py-5 px-4 sm:px-8.5">
+        <h3 className="font-medium text-xl text-white">Payment Method</h3>
       </div>
 
       <div className="p-4 sm:p-8.5">
@@ -31,17 +31,17 @@ const PaymentMethod = () => {
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${
                   payment === "cash"
-                    ? "border-4 border-blue"
-                    : "border border-gray-4"
+                    ? "border-4 border-brand-accent"
+                    : "border border-brand-border"
                 }`}
               ></div>
             </div>
 
             <div
-              className={`rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-gray-2 hover:border-transparent hover:shadow-none min-w-[240px] ${
+              className={`rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-brand-surface hover:border-transparent hover:shadow-none min-w-[240px] ${
                 payment === "cash"
-                  ? "border-transparent bg-gray-2"
-                  : " border-gray-4 shadow-1"
+                  ? "border-transparent bg-brand-surface"
+                  : " border-brand-border"
               }`}
             >
               <div className="flex items-center">
@@ -54,9 +54,9 @@ const PaymentMethod = () => {
                   />
                 </div>
 
-                <div className="border-l border-gray-4 pl-2.5">
+                <div className="border-l border-brand-border pl-2.5">
                   <p>Cash on delivery</p>
-                  <p className="text-custom-xs text-dark-4">
+                  <p className="text-custom-xs text-brand-muted">
                     minimum advance 200tk
                   </p>
                 </div>
@@ -70,17 +70,17 @@ const PaymentMethod = () => {
             }`}
           >
             <div className="overflow-hidden">
-              <div className="rounded-md border border-gray-3 bg-gray-1 p-5">
-                <p className="text-custom-sm text-dark mb-4">
-                  অর্ডার কনফার্ম করতে অনুগ্রহ করে বিকাশে ২০০ টাকা পেমেন্ট করে
+              <div className="rounded-md border border-brand-border bg-brand-surface p-5">
+                <p className="text-custom-sm text-white mb-4">
+                  অর্ডার কনফার্ম করতে অনুগ্রহ করে নিচের বিকাশ মার্চেন্ট নাম্বারে ২০০ টাকা সেন্ড মানি করে,
                   বিকাশ নাম্বার ও ট্রান্সেকশন আইডি নিচের বক্সে লিখুন।
                 </p>
 
-                <div className="flex items-center justify-between mb-5">
-                  <span className="text-dark font-medium">
-                    My bKash Number:
+                <div className="flex items-center justify-between mb-5 text-custom-sm">
+                  <span className="text-white font-medium">
+                    bKash Merchant Number:
                   </span>
-                  <span className="font-semibold text-blue">{BkashNumber}</span>
+                  <span className="font-semibold text-brand-accent">{BkashNumber}</span>
                 </div>
 
                 <div className="mb-4">
@@ -94,7 +94,7 @@ const PaymentMethod = () => {
                     value={bkashNumber}
                     onChange={(e) => setBkashNumber(e.target.value)}
                     placeholder="01XXXXXXXXX"
-                    className="rounded-md border border-gray-3 bg-white placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                   />
                 </div>
 
@@ -109,7 +109,7 @@ const PaymentMethod = () => {
                     value={transactionId}
                     onChange={(e) => setTransactionId(e.target.value)}
                     placeholder="Transaction ID"
-                    className="rounded-md border border-gray-3 bg-white placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                   />
                 </div>
               </div>
@@ -131,17 +131,17 @@ const PaymentMethod = () => {
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${
                   payment === "bank"
-                    ? "border-4 border-blue"
-                    : "border border-gray-4"
+                    ? "border-4 border-brand-accent"
+                    : "border border-brand-border"
                 }`}
               ></div>
             </div>
 
             <div
-              className={`rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-gray-2 hover:border-transparent hover:shadow-none ${
+              className={`rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-brand-surface hover:border-transparent hover:shadow-none ${
                 payment === "bank"
-                  ? "border-transparent bg-gray-2"
-                  : " border-gray-4 shadow-1"
+                  ? "border-transparent bg-brand-surface"
+                  : " border-brand-border"
               }`}
             >
               <div className="flex items-center">
@@ -154,9 +154,9 @@ const PaymentMethod = () => {
                   />
                 </div>
 
-                <div className="border-l border-gray-4 pl-2.5">
+                <div className="border-l border-brand-border pl-2.5">
                   <p>Bank payment</p>
-                  <p className="text-custom-xs text-dark-4">
+                  <p className="text-custom-xs text-brand-muted">
                     Stripe payment coming soon
                   </p>
                 </div>

@@ -5,15 +5,15 @@ const Login = () => {
   const [dropdown, setDropdown] = useState(false);
 
   return (
-    <div className="bg-white shadow-1 rounded-[10px]">
+    <div className="bg-brand-card border border-brand-border rounded-[10px]">
       <div
         className={`flex items-center justify-between gap-3 py-5 px-5.5 ${
-          dropdown && "border-b border-gray-3"
+          dropdown && "border-b border-brand-border"
         }`}
       >
         <Link
           href="/cart"
-          className="inline-flex items-center gap-2 font-medium text-white bg-blue py-2 px-4 rounded-md ease-out duration-200 hover:bg-blue-dark"
+          className="inline-flex items-center gap-2 font-medium text-white bg-brand-accent py-2 px-4 rounded-md ease-out duration-200 hover:bg-brand-hover"
         >
           <svg
             className="fill-current"
@@ -36,7 +36,7 @@ const Login = () => {
           className="cursor-pointer flex items-center gap-0.5"
         >
           Returning customer?
-          <span className="flex items-center gap-2.5 pl-1 font-medium text-dark">
+          <span className="flex items-center gap-2.5 pl-1 font-medium text-white">
             Click here to login
             <svg
               className={`${
@@ -78,7 +78,7 @@ const Login = () => {
             type="text"
             name="name"
             id="name"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+            className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
           />
         </div>
 
@@ -92,13 +92,13 @@ const Login = () => {
             name="password"
             id="password"
             autoComplete="on"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+            className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
           />
         </div>
 
         <button
           type="submit"
-          className="inline-flex font-medium text-white bg-blue py-3 px-10.5 rounded-md ease-out duration-200 hover:bg-blue-dark"
+          className="inline-flex font-medium text-white bg-brand-accent py-3 px-10.5 rounded-md ease-out duration-200 hover:bg-brand-hover"
         >
           Login
         </button>

@@ -110,14 +110,14 @@ const Checkout = () => {
   return (
     <>
       <Breadcrumb title={"Checkout"} pages={["checkout"]} />
-      <section className="overflow-hidden pt-4 pb-20 bg-gray-2">
+      <section className="overflow-hidden pt-4 pb-20 bg-brand-dark">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col lg:flex-row gap-5 xl:gap-7">
               <div className="w-full lg:flex-[1.9] lg:min-w-0">
                 <Login />
                 <Billing formData={formData} onChange={handleChange} />
-                <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5 mt-7.5">
+                <div className="bg-brand-card border border-brand-border rounded-[10px] p-4 sm:p-8.5 mt-7.5">
                   <div>
                     <label htmlFor="notes" className="block mb-2.5">
                       Other Notes (optional)
@@ -129,25 +129,25 @@ const Checkout = () => {
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Notes about your order, e.g. speacial notes for delivery."
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                     ></textarea>
                   </div>
                 </div>
 
-                <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
-                  <div className="border-b border-gray-3 py-3 px-4 sm:px-8.5">
-                    <h3 className="font-medium text-xl text-dark">
+                <div className="bg-brand-card border border-brand-border rounded-[10px] mt-7.5">
+                  <div className="border-b border-brand-border py-3 px-4 sm:px-8.5">
+                    <h3 className="font-medium text-xl text-white">
                       Your Order
                     </h3>
                   </div>
 
                   <div className="pt-2.5 pb-8.5 px-4 sm:px-8.5">
-                    <div className="flex items-center justify-between py-3 border-b border-gray-3">
+                    <div className="flex items-center justify-between py-3 border-b border-brand-border">
                       <div>
-                        <h4 className="font-medium text-dark">Product</h4>
+                        <h4 className="font-medium text-white">Product</h4>
                       </div>
                       <div>
-                        <h4 className="font-medium text-dark text-right">
+                        <h4 className="font-medium text-white text-right">
                           Subtotal
                         </h4>
                       </div>
@@ -157,10 +157,10 @@ const Checkout = () => {
                       cartItems.map((item) => (
                         <div
                           key={item.lineKey || `${item.id}:${item.variantName || ""}`}
-                          className="flex items-center justify-between py-3 border-b border-gray-3"
+                          className="flex items-center justify-between py-3 border-b border-brand-border"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="flex items-center justify-center rounded-[5px] bg-gray-2 max-w-[70px] w-full h-16 overflow-hidden">
+                            <div className="flex items-center justify-center rounded-[5px] bg-brand-surface max-w-[70px] w-full h-16 overflow-hidden">
                               {item.imgs?.thumbnails[0] ? (
                                 <Image
                                   width={70}
@@ -170,29 +170,29 @@ const Checkout = () => {
                                   className="object-cover"
                                 />
                               ) : (
-                                <span className="text-dark-4 text-xs">
+                                <span className="text-brand-muted text-xs">
                                   No Image
                                 </span>
                               )}
                             </div>
                             <div>
-                              <p className="text-dark">{item.title}</p>
-                              <p className="text-dark-4 text-custom-sm">
+                              <p className="text-white">{item.title}</p>
+                              <p className="text-brand-muted text-custom-sm">
                                 ৳{item.discountedPrice.toFixed(2)} × {item.quantity}
                               </p>
                             </div>
                           </div>
-                          <p className="text-dark text-right">
+                          <p className="text-white text-right">
                             ৳{(item.discountedPrice * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       ))
                     ) : (
                       <div className="py-8 text-center">
-                        <p className="text-dark-4 mb-4">Your cart is empty!</p>
+                        <p className="text-brand-muted mb-4">Your cart is empty!</p>
                         <Link
                           href="/shop-with-sidebar"
-                          className="inline-flex font-medium text-white bg-blue py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                          className="inline-flex font-medium text-white bg-brand-accent py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
                         >
                           Continue Shopping
                         </Link>
@@ -216,9 +216,9 @@ const Checkout = () => {
                 <button
                   type="submit"
                   disabled={loading || cartItems.length === 0}
-                  className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5 disabled:opacity-50"
+                  className="w-full flex justify-center font-medium text-white bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5 disabled:opacity-50"
                 >
-                  {loading ? "Processing..." : "Process to Checkout"}
+                  {loading ? "Processing..." : "Place Order"}
                 </button>
               </div>
             </div>
