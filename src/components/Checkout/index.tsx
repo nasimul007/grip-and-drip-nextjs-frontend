@@ -21,6 +21,7 @@ const Checkout = () => {
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
@@ -80,6 +81,8 @@ const Checkout = () => {
     if (!formData.division) newErrors.division = "Please select a Division.";
     if (!formData.city) newErrors.city = "Please select a City.";
     if (!formData.area) newErrors.area = "Please select an Area.";
+    if (!agree)
+      newErrors.terms = "Please accept the terms and conditions.";
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
@@ -221,10 +224,41 @@ const Checkout = () => {
                 />
                 <PaymentMethod />
 
+                <label className="flex items-start gap-2.5 mt-7.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={agree}
+                    onChange={(e) => {
+                      setAgree(e.target.checked);
+                      setErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.terms;
+                        return next;
+                      });
+                    }}
+                    className="h-4 w-4 mt-0.5 accent-brand-accent"
+                  />
+                  <span className="text-custom-sm text-brand-muted">
+                    I have read and agree to the{" "}
+                    <Link
+                      href="/terms"
+                      className="text-brand-accent underline underline-offset-2"
+                    >
+                      website terms and conditions
+                    </Link>{" "}
+                    <span className="text-red">*</span>
+                  </span>
+                </label>
+                {errors.terms && (
+                  <p className="text-red text-custom-sm mt-1.5">
+                    {errors.terms}
+                  </p>
+                )}
+
                 <button
                   type="submit"
                   disabled={loading || cartItems.length === 0}
-                  className="w-full flex justify-center font-medium text-white bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5 disabled:opacity-50"
+                  className="w-full flex justify-center font-medium text-white bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-3 disabled:opacity-50"
                 >
                   {loading ? "Processing..." : "Place Order"}
                 </button>
