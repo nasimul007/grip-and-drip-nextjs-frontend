@@ -83,7 +83,23 @@ export function useCart() {
         }
       } else {
         dispatch(addItemToCart(cartItem));
-        persistGuestCart([...items, cartItem]);
+        const existingItem = items.find(
+          (i) => (i.lineKey || makeLineKey(i)) === lineKey
+        );
+        const nextItems = existingItem
+          ? items.map((i) =>
+              (i.lineKey || makeLineKey(i)) === lineKey
+                ? {
+                    ...i,
+                    quantity: Math.min(
+                      i.quantity + item.quantity,
+                      i.stock ?? Infinity
+                    ),
+                  }
+                : i
+            )
+          : [...items, cartItem];
+        persistGuestCart(nextItems);
       }
     },
     [isAuthenticated, dispatch, fetchCart, items]

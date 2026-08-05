@@ -39,12 +39,26 @@ function loadLocalCart(): ReduxCartItem[] {
   try {
     const raw = localStorage.getItem(LOCAL_KEY);
     const items: ReduxCartItem[] = raw ? JSON.parse(raw) : [];
-    return items.map((item) => ({
-      ...item,
-      price: Number(item.price),
-      discountedPrice: Number(item.discountedPrice),
-      lineKey: item.lineKey || makeLineKey(item),
-    }));
+    const merged = new Map<string, ReduxCartItem>();
+    for (const item of items) {
+      const normalized = {
+        ...item,
+        price: Number(item.price),
+        discountedPrice: Number(item.discountedPrice),
+        lineKey: item.lineKey || makeLineKey(item),
+      };
+      const lineKey = normalized.lineKey;
+      const existing = merged.get(lineKey);
+      if (existing) {
+        existing.quantity = Math.min(
+          existing.quantity + normalized.quantity,
+          existing.stock ?? Infinity
+        );
+      } else {
+        merged.set(lineKey, normalized);
+      }
+    }
+    return Array.from(merged.values());
   } catch {
     return [];
   }
