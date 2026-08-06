@@ -498,7 +498,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                         disabled={displayStock <= 0}
                         className="inline-flex font-medium text-white bg-brand-card border border-brand-border py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent hover:border-brand-accent disabled:opacity-40 disabled:cursor-not-allowed"
                       >
-                        Add to Cart
+                        {displayStock > 0 ? "Add to Cart" : "Out of Stock"}
                       </button>
 
                       <button

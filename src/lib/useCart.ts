@@ -67,7 +67,6 @@ export function useCart() {
       variantName?: string;
       imgs?: ReduxCartItem["imgs"];
     }) => {
-      if (item.stock !== undefined && Number(item.stock) === 0) return;
       const lineKey = makeLineKey(item);
       const cartItem: ReduxCartItem = { ...item, lineKey };
       if (isAuthenticated) {

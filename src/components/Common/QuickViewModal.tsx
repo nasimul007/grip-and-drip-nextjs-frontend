@@ -89,8 +89,15 @@ const QuickViewModal = () => {
   // add to cart
   const handleAddToCart = () => {
     addItem({
-      ...product,
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      discountedPrice: Number(displayPrice || product.discountedPrice),
       quantity,
+      stock: displayStock,
+      slug: product.slug,
+      variantName: matchedVariant?.name,
+      imgs: product.imgs,
     });
 
     closeModal();

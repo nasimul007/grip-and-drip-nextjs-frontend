@@ -97,8 +97,6 @@ export const cart = createSlice({
       } = action.payload;
       const lineKey = action.payload.lineKey || makeLineKey(action.payload);
 
-      if (stock !== undefined && Number(stock) === 0) return;
-
       const existingItem = state.items.find((item) =>
         item.lineKey ? item.lineKey === lineKey : item.id === id
       );
