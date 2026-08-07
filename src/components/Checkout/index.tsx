@@ -117,7 +117,6 @@ const Checkout = () => {
           address_line2: "",
           city: `${formData.area}, ${formData.city}`,
           state: formData.division,
-          postal_code: "",
           country: "Bangladesh",
         },
       };
