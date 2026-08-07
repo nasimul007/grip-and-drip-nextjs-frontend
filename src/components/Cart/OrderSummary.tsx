@@ -99,38 +99,40 @@ const OrderSummary = ({
             </div>
           )}
 
-          <div className="pt-5">
-            <div className="flex gap-3">
-              <input
-                type="text"
-                name="coupon"
-                id="cart-coupon"
-                placeholder="Enter coupon code"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleApplyCoupon();
-                  }
-                }}
-                className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
-              />
-              <button
-                type="button"
-                onClick={handleApplyCoupon}
-                disabled={applying}
-                className="inline-flex font-medium text-white bg-brand-accent py-2.5 px-5 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
-              >
-                Apply
-              </button>
+          {showProceedLink && (
+            <div className="pt-5">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  name="coupon"
+                  id="cart-coupon"
+                  placeholder="Enter coupon code"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleApplyCoupon();
+                    }
+                  }}
+                  className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  disabled={applying}
+                  className="inline-flex font-medium text-white bg-brand-accent py-2.5 px-5 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
+                >
+                  Apply
+                </button>
+              </div>
+              {couponError && (
+                <p className="text-red text-custom-sm mt-2.5">
+                  {couponError}
+                </p>
+              )}
             </div>
-            {couponError && (
-              <p className="text-red text-custom-sm mt-2.5">
-                {couponError}
-              </p>
-            )}
-          </div>
+          )}
 
           <div className="flex items-center justify-between pt-5">
             <div>

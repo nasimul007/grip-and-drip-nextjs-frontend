@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Breadcrumb from "../Common/Breadcrumb";
 import Login from "./Login";
-import PaymentMethod from "./PaymentMethod";
+import PaymentMethod, { type PaymentMethodValue } from "./PaymentMethod";
 import Billing from "./Billing";
 import OrderSummary from "../Cart/OrderSummary";
 import { useAppSelector } from "@/redux/store";
@@ -16,6 +16,9 @@ import type { ShippingRate } from "@/lib/types";
 const Checkout = () => {
   const router = useRouter();
   const cartItems = useAppSelector((state) => state.cartReducer.items);
+  const isAuthenticated = useAppSelector(
+    (state) => state.authReducer.isAuthenticated
+  );
   const { clearCart } = useCart();
 
   const [rates, setRates] = useState<ShippingRate[]>([]);
@@ -23,6 +26,9 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [payment, setPayment] = useState<PaymentMethodValue>("cash");
+  const [bkashNumber, setBkashNumber] = useState("");
+  const [transactionId, setTransactionId] = useState("");
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -94,9 +100,16 @@ const Checkout = () => {
 
     setLoading(true);
     try {
-      await api.post("/api/orders/", {
+      const paymentDetails =
+        payment === "bkash"
+          ? { bkash_number: bkashNumber, transaction_id: transactionId }
+          : {};
+
+      const body: Record<string, unknown> = {
         shipping_rate_id: shippingRate.id,
         notes,
+        payment_method: payment,
+        payment_details: paymentDetails,
         shipping_address: {
           full_name: formData.fullName,
           phone: formData.phone,
@@ -107,7 +120,17 @@ const Checkout = () => {
           postal_code: "",
           country: "Bangladesh",
         },
-      });
+      };
+
+      if (!isAuthenticated) {
+        body.items = cartItems.map((item) => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          variant_id: item.variantId ?? null,
+        }));
+      }
+
+      await api.post("/api/orders/", body);
       setErrors({});
       await clearCart();
       router.push("/mail-success");
@@ -222,7 +245,14 @@ const Checkout = () => {
                   showProceedLink={false}
                   sticky={false}
                 />
-                <PaymentMethod />
+                <PaymentMethod
+                  payment={payment}
+                  bkashNumber={bkashNumber}
+                  transactionId={transactionId}
+                  onPayment={setPayment}
+                  onBkashNumberChange={setBkashNumber}
+                  onTransactionIdChange={setTransactionId}
+                />
 
                 <label className="flex items-start gap-2.5 mt-7.5 cursor-pointer select-none">
                   <input

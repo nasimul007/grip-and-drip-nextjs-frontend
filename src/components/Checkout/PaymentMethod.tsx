@@ -1,13 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 
-const BkashNumber = "01XXX-XXXXXX";
+export type PaymentMethodValue = "cash" | "bkash" | "bank";
 
-const PaymentMethod = () => {
-  const [payment, setPayment] = useState("cash");
-  const [bkashNumber, setBkashNumber] = useState("");
-  const [transactionId, setTransactionId] = useState("");
+type Props = {
+  payment: PaymentMethodValue;
+  bkashNumber: string;
+  transactionId: string;
+  onPayment: (value: PaymentMethodValue) => void;
+  onBkashNumberChange: (value: string) => void;
+  onTransactionIdChange: (value: string) => void;
+};
 
+const BkashNumber =
+  process.env.NEXT_PUBLIC_BKASH_NUMBER || "01XXX-XXXXXX";
+
+const PaymentMethod = ({
+  payment,
+  bkashNumber,
+  transactionId,
+  onPayment,
+  onBkashNumberChange,
+  onTransactionIdChange,
+}: Props) => {
   return (
     <div className="bg-brand-card border border-brand-border rounded-[10px] mt-7.5">
       <div className="border-b border-brand-border py-5 px-4 sm:px-8.5">
@@ -26,7 +41,7 @@ const PaymentMethod = () => {
                 name="cash"
                 id="cash"
                 className="sr-only"
-                onChange={() => setPayment("cash")}
+                onChange={() => onPayment("cash")}
               />
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${
@@ -92,7 +107,7 @@ const PaymentMethod = () => {
                     name="bkashNumber"
                     id="bkashNumber"
                     value={bkashNumber}
-                    onChange={(e) => setBkashNumber(e.target.value)}
+                    onChange={(e) => onBkashNumberChange(e.target.value)}
                     placeholder="01XXXXXXXXX"
                     className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                   />
@@ -107,7 +122,7 @@ const PaymentMethod = () => {
                     name="transactionId"
                     id="transactionId"
                     value={transactionId}
-                    onChange={(e) => setTransactionId(e.target.value)}
+                    onChange={(e) => onTransactionIdChange(e.target.value)}
                     placeholder="Transaction ID"
                     className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
                   />
@@ -126,7 +141,7 @@ const PaymentMethod = () => {
                 name="bank"
                 id="bank"
                 className="sr-only"
-                onChange={() => setPayment("bank")}
+                onChange={() => onPayment("bank")}
               />
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${

@@ -492,6 +492,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             stock: displayStock,
                             slug: product.slug,
                             variantName: matchedVariant?.name,
+                            variantId: matchedVariant?.id,
                             imgs: product.imgs,
                           })
                         }
@@ -512,6 +513,7 @@ const ShopDetails = ({ apiProduct }: { apiProduct?: any }) => {
                             stock: displayStock,
                             slug: product.slug,
                             variantName: matchedVariant?.name,
+                            variantId: matchedVariant?.id,
                             imgs: product.imgs,
                           });
                           router.push("/cart");

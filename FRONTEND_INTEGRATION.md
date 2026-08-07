@@ -29,18 +29,21 @@
 ✅ Wire Header category dropdown to API
 
 ### Step 4: Cart
-⬜ Sync Redux cart with `GET /api/cart/` (authenticated users)
-⬜ Wire "Add to Cart" → `POST /api/cart/add/`
-⬜ Wire quantity update → `PATCH /api/cart/items/<id>/`
-⬜ Wire remove → `DELETE /api/cart/items/<id>/remove/`
-⬜ Wire clear → `POST /api/cart/clear/`
-⬜ Guest cart handling (localStorage/Redux only)
+✅ Sync Redux cart with `GET /api/cart/` (authenticated users)
+✅ Wire "Add to Cart" → `POST /api/cart/add/`
+✅ Wire quantity update → `PATCH /api/cart/items/<id>/`
+✅ Wire remove → `DELETE /api/cart/items/<id>/remove/`
+✅ Wire clear → `POST /api/cart/clear/`
+✅ Guest cart handling (localStorage/Redux only)
 
 ### Step 5: Checkout & Orders
-⬜ Fetch shipping rates from `GET /api/shipping-rates/`
-⬜ Wire order placement → `POST /api/orders/`
+✅ Fetch shipping rates from `GET /api/shipping-rates/`
+✅ Wire order placement → `POST /api/orders/` (guest + authenticated; server prices totals)
+✅ Secure guest checkout: client sends product/variant IDs + quantities only; backend recomputes all prices/shipping server-side
+✅ Payment method (COD/bKash/bank) captured and submitted with order
 ⬜ Replace My Account orders → `GET /api/orders/list/`
 ⬜ Profile update → `PATCH /api/auth/profile/`
+⬜ Full coupon feature (validate + apply discount server-side; currently hidden on checkout)
 
 ### Step 6: Contact & Newsletter
 ⬜ Wire Contact form → `POST /api/contact/`

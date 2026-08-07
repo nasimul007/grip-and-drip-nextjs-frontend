@@ -11,6 +11,7 @@ export type ReduxCartItem = {
   stock?: number;
   slug?: string;
   variantName?: string;
+  variantId?: number;
   lineKey?: string;
   imgs?: {
     thumbnails: string[];

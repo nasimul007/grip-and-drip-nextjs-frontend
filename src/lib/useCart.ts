@@ -65,6 +65,7 @@ export function useCart() {
       stock?: number;
       slug?: string;
       variantName?: string;
+      variantId?: number;
       imgs?: ReduxCartItem["imgs"];
     }) => {
       const lineKey = makeLineKey(item);
@@ -74,6 +75,7 @@ export function useCart() {
           await api.post("/api/cart/add/", {
             product_id: item.id,
             quantity: item.quantity,
+            variant_id: item.variantId,
           });
           await fetchCart();
         } catch {
@@ -169,6 +171,7 @@ export function useCart() {
         await api.post("/api/cart/add/", {
           product_id: item.id,
           quantity: item.quantity,
+          variant_id: item.variantId,
         });
       }
       await fetchCart();

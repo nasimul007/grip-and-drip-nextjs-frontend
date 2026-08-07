@@ -97,6 +97,7 @@ const QuickViewModal = () => {
       stock: displayStock,
       slug: product.slug,
       variantName: matchedVariant?.name,
+      variantId: matchedVariant?.id,
       imgs: product.imgs,
     });
 
