@@ -4,18 +4,19 @@ import Image from "next/image";
 import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { updateQuickView } from "@/redux/features/quickView-slice";
-import { addItemToCart } from "@/redux/features/cart-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
+import { useCart, resolveAddableItem } from "@/lib/useCart";
 import WishlistButton from "@/components/Common/WishlistButton";
 import type { ProductDetail } from "@/lib/types";
 
 const ProductItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
+  const { addItem } = useCart();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -29,13 +30,9 @@ const ProductItem = ({ item }: { item: Product }) => {
     }
   };
 
-  const handleAddToCart = () => {
-    dispatch(
-      addItemToCart({
-        ...item,
-        quantity: 1,
-      })
-    );
+  const handleAddToCart = async () => {
+    const payload = await resolveAddableItem(item);
+    if (payload) addItem(payload);
   };
 
   const handleProductDetails = () => {

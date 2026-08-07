@@ -13,8 +13,74 @@ import {
   type ReduxCartItem,
 } from "@/redux/features/cart-slice";
 import { api } from "@/lib/api";
-import type { Cart as APICart } from "@/lib/types";
+import type { Cart as APICart, ProductDetail } from "@/lib/types";
 import { buildImageUrl } from "@/lib/api";
+
+export type AddItemPayload = {
+  id: number;
+  title: string;
+  price: number;
+  discountedPrice: number;
+  quantity: number;
+  stock?: number;
+  slug?: string;
+  variantName?: string;
+  variantId?: number;
+  imgs?: ReduxCartItem["imgs"];
+};
+
+type ResolvableItem = {
+  id: number;
+  title: string;
+  price: number;
+  discountedPrice: number;
+  slug?: string;
+  stock?: number;
+  imgs?: ReduxCartItem["imgs"];
+};
+
+export async function resolveAddableItem(
+  item: ResolvableItem
+): Promise<AddItemPayload | null> {
+  const fallback: AddItemPayload = { ...item, quantity: 1 };
+
+  if (!item.slug) {
+    return item.stock && item.stock > 0 ? fallback : null;
+  }
+
+  try {
+    const detail = await api.get<ProductDetail>(`/api/products/${item.slug}/`);
+    const variants = detail.variants || [];
+
+    if (variants.length > 0) {
+      const inStock = variants.find((v) => v.stock > 0);
+      const variant = inStock || variants[0];
+      if (variant && (variant.stock > 0 || Number(detail.stock) > 0)) {
+        return {
+          id: detail.id,
+          title: detail.name,
+          price: Number(detail.compare_price) || Number(detail.effective_price),
+          discountedPrice:
+            variant.price_override ?? Number(detail.effective_price),
+          quantity: 1,
+          stock: variant.stock,
+          slug: detail.slug,
+          variantName: variant.name,
+          variantId: variant.id,
+          imgs: item.imgs,
+        };
+      }
+      return null;
+    }
+
+    if (Number(detail.stock) > 0) {
+      return { ...fallback, stock: detail.stock };
+    }
+    return null;
+  } catch {
+    return fallback;
+  }
+}
 
 function mapAPICartItemToRedux(
   item: import("@/lib/types").CartItem
@@ -56,18 +122,7 @@ export function useCart() {
   }, [isAuthenticated, dispatch]);
 
   const addItem = useCallback(
-    async (item: {
-      id: number;
-      title: string;
-      price: number;
-      discountedPrice: number;
-      quantity: number;
-      stock?: number;
-      slug?: string;
-      variantName?: string;
-      variantId?: number;
-      imgs?: ReduxCartItem["imgs"];
-    }) => {
+    async (item: AddItemPayload) => {
       const lineKey = makeLineKey(item);
       const cartItem: ReduxCartItem = { ...item, lineKey };
       if (isAuthenticated) {

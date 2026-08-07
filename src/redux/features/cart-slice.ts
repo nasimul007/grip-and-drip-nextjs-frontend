@@ -93,6 +93,7 @@ export const cart = createSlice({
         discountedPrice,
         imgs,
         variantName,
+        variantId,
         stock,
         slug,
       } = action.payload;
@@ -103,9 +104,12 @@ export const cart = createSlice({
       );
 
       if (existingItem) {
-        existingItem.quantity = Math.min(
-          existingItem.quantity + quantity,
-          existingItem.stock ?? Infinity
+        existingItem.quantity = Math.max(
+          1,
+          Math.min(
+            existingItem.quantity + quantity,
+            existingItem.stock ?? Infinity
+          )
         );
       } else {
         state.items.push({
@@ -117,6 +121,7 @@ export const cart = createSlice({
           discountedPrice: Number(discountedPrice),
           imgs,
           variantName,
+          variantId,
           stock,
           slug,
           lineKey,

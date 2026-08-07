@@ -4,7 +4,7 @@ import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { updateQuickView } from "@/redux/features/quickView-slice";
 import WishlistButton from "@/components/Common/WishlistButton";
-import { useCart } from "@/lib/useCart";
+import { useCart, resolveAddableItem } from "@/lib/useCart";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
@@ -31,11 +31,9 @@ const SingleGridItem = ({ item }: { item: Product }) => {
   };
 
   // add to cart
-  const handleAddToCart = () => {
-    addItem({
-      ...item,
-      quantity: 1,
-    });
+  const handleAddToCart = async () => {
+    const payload = await resolveAddableItem(item);
+    if (payload) addItem(payload);
   };
 
   return (

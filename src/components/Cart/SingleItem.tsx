@@ -11,8 +11,8 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
   const [updating, setUpdating] = useState(false);
 
   const lineKey = item.lineKey || makeLineKey(item);
-  const atMaxStock =
-    item.stock !== undefined && item.quantity >= item.stock;
+  const hasStock = (item.stock ?? 0) > 0;
+  const atMaxStock = hasStock && item.quantity >= item.stock;
 
   const handleRemoveFromCart = async () => {
     setUpdating(true);

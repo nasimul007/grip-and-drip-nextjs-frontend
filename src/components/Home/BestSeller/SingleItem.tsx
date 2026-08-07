@@ -5,7 +5,7 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateQuickView } from "@/redux/features/quickView-slice";
-import { useCart } from "@/lib/useCart";
+import { useCart, resolveAddableItem } from "@/lib/useCart";
 import Image from "next/image";
 import Link from "next/link";
 import { api } from "@/lib/api";
@@ -28,11 +28,9 @@ const SingleItem = ({ item }: { item: Product }) => {
     }
   };
 
-  const handleAddToCart = () => {
-    addItem({
-      ...item,
-      quantity: 1,
-    });
+  const handleAddToCart = async () => {
+    const payload = await resolveAddableItem(item);
+    if (payload) addItem(payload);
   };
 
   return (
