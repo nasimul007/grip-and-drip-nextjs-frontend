@@ -4,7 +4,6 @@ import OrderSummary from "./OrderSummary";
 import { useAppSelector } from "@/redux/store";
 import { useCart } from "@/lib/useCart";
 import SingleItem from "./SingleItem";
-import Breadcrumb from "../Common/Breadcrumb";
 import Link from "next/link";
 
 const Cart = () => {
@@ -18,15 +17,10 @@ const Cart = () => {
 
   return (
     <>
-      {/* <!-- ===== Breadcrumb Section Start ===== --> */}
-      <section>
-        <Breadcrumb title={"Cart"} pages={["Cart"]} />
-      </section>
-      {/* <!-- ===== Breadcrumb Section End ===== --> */}
       {cartItems.length > 0 ? (
-        <section className="pt-4 py-20 bg-brand-dark">
+        <section className="pt-[200px] sm:pt-[130px] lg:pt-[114px] py-20 bg-brand-dark">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-            <div className="flex flex-wrap items-center justify-between gap-5 mb-7.5">
+            <div className="flex flex-wrap items-center justify-between gap-5 mb-3.5">
               <h2 className="font-medium text-white text-2xl">Your Cart</h2>
               <button onClick={() => clearCart()} className="text-brand-accent">
                 Clear Shopping Cart
@@ -56,7 +50,7 @@ const Cart = () => {
         </section>
       ) : (
         <>
-          <div className="text-center mt-8">
+          <div className="pt-[200px] sm:pt-[130px] lg:pt-[114px] text-center">
             <div className="mx-auto pb-7.5">
               <svg
                 className="mx-auto"
