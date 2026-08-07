@@ -1,22 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-type Option = { id: string; displayName: string };
+import SearchableSelect from "./SearchableSelect";
 
-type LocationSelectProps = {
-  name: string;
-  id: string;
-  label: string;
-  required?: boolean;
-  value: string;
-  options: Option[];
-  disabled?: boolean;
-  loading?: boolean;
-  error?: string;
-  placeholder: string;
-  wrapperClassName?: string;
-  onChange: React.ChangeEventHandler<HTMLSelectElement>;
-};
+type Option = { id: string; displayName: string };
 
 const inputClass =
   "rounded-md bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
@@ -30,45 +17,6 @@ const FieldError = ({ message }: { message?: string }) =>
   message ? (
     <p className="text-red text-custom-sm mt-1">{message}</p>
   ) : null;
-
-const LocationSelect = ({
-  name,
-  id,
-  label,
-  required,
-  value,
-  options,
-  disabled,
-  loading,
-  error,
-  placeholder,
-  wrapperClassName = "mb-5",
-  onChange,
-}: LocationSelectProps) => (
-  <div className={wrapperClassName}>
-    <label htmlFor={id} className="block mb-2.5">
-      {label} {required && <span className="text-red">*</span>}
-    </label>
-    <select
-      name={name}
-      id={id}
-      value={value}
-      onChange={onChange}
-      disabled={disabled || loading}
-      className={fieldClass(error)}
-    >
-      <option value="">
-        {loading ? "Loading..." : placeholder}
-      </option>
-      {options.map((opt) => (
-        <option key={opt.id} value={opt.displayName}>
-          {opt.displayName}
-        </option>
-      ))}
-    </select>
-    <FieldError message={error} />
-  </div>
-);
 
 async function fetchOptions(addressId?: string): Promise<Option[]> {
   const query = addressId
@@ -110,16 +58,16 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
   }, []);
 
   const handleDivisionChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: { target: { name: string; value: string } }
   ) => {
     setCities([]);
     setAreas([]);
     onChange({
       target: { name: "city", value: "" },
-    } as React.ChangeEvent<HTMLSelectElement>);
+    });
     onChange({
       target: { name: "area", value: "" },
-    } as React.ChangeEvent<HTMLSelectElement>);
+    });
     const divisionName = e.target.value;
     onChange(e);
 
@@ -138,12 +86,12 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
   };
 
   const handleCityChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: { target: { name: string; value: string } }
   ) => {
     setAreas([]);
     onChange({
       target: { name: "area", value: "" },
-    } as React.ChangeEvent<HTMLSelectElement>);
+    });
     const cityName = e.target.value;
     onChange(e);
 
@@ -214,7 +162,7 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
         </div>
 
         <div className="grid gap-x-5 gap-y-5 mb-5 sm:grid-cols-3 sm:gap-y-6">
-        <LocationSelect
+        <SearchableSelect
           name="division"
           id="division"
           label="Division"
@@ -228,7 +176,7 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           onChange={handleDivisionChange}
         />
 
-        <LocationSelect
+        <SearchableSelect
           name="city"
           id="city"
           label="City"
@@ -243,7 +191,7 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           onChange={handleCityChange}
         />
 
-        <LocationSelect
+        <SearchableSelect
           name="area"
           id="area"
           label="Area"
