@@ -22,7 +22,7 @@ const Signin = () => {
       const data = await api.post<{
         access: string;
         refresh: string;
-      }>("/api/auth/login/", { email, password });
+      }>("/api/auth/login/", { username: email, password });
 
       setTokens(data.access, data.refresh);
 

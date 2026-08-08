@@ -16,6 +16,7 @@ import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import PreLoader from "@/components/Common/PreLoader";
 import CartInit from "@/components/Providers/CartInit";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -46,6 +47,15 @@ export default function RootLayout({
                     <CartSidebarModal />
                     <PreviewSliderModal />
                     <CartInit />
+                    <Toaster
+                      toastOptions={{
+                        style: {
+                          background: "#242428",
+                          color: "#FFFFFF",
+                          border: "1px solid #2A2A30",
+                        },
+                      }}
+                    />
                   </PreviewSliderProvider>
                 </ModalProvider>
               </CartModalProvider>
