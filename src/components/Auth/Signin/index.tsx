@@ -22,13 +22,14 @@ const Signin = () => {
       const data = await api.post<{
         access: string;
         refresh: string;
-      }>("/api/auth/login/", { username: email, password });
+      }>("/api/auth/login/", { email, password });
 
       setTokens(data.access, data.refresh);
 
       const user = await api.get<{
         id: number;
         username: string;
+        full_name: string;
         email: string;
         phone_number: string;
         is_vendor: boolean;

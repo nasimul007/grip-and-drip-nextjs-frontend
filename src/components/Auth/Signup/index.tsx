@@ -25,6 +25,7 @@ const Signup = () => {
         user: {
           id: number;
           username: string;
+          full_name: string;
           email: string;
           phone_number: string;
           is_vendor: boolean;
@@ -32,8 +33,8 @@ const Signup = () => {
         access: string;
         refresh: string;
       }>("/api/auth/register/", {
-        username: name,
         email,
+        full_name: name,
         password,
         password2,
       });

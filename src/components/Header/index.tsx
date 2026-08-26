@@ -270,7 +270,7 @@ const Header = () => {
                         account
                       </span>
                       <p className="font-medium text-custom-sm text-white max-w-[100px] truncate">
-                        {user.username}
+                        {user.full_name || user.username}
                       </p>
                     </div>
                   </Link>

@@ -53,7 +53,7 @@ const MyAccount = () => {
 
                   <div>
                     <p className="font-medium text-dark mb-0.5">
-                      {user?.username || "User"}
+                      {user?.full_name || user?.username || "User"}
                     </p>
                     <p className="text-custom-xs">Member</p>
                   </div>
@@ -275,7 +275,7 @@ const MyAccount = () => {
               }`}
             >
               <p className="text-dark">
-                Hello {user?.username || "User"} (not {user?.username || "User"}?
+                Hello {user?.full_name || user?.username || "User"} (not {user?.full_name || user?.username || "User"}?
                 <button
                   onClick={handleLogout}
                   className="text-red ease-out duration-200 hover:underline ml-1"
