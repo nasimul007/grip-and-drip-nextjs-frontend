@@ -16,6 +16,7 @@ import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import PreLoader from "@/components/Common/PreLoader";
 import CartInit from "@/components/Providers/CartInit";
+import AuthInit from "@/components/Providers/AuthInit";
 import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
@@ -48,6 +49,7 @@ export default function RootLayout({
                     <CartSidebarModal />
                     <PreviewSliderModal />
                     <CartInit />
+                    <AuthInit />
                     <Toaster
                       toastOptions={{
                         style: {
