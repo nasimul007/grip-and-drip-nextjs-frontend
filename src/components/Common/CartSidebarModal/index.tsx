@@ -27,22 +27,25 @@ const CartSidebarModal = () => {
 
     if (isCartModalOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      // lock background page scroll while the cart modal is open
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "";
     };
   }, [isCartModalOpen, closeCartModal]);
 
   return (
     <div
-      className={`fixed top-0 left-0 z-99999 overflow-y-auto no-scrollbar w-full h-screen bg-black/80 ease-linear duration-300 ${
+      className={`fixed top-0 left-0 z-99999 overflow-y-auto no-scrollbar overscroll-contain w-full h-screen bg-black/80 ease-linear duration-300 ${
         isCartModalOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
-      <div className="flex items-center justify-end">
-        <div className="w-full max-w-[500px] shadow-1 bg-brand-card px-4 sm:px-7.5 lg:px-11 relative modal-content">
-          <div className="sticky top-0 bg-brand-card flex items-center justify-between pb-7 pt-4 sm:pt-7.5 lg:pt-11 border-b border-brand-border mb-7.5">
+      <div className="flex h-full justify-end">
+        <div className="flex h-full w-full max-w-[500px] flex-col shadow-1 bg-brand-card px-4 sm:px-7.5 lg:px-11 relative modal-content">
+          <div className="sticky top-0 bg-brand-card flex items-center justify-between pb-7 pt-4 sm:pt-7.5 lg:pt-11 border-b border-brand-border mb-7.5 shrink-0">
             <h2 className="font-medium text-white text-lg sm:text-2xl">
               Cart View
             </h2>
@@ -73,7 +76,7 @@ const CartSidebarModal = () => {
             </button>
           </div>
 
-          <div className="h-[66vh] overflow-y-auto no-scrollbar">
+          <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar overscroll-contain">
             <div className="flex flex-col gap-6">
               {/* <!-- cart item --> */}
               {cartItems.length > 0 ? (
@@ -89,7 +92,7 @@ const CartSidebarModal = () => {
             </div>
           </div>
 
-          <div className="border-t border-brand-border bg-brand-card pt-5 pb-4 sm:pb-7.5 lg:pb-11 mt-7.5 sticky bottom-0">
+          <div className="border-t border-brand-border bg-brand-card pt-5 pb-4 sm:pb-7.5 lg:pb-11 mt-7.5 sticky bottom-0 shrink-0">
             <div className="flex items-center justify-between gap-5 mb-6">
               <p className="font-medium text-xl text-white">Subtotal:</p>
 
