@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 interface PreviewSliderType {
   isModalPreviewOpen: boolean;
@@ -20,18 +20,21 @@ export const usePreviewSlider = () => {
 export const PreviewSliderProvider = ({ children }) => {
   const [isModalPreviewOpen, setIsModalOpen] = useState(false);
 
-  const openPreviewModal = () => {
+  const openPreviewModal = useCallback(() => {
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const closePreviewModal = () => {
+  const closePreviewModal = useCallback(() => {
     setIsModalOpen(false);
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({ isModalPreviewOpen, openPreviewModal, closePreviewModal }),
+    [isModalPreviewOpen, openPreviewModal, closePreviewModal]
+  );
 
   return (
-    <PreviewSlider.Provider
-      value={{ isModalPreviewOpen, openPreviewModal, closePreviewModal }}
-    >
+    <PreviewSlider.Provider value={value}>
       {children}
     </PreviewSlider.Provider>
   );

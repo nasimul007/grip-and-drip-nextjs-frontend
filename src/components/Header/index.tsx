@@ -96,6 +96,9 @@ const Header = () => {
         ]);
       })
       .catch(() => {});
+    return () => {
+      window.removeEventListener("scroll", handleStickyMenu);
+    };
   }, []);
 
   const options = categoryOptions;

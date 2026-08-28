@@ -118,10 +118,15 @@ const QuickViewModal = () => {
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-
-      setQuantity(1);
     };
   }, [isModalOpen, closeModal]);
+
+  useEffect(() => {
+    // reset quantity whenever the modal closes
+    if (!isModalOpen) {
+      setQuantity(1);
+    }
+  }, [isModalOpen]);
 
   return (
     <div
