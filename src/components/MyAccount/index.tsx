@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import AddressModal from "./AddressModal";
 import Orders from "../Orders";
@@ -31,9 +30,7 @@ const MyAccount = () => {
 
   return (
     <>
-      <Breadcrumb title={"My Account"} pages={["my account"]} />
-
-      <section className="overflow-hidden py-20 bg-gray-2">
+      <section className="overflow-hidden pt-[200px] sm:pt-[130px] md:pt-[130px] lg:pt-[72px] xl:pt-[115px] pb-20 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex flex-col xl:flex-row gap-7.5">
             {/* <!--== user dashboard menu start ==--> */}
