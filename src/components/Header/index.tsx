@@ -7,10 +7,9 @@ import SearchSuggestions from "./SearchSuggestions";
 import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
 import { useAppSelector } from "@/redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectTotalPrice } from "@/redux/features/cart-slice";
-import { logout } from "@/redux/features/auth-slice";
-import { clearTokens } from "@/lib/api";
+import { useLogout } from "@/lib/useLogout";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import Image from "next/image";
 import { api } from "@/lib/api";
@@ -52,7 +51,6 @@ const Header = () => {
   ]);
   const { openCartModal } = useCartModalContext();
 
-  const dispatch = useDispatch();
   const product = useAppSelector((state) => state.cartReducer.items);
   const totalPrice = useSelector(selectTotalPrice);
   const { user, isAuthenticated } = useAppSelector(
@@ -63,10 +61,7 @@ const Header = () => {
     openCartModal();
   };
 
-  const handleLogout = () => {
-    clearTokens();
-    dispatch(logout());
-  };
+  const handleLogout = useLogout();
 
   // Sticky menu
   const handleStickyMenu = () => {

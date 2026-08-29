@@ -1,5 +1,5 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "@/redux/store";
 import {
@@ -111,10 +111,14 @@ export function useCart() {
   );
   const items = useAppSelector((state) => state.cartReducer.items);
 
+  const isAuthedRef = useRef(isAuthenticated);
+  isAuthedRef.current = isAuthenticated;
+
   const fetchCart = useCallback(async () => {
     if (!isAuthenticated) return;
     try {
       const cart: APICart = await api.get("/api/cart/");
+      if (!isAuthedRef.current) return;
       dispatch(setCartItems(cart.items.map(mapAPICartItemToRedux)));
     } catch {
       /* not logged in or error */
@@ -220,7 +224,10 @@ export function useCart() {
   }, [isAuthenticated, dispatch]);
 
   const syncGuestCart = useCallback(async () => {
-    if (!isAuthenticated || items.length === 0) return;
+    if (!isAuthenticated || items.length === 0) {
+      persistGuestCart([]);
+      return;
+    }
     try {
       for (const item of items) {
         await api.post("/api/cart/add/", {
@@ -231,6 +238,7 @@ export function useCart() {
       }
       await fetchCart();
     } catch {}
+    persistGuestCart([]);
   }, [isAuthenticated, items, fetchCart]);
 
   return {

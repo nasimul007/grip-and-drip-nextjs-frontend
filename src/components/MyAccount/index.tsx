@@ -5,16 +5,13 @@ import Image from "next/image";
 import AddressModal from "./AddressModal";
 import Orders from "../Orders";
 import { useAppSelector } from "@/redux/store";
-import { useDispatch } from "react-redux";
-import { logout } from "@/redux/features/auth-slice";
-import { clearTokens } from "@/lib/api";
+import { useLogout } from "@/lib/useLogout";
 import { useRouter } from "next/navigation";
 
 const MyAccount = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [addressModal, setAddressModal] = useState(false);
   const user = useAppSelector((state) => state.authReducer.user);
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const openAddressModal = () => {
@@ -25,9 +22,10 @@ const MyAccount = () => {
     setAddressModal(false);
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    clearTokens();
+  const handleLogout = useLogout();
+
+  const handleLogoutClick = () => {
+    handleLogout();
     router.push("/signin");
   };
 
@@ -233,7 +231,7 @@ const MyAccount = () => {
                     </button>
 
                     <button
-                      onClick={handleLogout}
+                      onClick={handleLogoutClick}
                       className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
                         activeTab === "logout"
                           ? "text-white bg-blue"
@@ -277,7 +275,7 @@ const MyAccount = () => {
               <p className="text-dark">
                 Hello {user?.full_name || user?.username || "User"} (not {user?.full_name || user?.username || "User"}?
                 <button
-                  onClick={handleLogout}
+                  onClick={handleLogoutClick}
                   className="text-red ease-out duration-200 hover:underline ml-1"
                 >
                   Log Out

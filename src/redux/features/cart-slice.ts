@@ -73,7 +73,10 @@ function saveLocalCart(items: ReduxCartItem[]) {
 }
 
 const initialState: InitialState = {
-  items: typeof window !== "undefined" ? loadLocalCart() : [],
+  items:
+    typeof window !== "undefined" && !localStorage.getItem("access_token")
+      ? loadLocalCart()
+      : [],
 };
 
 export const cart = createSlice({
