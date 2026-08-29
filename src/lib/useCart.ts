@@ -14,7 +14,6 @@ import {
 } from "@/redux/features/cart-slice";
 import { api } from "@/lib/api";
 import type { Cart as APICart, ProductDetail } from "@/lib/types";
-import { buildImageUrl } from "@/lib/api";
 
 export type AddItemPayload = {
   id: number;
@@ -82,10 +81,17 @@ export async function resolveAddableItem(
   }
 }
 
+function toCartImage(path: string | null | undefined): string | null {
+  if (!path || typeof path !== "string") return null;
+  if (path.startsWith("http")) return path;
+  return path.startsWith("/") ? path : `/media/${path}`;
+}
+
 function mapAPICartItemToRedux(
   item: import("@/lib/types").CartItem
 ): ReduxCartItem {
   const anyItem = item as any;
+  const image = toCartImage(item.product_image);
   return {
     id: item.product_id,
     cartItemId: item.id,
@@ -98,8 +104,8 @@ function mapAPICartItemToRedux(
     slug: item.product_slug,
     stock: anyItem.stock != null ? Number(anyItem.stock) : undefined,
     imgs: {
-      thumbnails: item.product_image ? [buildImageUrl(item.product_image)] : [],
-      previews: item.product_image ? [buildImageUrl(item.product_image)] : [],
+      thumbnails: image ? [image] : [],
+      previews: image ? [image] : [],
     },
   };
 }
