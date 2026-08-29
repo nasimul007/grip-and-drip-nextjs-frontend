@@ -17,14 +17,19 @@ export default function CartInit() {
   const didSync = useRef(false);
   const wasAuthed = useRef(false);
 
+  const fetchCartRef = useRef(fetchCart);
+  fetchCartRef.current = fetchCart;
+  const syncGuestCartRef = useRef(syncGuestCart);
+  syncGuestCartRef.current = syncGuestCart;
+
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetchCart();
+    fetchCartRef.current();
     if (!didSync.current) {
       didSync.current = true;
-      syncGuestCart();
+      syncGuestCartRef.current();
     }
-  }, [isAuthenticated, fetchCart, syncGuestCart]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (wasAuthed.current && !isAuthenticated) {
