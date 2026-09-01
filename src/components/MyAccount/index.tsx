@@ -67,6 +67,52 @@ const MyAccount = () => {
     }
   };
 
+  const [pw, setPw] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [pwStatus, setPwStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const [pwError, setPwError] = useState("");
+
+  const handlePasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setPw((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    if (pw.newPassword !== pw.confirmNewPassword) {
+      setPwError("New passwords do not match");
+      setPwStatus("error");
+      return;
+    }
+    if (!pw.oldPassword || !pw.newPassword) {
+      setPwError("All fields are required");
+      setPwStatus("error");
+      return;
+    }
+    setPwStatus("saving");
+    try {
+      await api.post("/api/auth/password/change/", {
+        old_password: pw.oldPassword,
+        new_password: pw.newPassword,
+        confirm_new_password: pw.confirmNewPassword,
+      });
+      setPwStatus("saved");
+      setPw({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
+    } catch (err) {
+      setPwError(err instanceof Error ? err.message : "Password change failed");
+      setPwStatus("error");
+    }
+  };
+
   const openAddressModal = () => {
     setAddressModal(true);
   };
@@ -611,6 +657,7 @@ const MyAccount = () => {
                     {status === "saving" ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
+              </form>
 
                 <p className="text-custom-sm mt-5 mb-9">
                   This will be how your name will be displayed in the account
@@ -621,6 +668,7 @@ const MyAccount = () => {
                   Password Change
                 </p>
 
+                <form onSubmit={handlePasswordSubmit}>
                 <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
                   <div className="mb-5">
                     <label htmlFor="oldPassword" className="block mb-2.5">
@@ -632,6 +680,8 @@ const MyAccount = () => {
                       name="oldPassword"
                       id="oldPassword"
                       autoComplete="on"
+                      value={pw.oldPassword}
+                      onChange={handlePasswordChange}
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     />
                   </div>
@@ -646,6 +696,8 @@ const MyAccount = () => {
                       name="newPassword"
                       id="newPassword"
                       autoComplete="on"
+                      value={pw.newPassword}
+                      onChange={handlePasswordChange}
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     />
                   </div>
@@ -663,15 +715,28 @@ const MyAccount = () => {
                       name="confirmNewPassword"
                       id="confirmNewPassword"
                       autoComplete="on"
+                      value={pw.confirmNewPassword}
+                      onChange={handlePasswordChange}
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                     />
                   </div>
 
+                  {pwStatus === "saved" && (
+                    <p className="text-green-600 text-custom-sm mb-4">
+                      Password changed successfully.
+                    </p>
+                  )}
+
+                  {pwStatus === "error" && (
+                    <p className="text-red text-custom-sm mb-4">{pwError}</p>
+                  )}
+
                   <button
                     type="submit"
-                    className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                    disabled={pwStatus === "saving"}
+                    className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-60"
                   >
-                    Change Password
+                    {pwStatus === "saving" ? "Changing..." : "Change Password"}
                   </button>
                 </div>
               </form>
