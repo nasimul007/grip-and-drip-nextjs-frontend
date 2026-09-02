@@ -58,13 +58,20 @@ async function request<T>(
     }
   }
 
+  function extractErrorMessage(error: unknown): string {
+  if (!error || typeof error !== "object") return String(error);
+  const e = error as Record<string, unknown>;
+  if (typeof e.detail === "string") return e.detail;
+  const fieldErrors = Object.values(e).flat() as unknown[];
+  const firstMsg = fieldErrors.find(v => typeof v === "string" && v.length > 0);
+  if (firstMsg) return firstMsg as string;
+  if (Array.isArray(e)) return e.filter((v): v is string => typeof v === "string").join(", ");
+  return JSON.stringify(e);
+}
+
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(
-      typeof error.detail === "string"
-        ? error.detail
-        : JSON.stringify(error)
-    );
+    throw new Error(extractErrorMessage(error));
   }
 
   const contentType = res.headers.get("content-type");
