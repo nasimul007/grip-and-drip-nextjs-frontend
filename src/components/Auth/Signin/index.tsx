@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { api, setTokens } from "@/lib/api";
 import { setUser } from "@/redux/features/auth-slice";
 import toast from "react-hot-toast";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const Signin = () => {
   const router = useRouter();
@@ -78,19 +79,15 @@ const Signin = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label htmlFor="password" className="block mb-2.5">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
+                  <PasswordInput
                     id="password"
+                    name="password"
+                    label="Password"
                     placeholder="Enter your password"
-                    autoComplete="on"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                    variant="auth"
                   />
                 </div>
 

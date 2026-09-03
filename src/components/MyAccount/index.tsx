@@ -9,6 +9,7 @@ import { api } from "@/lib/api";
 import type { User } from "@/lib/types";
 import { useLogout } from "@/lib/useLogout";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const MyAccount = () => {
   const [activeTab, setActiveTab] = useState("account-details");
@@ -671,53 +672,38 @@ const MyAccount = () => {
                 <form onSubmit={handlePasswordSubmit}>
                 <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
                   <div className="mb-5">
-                    <label htmlFor="oldPassword" className="block mb-2.5">
-                      Old Password
-                    </label>
-
-                    <input
-                      type="password"
-                      name="oldPassword"
+                    <PasswordInput
                       id="oldPassword"
-                      autoComplete="on"
+                      name="oldPassword"
+                      label="Old Password"
+                      placeholder="Enter your current password"
                       value={pw.oldPassword}
                       onChange={handlePasswordChange}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      variant="account"
                     />
                   </div>
 
                   <div className="mb-5">
-                    <label htmlFor="newPassword" className="block mb-2.5">
-                      New Password
-                    </label>
-
-                    <input
-                      type="password"
-                      name="newPassword"
+                    <PasswordInput
                       id="newPassword"
-                      autoComplete="on"
+                      name="newPassword"
+                      label="New Password"
+                      placeholder="Enter new password"
                       value={pw.newPassword}
                       onChange={handlePasswordChange}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      variant="account"
                     />
                   </div>
 
                   <div className="mb-5">
-                    <label
-                      htmlFor="confirmNewPassword"
-                      className="block mb-2.5"
-                    >
-                      Confirm New Password
-                    </label>
-
-                    <input
-                      type="password"
-                      name="confirmNewPassword"
+                    <PasswordInput
                       id="confirmNewPassword"
-                      autoComplete="on"
+                      name="confirmNewPassword"
+                      label="Confirm New Password"
+                      placeholder="Confirm new password"
                       value={pw.confirmNewPassword}
                       onChange={handlePasswordChange}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      variant="account"
                     />
                   </div>
 

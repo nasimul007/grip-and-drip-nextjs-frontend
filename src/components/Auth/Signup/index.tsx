@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { api, setTokens } from "@/lib/api";
 import { setUser } from "@/redux/features/auth-slice";
 import toast from "react-hot-toast";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 const Signup = () => {
   const router = useRouter();
@@ -175,36 +176,28 @@ const Signup = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label htmlFor="password" className="block mb-2.5">
-                    Password <span className="text-red">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
+                  <PasswordInput
                     id="password"
+                    name="password"
+                    label="Password"
                     placeholder="Enter your password"
-                    autoComplete="on"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                    variant="auth"
                   />
                 </div>
 
                 <div className="mb-4">
-                  <label htmlFor="re-type-password" className="block mb-2.5">
-                    Re-type Password <span className="text-red">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    name="re-type-password"
+                  <PasswordInput
                     id="re-type-password"
+                    name="re-type-password"
+                    label="Re-type Password"
                     placeholder="Re-type your password"
-                    autoComplete="on"
                     value={password2}
                     onChange={(e) => setPassword2(e.target.value)}
                     required
-                    className="rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                    variant="auth"
                   />
                 </div>
 
