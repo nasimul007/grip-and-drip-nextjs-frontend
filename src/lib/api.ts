@@ -1,3 +1,5 @@
+import type { Address, AddressFormData, PaginatedResponse } from "@/lib/types";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 function getTokens() {
@@ -88,6 +90,16 @@ export const api = {
   patch: <T>(endpoint: string, data?: unknown) =>
     request<T>(endpoint, { method: "PATCH", body: JSON.stringify(data) }),
   delete: <T>(endpoint: string) => request<T>(endpoint, { method: "DELETE" }),
+
+  getAddresses: () => request<PaginatedResponse<Address>>("/api/auth/addresses/"),
+  createAddress: (data: AddressFormData) =>
+    request<Address>("/api/auth/addresses/", { method: "POST", body: JSON.stringify(data) }),
+  updateAddress: (id: number, data: Partial<AddressFormData>) =>
+    request<Address>(`/api/auth/addresses/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteAddress: (id: number) =>
+    request<void>(`/api/auth/addresses/${id}/`, { method: "DELETE" }),
+  setDefaultShipping: (id: number) =>
+    request<void>(`/api/auth/addresses/${id}/set_default_shipping/`, { method: "POST" }),
 };
 
 export function buildImageUrl(path: string | null | undefined): string | null {

@@ -196,3 +196,30 @@ export type TokenResponse = {
   access: string;
   refresh: string;
 };
+
+export type Address = {
+  id: number;
+  address_name: string;
+  division_id: string;
+  division_name: string;
+  city_id: string;
+  city_name: string;
+  area_id: string;
+  area_name: string;
+  address: string;
+  is_default_shipping: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AddressFormData = {
+  address_name: string;
+  division_id: string;
+  division_name: string;
+  city_id: string;
+  city_name: string;
+  area_id: string;
+  area_name: string;
+  address: string;
+  is_default_shipping: boolean;
+};

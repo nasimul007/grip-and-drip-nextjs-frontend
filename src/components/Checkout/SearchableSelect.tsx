@@ -56,7 +56,7 @@ const SearchableSelect = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const selectedLabel = useMemo(
-    () => options.find((opt) => opt.displayName === value)?.displayName ?? "",
+    () => options.find((opt) => opt.displayName === value)?.displayName ?? value,
     [options, value]
   );
 
@@ -121,7 +121,7 @@ const SearchableSelect = ({
     }
   };
 
-  const showQuery = open && !disabled && !loading;
+  const showQuery = open && !disabled;
   const display = showQuery ? query : selectedLabel;
 
   return (
@@ -136,11 +136,11 @@ const SearchableSelect = ({
           name={name}
           value={display}
           placeholder={loading ? "Loading..." : placeholder}
-          disabled={disabled || loading}
+          disabled={disabled}
           autoComplete="off"
           className={fieldClass(error)}
           onFocus={() => {
-            if (!disabled && !loading) {
+            if (!disabled) {
               setOpen(true);
               setQuery("");
             }
@@ -172,7 +172,7 @@ const SearchableSelect = ({
           </svg>
         </span>
 
-        {open && !disabled && !loading && (
+        {open && !disabled && (
           <ul className="absolute z-20 mt-1 w-full max-h-56 overflow-y-auto rounded-md border border-brand-border bg-brand-card shadow-1">
             {filtered.length === 0 ? (
               <li className="px-5 py-2.5 text-brand-muted text-sm">
