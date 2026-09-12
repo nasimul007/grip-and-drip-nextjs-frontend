@@ -65,7 +65,7 @@ export const setDefaultShipping = createAsyncThunk<Address, number>(
     try {
       await api.setDefaultShipping(id);
       const addresses = await api.getAddresses();
-      return addresses.find(a => a.id === id)!;
+      return addresses.results.find(a => a.id === id)!;
     } catch (err) {
       return rejectWithValue(err instanceof Error ? err.message : "Failed to set default shipping");
     }
