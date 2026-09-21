@@ -6,8 +6,6 @@ import type { AddressFormData } from "@/lib/types";
 interface AddressModalProps {
   isOpen: boolean;
   onClose: () => void;
-  mode: "add" | "edit";
-  initialData?: AddressFormData;
   onSubmit: (data: AddressFormData) => Promise<void>;
   loading?: boolean;
 }
@@ -21,54 +19,38 @@ const fieldClass = (error?: string) =>
 const AddressModal = ({
   isOpen,
   onClose,
-  mode,
-  initialData,
   onSubmit,
   loading = false,
 }: AddressModalProps) => {
-  const [formData, setFormData] = useState<AddressFormData>(() => ({
-    address_name: initialData?.address_name || "",
-    division_id: initialData?.division_id || "",
-    division_name: initialData?.division_name || "",
-    city_id: initialData?.city_id || "",
-    city_name: initialData?.city_name || "",
-    area_id: initialData?.area_id || "",
-    area_name: initialData?.area_name || "",
-    address: initialData?.address || "",
-    is_default_shipping: initialData?.is_default_shipping || false,
-  }));
+  const [formData, setFormData] = useState<AddressFormData>({
+    address_name: "",
+    division_id: "",
+    division_name: "",
+    city_id: "",
+    city_name: "",
+    area_id: "",
+    area_name: "",
+    address: "",
+    is_default_shipping: false,
+  });
   const [errors, setErrors] = useState<Partial<Record<keyof AddressFormData, string>>>({});
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
-    if (initialData) {
-      setFormData({
-        address_name: initialData.address_name || "",
-        division_id: initialData.division_id || "",
-        division_name: initialData.division_name || "",
-        city_id: initialData.city_id || "",
-        city_name: initialData.city_name || "",
-        area_id: initialData.area_id || "",
-        area_name: initialData.area_name || "",
-        address: initialData.address || "",
-        is_default_shipping: initialData.is_default_shipping || false,
-      });
-    } else {
-      setFormData({
-        address_name: "",
-        division_id: "",
-        division_name: "",
-        city_id: "",
-        city_name: "",
-        area_id: "",
-        area_name: "",
-        address: "",
-        is_default_shipping: false,
-      });
-    }
+    setFormData({
+      address_name: "",
+      division_id: "",
+      division_name: "",
+      city_id: "",
+      city_name: "",
+      area_id: "",
+      area_name: "",
+      address: "",
+      is_default_shipping: false,
+    });
     setErrors({});
     setSubmitError("");
-  }, [initialData, isOpen]);
+  }, [isOpen]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -156,7 +138,7 @@ const AddressModal = ({
           <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
             <div className="flex-1 overflow-y-auto px-7.5 pt-7.5">
               <h3 className="font-medium text-xl text-dark mb-6">
-                {mode === "add" ? "Add New Address" : "Edit Address"}
+                Add New Address
               </h3>
 
               {submitError && (
@@ -236,7 +218,7 @@ const AddressModal = ({
                 disabled={loading}
                 className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-60"
               >
-                {loading ? "Saving..." : mode === "add" ? "Add Address" : "Save Changes"}
+                {loading ? "Saving..." : "Add Address"}
               </button>
             </div>
           </form>

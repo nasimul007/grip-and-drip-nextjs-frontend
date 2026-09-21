@@ -1,9 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 
 import SearchableSelect from "./SearchableSelect";
-
-type Option = { id: string; displayName: string };
+import { getDivisions, getCities, getAreas } from "@/lib/location-data";
 
 const inputClass =
   "rounded-md bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
@@ -18,95 +17,40 @@ const FieldError = ({ message }: { message?: string }) =>
     <p className="text-red text-custom-sm mt-1">{message}</p>
   ) : null;
 
-async function fetchOptions(addressId?: string): Promise<Option[]> {
-  const query = addressId
-    ? `?countryCode=BD&addressId=${addressId}`
-    : "?countryCode=BD";
-  const res = await fetch(`/daraz-location${query}`);
-  if (!res.ok) throw new Error("Failed to load location data.");
-  const data = await res.json();
-  return (data?.module ?? []).map((item: any) => ({
-    id: item.id,
-    displayName: item.displayName,
-  }));
-}
-
 const Billing = ({ formData, onChange, errors = {} }: any) => {
-  const [divisions, setDivisions] = useState<Option[]>([]);
-  const [cities, setCities] = useState<Option[]>([]);
-  const [areas, setAreas] = useState<Option[]>([]);
-  const [loadingDivisions, setLoadingDivisions] = useState(false);
-  const [loadingCities, setLoadingCities] = useState(false);
-  const [loadingAreas, setLoadingAreas] = useState(false);
+  const divisions = getDivisions();
 
-  useEffect(() => {
-    let active = true;
-    setLoadingDivisions(true);
-    fetchOptions()
-      .then((opts) => {
-        if (active) setDivisions(opts);
-      })
-      .catch(() => {
-        if (active) setDivisions([]);
-      })
-      .finally(() => {
-        if (active) setLoadingDivisions(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const cities = useMemo(() => {
+    if (!formData.division) return [];
+    const division = divisions.find((d) => d.displayName === formData.division);
+    return division ? getCities(division.id) : [];
+  }, [formData.division, divisions]);
 
-  const handleDivisionChange = async (
+  const areas = useMemo(() => {
+    if (!formData.city) return [];
+    const city = cities.find((c) => c.displayName === formData.city);
+    return city ? getAreas(city.id) : [];
+  }, [formData.city, cities]);
+
+  const handleDivisionChange = (
     e: { target: { name: string; value: string } }
   ) => {
-    setCities([]);
-    setAreas([]);
     onChange({
       target: { name: "city", value: "" },
     });
     onChange({
       target: { name: "area", value: "" },
     });
-    const divisionName = e.target.value;
     onChange(e);
-
-    if (!divisionName) return;
-    const division = divisions.find((d) => d.displayName === divisionName);
-    if (!division) return;
-    setLoadingCities(true);
-    try {
-      const opts = await fetchOptions(division.id);
-      setCities(opts);
-    } catch {
-      setCities([]);
-    } finally {
-      setLoadingCities(false);
-    }
   };
 
-  const handleCityChange = async (
+  const handleCityChange = (
     e: { target: { name: string; value: string } }
   ) => {
-    setAreas([]);
     onChange({
       target: { name: "area", value: "" },
     });
-    const cityName = e.target.value;
     onChange(e);
-
-    if (!cityName) return;
-    const city = cities.find((c) => c.displayName === cityName);
-    if (!city) return;
-    setLoadingAreas(true);
-    try {
-      const opts = await fetchOptions(city.id);
-      setAreas(opts);
-    } catch {
-      setAreas([]);
-    } finally {
-      setLoadingAreas(false);
-    }
   };
 
   return (
@@ -169,7 +113,6 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           required
           value={formData.division}
           options={divisions}
-          loading={loadingDivisions}
           placeholder="Select Division"
           error={errors.division}
           wrapperClassName="mb-0"
@@ -184,7 +127,6 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           value={formData.city}
           options={cities}
           disabled={!formData.division}
-          loading={loadingCities}
           placeholder={formData.division ? "Select City" : "Select Division first"}
           error={errors.city}
           wrapperClassName="mb-0"
@@ -199,7 +141,6 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           value={formData.area}
           options={areas}
           disabled={!formData.city}
-          loading={loadingAreas}
           placeholder={formData.city ? "Select Area" : "Select City first"}
           error={errors.area}
           wrapperClassName="mb-0"

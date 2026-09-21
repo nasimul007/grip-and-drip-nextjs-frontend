@@ -1,0 +1,992 @@
+[
+  {
+    "id": "R4666255",
+    "displayName": "Barguna",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300482",
+    "displayName": "Barishal - Agailjhara",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300475",
+    "displayName": "Barishal - Babuganj",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300472",
+    "displayName": "Barishal - Bakerganj",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300480",
+    "displayName": "Barishal - Gouranadi",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300478",
+    "displayName": "Barishal - Hizla",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300476",
+    "displayName": "Barishal - Mehendiganj",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300481",
+    "displayName": "Barishal - Muladi",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300479",
+    "displayName": "Barishal - Town",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300477",
+    "displayName": "Barishal - Uzirpur",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R4666454",
+    "displayName": "Bhola",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300473",
+    "displayName": "Jhalokati",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R4666451",
+    "displayName": "Patuakhali",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R4631898",
+    "displayName": "Pirojpur",
+    "divisionId": "R3921298"
+  },
+  {
+    "id": "R80300576",
+    "displayName": "Dhaka - North",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300574",
+    "displayName": "Dhaka - South",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300575",
+    "displayName": "Faridpur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300579",
+    "displayName": "Gazipur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300558",
+    "displayName": "Gopalganj",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R4734867",
+    "displayName": "Keraniganj - Dhaka",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300573",
+    "displayName": "Kishoreganj",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300566",
+    "displayName": "Madaripur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300564",
+    "displayName": "Manikganj - Shibloya",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300582",
+    "displayName": "Manikganj - Singair",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300584",
+    "displayName": "Manikganj - Town",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300572",
+    "displayName": "Munshiganj - Gajaria",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300583",
+    "displayName": "Munshiganj - Lohajong",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300585",
+    "displayName": "Munshiganj - Sirajdikhan",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300557",
+    "displayName": "Munshiganj - Town",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300559",
+    "displayName": "Narayanganj",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300553",
+    "displayName": "Narsingdi",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300561",
+    "displayName": "Nawabganj",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300560",
+    "displayName": "Rajbari - Baliakandi",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300562",
+    "displayName": "Rajbari - Pangsha",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300571",
+    "displayName": "Rajbari - Town",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R4730836",
+    "displayName": "Savar",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300578",
+    "displayName": "Shariatpur - Naria",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300580",
+    "displayName": "Shariatpur - Town",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300567",
+    "displayName": "Tangail - Basail",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300581",
+    "displayName": "Tangail - Bhuapur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300563",
+    "displayName": "Tangail - Deldur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "RBD1478",
+    "displayName": "Tangail - Dhanbari",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300568",
+    "displayName": "Tangail - Ghatail",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300577",
+    "displayName": "Tangail - Gopalpur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300569",
+    "displayName": "Tangail - Kalihati",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300556",
+    "displayName": "Tangail - Madhupur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300565",
+    "displayName": "Tangail - Mirzapur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300586",
+    "displayName": "Tangail - Nagarpur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300554",
+    "displayName": "Tangail - Sakhipur",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300555",
+    "displayName": "Tangail - Town",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80314542",
+    "displayName": "Tongi",
+    "divisionId": "R3921322"
+  },
+  {
+    "id": "R80300603",
+    "displayName": "Bagerhat",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300604",
+    "displayName": "Chuadanga",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300588",
+    "displayName": "Jashore",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300598",
+    "displayName": "Jhenaidah",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300601",
+    "displayName": "Khulna - Aliapur",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300589",
+    "displayName": "Khulna -Amadee",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300593",
+    "displayName": "Khulna - Batiaghat",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300594",
+    "displayName": "Khulna - Chalna Bazar",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300587",
+    "displayName": "Khulna - Digalia",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300595",
+    "displayName": "Khulna - Dumuria",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300599",
+    "displayName": "Khulna - Paikgachha",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300602",
+    "displayName": "Khulna - Terokhada",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300596",
+    "displayName": "Khulna - Town",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300590",
+    "displayName": "Kushtia",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300600",
+    "displayName": "Magura",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300591",
+    "displayName": "Meherpur",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300592",
+    "displayName": "Narail",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300597",
+    "displayName": "Satkhira",
+    "divisionId": "R3825003"
+  },
+  {
+    "id": "R80300611",
+    "displayName": "Jamalpur - Dewangonj",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300621",
+    "displayName": "Jamalpur - Islampur",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300613",
+    "displayName": "Jamalpur - Madarganj",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300605",
+    "displayName": "Jamalpur - Malandah",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300617",
+    "displayName": "Jamalpur - Shorishbari",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300607",
+    "displayName": "Jamalpur - Town",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300619",
+    "displayName": "Mymensingh - Gaforgaon",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300614",
+    "displayName": "Mymensingh - Gouripur",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300610",
+    "displayName": "Mymensingh - Haluaghat",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300609",
+    "displayName": "Mymensingh - Isshwargonj",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300606",
+    "displayName": "Mymensingh - Muktagacha",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300608",
+    "displayName": "Mymensingh - Nandail",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300612",
+    "displayName": "Mymensingh - Phulpur",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300616",
+    "displayName": "Mymensingh - Town",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300618",
+    "displayName": "Mymensingh - Trishal",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300620",
+    "displayName": "Netrokona",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300615",
+    "displayName": "Sherpur",
+    "divisionId": "R7318343"
+  },
+  {
+    "id": "R80300627",
+    "displayName": "Bogura",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R80300622",
+    "displayName": "Chapai Nawabganj",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R80300630",
+    "displayName": "Joypurhat",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R80300625",
+    "displayName": "Naogaon",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R80300626",
+    "displayName": "Natore",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R80300623",
+    "displayName": "Pabna",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R80300628",
+    "displayName": "Rajshahi",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R80300629",
+    "displayName": "Sirajganj",
+    "divisionId": "R3859335"
+  },
+  {
+    "id": "R3824576",
+    "displayName": "Bandarban",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300532",
+    "displayName": "Brahmanbaria",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300494",
+    "displayName": "Brahmanbaria - Kasba",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300497",
+    "displayName": "Brahmanbaria - Nabinagar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300552",
+    "displayName": "Brahmanbaria - Sarail",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300536",
+    "displayName": "Chandpur - Faridganj",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300523",
+    "displayName": "Chandpur - Hajiganj",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300545",
+    "displayName": "Chandpur - Hayemchar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300501",
+    "displayName": "Chandpur - Kachua",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300492",
+    "displayName": "Chandpur - Matlab",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R3824841",
+    "displayName": "Chandpur Sadar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300544",
+    "displayName": "Chandpur - Shahrasti",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300520",
+    "displayName": "Chattagram - Boalkhali",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300535",
+    "displayName": "Chattogram - Anowara",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300542",
+    "displayName": "Chattogram - Banshkhali",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300530",
+    "displayName": "Chattogram - Chandanaish",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300540",
+    "displayName": "Chattogram - Fatikchhari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300505",
+    "displayName": "Chattogram - Hathazari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300518",
+    "displayName": "Chattogram - Lohagara",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300550",
+    "displayName": "Chattogram - Mirsharai",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300534",
+    "displayName": "Chattogram - Patiya",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300526",
+    "displayName": "Chattogram - Rangunia",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300546",
+    "displayName": "Chattogram - Raozan",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80306204",
+    "displayName": "Chattogram Sadar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300486",
+    "displayName": "Chattogram - Sandwip",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300517",
+    "displayName": "Chattogram - Satkania",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300508",
+    "displayName": "Chattogram - Sitakunda",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300490",
+    "displayName": "Comilla - Barura",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300512",
+    "displayName": "Comilla - Brahmanpara",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300515",
+    "displayName": "Comilla - Burichang",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300500",
+    "displayName": "Comilla - Chandina",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300483",
+    "displayName": "Comilla - Choddagram",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300539",
+    "displayName": "Comilla - Daudkandi",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300509",
+    "displayName": "Comilla - Davidhar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300503",
+    "displayName": "Comilla - Homna",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300516",
+    "displayName": "Comilla Laksam",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "RBD1250",
+    "displayName": "Comilla - Lalmai",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300507",
+    "displayName": "Comilla Langalkot",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "RBD1248",
+    "displayName": "Comilla - Meghna",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "RBD1247",
+    "displayName": "Comilla - Monohorganj",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300527",
+    "displayName": "Comilla - Muradnagar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300524",
+    "displayName": "Comilla Sadar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300487",
+    "displayName": "Cox's Bazar - Chakaria",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "RBD1249",
+    "displayName": "Cox's Bazar - Eidgaon",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300528",
+    "displayName": "Cox's Bazar - Kutubdia",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300495",
+    "displayName": "Cox's Bazar - Moheskhali",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300484",
+    "displayName": "Cox's Bazar - Ramu",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R3824578",
+    "displayName": "Cox's Bazar Sadar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300489",
+    "displayName": "Cox's Bazar - Teknaf",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300543",
+    "displayName": "Cox's Bazar - Ukhia",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300549",
+    "displayName": "Feni - Chhagalnaia",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300533",
+    "displayName": "Feni - Daganbhuiyan",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300502",
+    "displayName": "Feni - Pashurampur",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R3824791",
+    "displayName": "Feni - Sadar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300531",
+    "displayName": "Feni - Sonagazi",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300510",
+    "displayName": "Hatiya",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R3824617",
+    "displayName": "Khagrachari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300547",
+    "displayName": "Khagrachari - Dighinala",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300529",
+    "displayName": "Khagrachari - Laxmichhari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300537",
+    "displayName": "Khagrachari - Manikchhari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300548",
+    "displayName": "Khagrachari - Matiranga",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300498",
+    "displayName": "Khagrachari - Panchhari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300538",
+    "displayName": "Khagrachari - Ramghar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300551",
+    "displayName": "Lakshmipur",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "RBD1477",
+    "displayName": "Lakshmipur - Raipur",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300541",
+    "displayName": "Lakshmipur - Ramganj",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300506",
+    "displayName": "Lakshmipur - Ramgati",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300519",
+    "displayName": "Lakshmipur - Raypur",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R3824792",
+    "displayName": "Noakhali",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300511",
+    "displayName": "Noakhali - Basurhat",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300499",
+    "displayName": "Noakhali - Begumganj",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300521",
+    "displayName": "Noakhali - Chatkhil",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300488",
+    "displayName": "Noakhali - Senbag",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300522",
+    "displayName": "Rangamati Barkal",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300493",
+    "displayName": "Rangamati - Bilaichhari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300491",
+    "displayName": "Rangamati - Juraichhari",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300513",
+    "displayName": "Rangamati - Kaptai",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300496",
+    "displayName": "Rangamati - Kawkhali",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300485",
+    "displayName": "Rangamati - Langadu",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300504",
+    "displayName": "Rangamati Marishya",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300525",
+    "displayName": "Rangamati - Naniachhar",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300514",
+    "displayName": "Rangamati - Rajsthali",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R3824602",
+    "displayName": "Rangamati Town",
+    "divisionId": "R3824588"
+  },
+  {
+    "id": "R80300637",
+    "displayName": "Dinajpur",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300632",
+    "displayName": "Gaibandha",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R8419493",
+    "displayName": "Kurigram",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300636",
+    "displayName": "Lalmonirhat",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300633",
+    "displayName": "Nilphamari",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300635",
+    "displayName": "Nilphamari - Saidpur",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300638",
+    "displayName": "Panchagarh",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300634",
+    "displayName": "Rangpur",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300631",
+    "displayName": "Thakurgaon",
+    "divisionId": "R3921211"
+  },
+  {
+    "id": "R80300649",
+    "displayName": "Habiganj",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300643",
+    "displayName": "Moulvibazar",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300650",
+    "displayName": "Sunamganj",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300646",
+    "displayName": "Sylhet - Balaganj",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300644",
+    "displayName": "Sylhet - Bianibazar",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300645",
+    "displayName": "Sylhet - Bishwanath",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300648",
+    "displayName": "Sylhet - Fenchuganj",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300647",
+    "displayName": "Sylhet - Goainhat",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80306260",
+    "displayName": "Sylhet - Golapganj",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300640",
+    "displayName": "Sylhet - Jakiganj",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80300641",
+    "displayName": "Sylhet - Kanaighat",
+    "divisionId": "R3921222"
+  },
+  {
+    "id": "R80306262",
+    "displayName": "Sylhet Sadar",
+    "divisionId": "R3921222"
+  }
+]

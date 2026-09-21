@@ -1,8 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import SearchableSelect from "@/components/Checkout/SearchableSelect";
-
-type Option = { id: string; displayName: string };
+import {
+  getDivisions,
+  getCities,
+  getAreas,
+} from "@/lib/location-data";
 
 interface LocationSelectorsProps {
   formData: {
@@ -22,105 +25,25 @@ interface LocationSelectorsProps {
   disabled?: boolean;
 }
 
-async function fetchOptions(addressId?: string): Promise<Option[]> {
-  const query = addressId
-    ? `?countryCode=BD&addressId=${addressId}`
-    : "?countryCode=BD";
-  const res = await fetch(`/daraz-location${query}`);
-  if (!res.ok) throw new Error("Failed to load location data.");
-  const data = await res.json();
-  return (data?.module ?? []).map((item: any) => ({
-    id: item.id,
-    displayName: item.displayName,
-  }));
-}
-
 export const LocationSelectors = ({
   formData,
   onChange,
   errors = {},
   disabled = false,
 }: LocationSelectorsProps) => {
-  const [divisions, setDivisions] = useState<Option[]>([]);
-  const [cities, setCities] = useState<Option[]>([]);
-  const [areas, setAreas] = useState<Option[]>([]);
-  const [loadingDivisions, setLoadingDivisions] = useState(false);
-  const [loadingCities, setLoadingCities] = useState(false);
-  const [loadingAreas, setLoadingAreas] = useState(false);
+  const divisions = getDivisions();
 
-  useEffect(() => {
-    let active = true;
-    setLoadingDivisions(true);
-    fetchOptions()
-      .then((opts) => {
-        if (active) setDivisions(opts);
-      })
-      .catch(() => {
-        if (active) setDivisions([]);
-      })
-      .finally(() => {
-        if (active) setLoadingDivisions(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const cities = useMemo(
+    () => getCities(formData.division_id),
+    [formData.division_id]
+  );
 
-  useEffect(() => {
-    if (!formData.division_id) return;
-    let active = true;
-    setLoadingCities(true);
-    fetchOptions(formData.division_id)
-      .then((opts) => {
-        if (active) setCities(opts);
-      })
-      .catch(() => {
-        if (active) {
-          setCities([]);
-          onChange("city_id", "");
-          onChange("city_name", "");
-          onChange("area_id", "");
-          onChange("area_name", "");
-        }
-      })
-      .finally(() => {
-        if (active) setLoadingCities(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [formData.division_id]);
+  const areas = useMemo(
+    () => getAreas(formData.city_id),
+    [formData.city_id]
+  );
 
-  useEffect(() => {
-    if (!formData.city_id) return;
-    let active = true;
-    setLoadingAreas(true);
-    fetchOptions(formData.city_id)
-      .then((opts) => {
-        if (active) setAreas(opts);
-      })
-      .catch(() => {
-        if (active) {
-          setAreas([]);
-          onChange("area_id", "");
-          onChange("area_name", "");
-        }
-      })
-      .finally(() => {
-        if (active) setLoadingAreas(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [formData.city_id]);
-
-  const handleDivisionChange = async (e: { target: { name: string; value: string } }) => {
-    setCities([]);
-    setAreas([]);
-    onChange("city_id", "");
-    onChange("city_name", "");
-    onChange("area_id", "");
-    onChange("area_name", "");
+  const handleDivisionChange = (e: { target: { name: string; value: string } }) => {
     const divisionName = e.target.value;
     const division = divisions.find((d) => d.displayName === divisionName);
     if (division) {
@@ -130,23 +53,13 @@ export const LocationSelectors = ({
       onChange("division_id", "");
       onChange("division_name", "");
     }
-
-    if (!divisionName) return;
-    setLoadingCities(true);
-    try {
-      const opts = await fetchOptions(division?.id);
-      setCities(opts);
-    } catch {
-      setCities([]);
-    } finally {
-      setLoadingCities(false);
-    }
-  };
-
-  const handleCityChange = async (e: { target: { name: string; value: string } }) => {
-    setAreas([]);
+    onChange("city_id", "");
+    onChange("city_name", "");
     onChange("area_id", "");
     onChange("area_name", "");
+  };
+
+  const handleCityChange = (e: { target: { name: string; value: string } }) => {
     const cityName = e.target.value;
     const city = cities.find((c) => c.displayName === cityName);
     if (city) {
@@ -156,17 +69,8 @@ export const LocationSelectors = ({
       onChange("city_id", "");
       onChange("city_name", "");
     }
-
-    if (!cityName) return;
-    setLoadingAreas(true);
-    try {
-      const opts = await fetchOptions(city?.id);
-      setAreas(opts);
-    } catch {
-      setAreas([]);
-    } finally {
-      setLoadingAreas(false);
-    }
+    onChange("area_id", "");
+    onChange("area_name", "");
   };
 
   const handleAreaChange = (e: { target: { name: string; value: string } }) => {
@@ -190,7 +94,6 @@ export const LocationSelectors = ({
         required
         value={formData.division_name}
         options={divisions}
-        loading={loadingDivisions}
         disabled={disabled}
         placeholder="Select Division"
         error={errors.division_id}
@@ -205,7 +108,6 @@ export const LocationSelectors = ({
         required
         value={formData.city_name}
         options={cities}
-        loading={loadingCities}
         disabled={disabled || !formData.division_id}
         placeholder={formData.division_id ? "Select City" : "Select Division first"}
         error={errors.city_id}
@@ -220,7 +122,6 @@ export const LocationSelectors = ({
         required
         value={formData.area_name}
         options={areas}
-        loading={loadingAreas}
         disabled={disabled || !formData.city_id}
         placeholder={formData.city_id ? "Select Area" : "Select City first"}
         error={errors.area_id}

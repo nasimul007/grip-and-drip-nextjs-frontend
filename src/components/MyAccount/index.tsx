@@ -32,7 +32,6 @@ const MyAccount = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const [editAddress, setEditAddress] = useState<Address | null>(null);
   const [deleteAddressId, setDeleteAddressId] = useState<number | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -137,13 +136,11 @@ const MyAccount = () => {
   };
 
   const openAddressModal = () => {
-    setEditAddress(null);
     setAddressModal(true);
   };
 
   const closeAddressModal = () => {
     setAddressModal(false);
-    setEditAddress(null);
   };
 
   const handleAddressSubmit = async (data: AddressFormData) => {
@@ -155,10 +152,7 @@ const MyAccount = () => {
     }
   };
 
-  const handleEditAddress = (address: Address) => {
-    setEditAddress(address);
-    setAddressModal(true);
-  };
+  
 
   const handleDeleteAddress = (id: number) => {
     setDeleteAddressId(id);
@@ -451,12 +445,6 @@ const MyAccount = () => {
                               </button>
                             )}
                             <button
-                              className="text-gray-600 text-xs underline hover:text-gray-800"
-                              onClick={() => handleEditAddress(address)}
-                            >
-                              Edit
-                            </button>
-                            <button
                               className="text-red-600 text-xs underline hover:text-red-800"
                               onClick={() => handleDeleteAddress(address.id)}
                             >
@@ -626,8 +614,6 @@ const MyAccount = () => {
       <AddressModal
         isOpen={addressModal}
         onClose={closeAddressModal}
-        mode={editAddress ? "edit" : "add"}
-        initialData={editAddress ?? undefined}
         onSubmit={handleAddressSubmit}
       />
 
