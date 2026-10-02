@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import SearchableSelect from "@/components/Checkout/SearchableSelect";
 import {
   getDivisions,
@@ -44,44 +44,35 @@ export const LocationSelectors = ({
   );
 
   const handleDivisionChange = (e: { target: { name: string; value: string } }) => {
-    const divisionName = e.target.value;
-    const division = divisions.find((d) => d.displayName === divisionName);
+    const divisionId = e.target.value;
+    const division = divisions.find((d) => d.id === divisionId);
     if (division) {
-      onChange("division_id", division.id);
-      onChange("division_name", division.displayName);
+      onChange("division_id", division.id, division.displayName);
     } else {
-      onChange("division_id", "");
-      onChange("division_name", "");
+      onChange("division_id", "", "");
     }
-    onChange("city_id", "");
-    onChange("city_name", "");
-    onChange("area_id", "");
-    onChange("area_name", "");
+    onChange("city_id", "", "");
+    onChange("area_id", "", "");
   };
 
   const handleCityChange = (e: { target: { name: string; value: string } }) => {
-    const cityName = e.target.value;
-    const city = cities.find((c) => c.displayName === cityName);
+    const cityId = e.target.value;
+    const city = cities.find((c) => c.id === cityId);
     if (city) {
-      onChange("city_id", city.id);
-      onChange("city_name", city.displayName);
+      onChange("city_id", city.id, city.displayName);
     } else {
-      onChange("city_id", "");
-      onChange("city_name", "");
+      onChange("city_id", "", "");
     }
-    onChange("area_id", "");
-    onChange("area_name", "");
+    onChange("area_id", "", "");
   };
 
   const handleAreaChange = (e: { target: { name: string; value: string } }) => {
-    const areaName = e.target.value;
-    const area = areas.find((a) => a.displayName === areaName);
+    const areaId = e.target.value;
+    const area = areas.find((a) => a.id === areaId);
     if (area) {
-      onChange("area_id", area.id);
-      onChange("area_name", area.displayName);
+      onChange("area_id", area.id, area.displayName);
     } else {
-      onChange("area_id", "");
-      onChange("area_name", "");
+      onChange("area_id", "", "");
     }
   };
 
@@ -92,12 +83,14 @@ export const LocationSelectors = ({
         id="division_name"
         label="Division"
         required
-        value={formData.division_name}
+        value={formData.division_id}
         options={divisions}
         disabled={disabled}
         placeholder="Select Division"
         error={errors.division_id}
         wrapperClassName="mb-0"
+        valueKey="id"
+        labelKey="displayName"
         onChange={handleDivisionChange}
       />
 
@@ -106,12 +99,14 @@ export const LocationSelectors = ({
         id="city_name"
         label="City"
         required
-        value={formData.city_name}
+        value={formData.city_id}
         options={cities}
         disabled={disabled || !formData.division_id}
         placeholder={formData.division_id ? "Select City" : "Select Division first"}
         error={errors.city_id}
         wrapperClassName="mb-0"
+        valueKey="id"
+        labelKey="displayName"
         onChange={handleCityChange}
       />
 
@@ -120,12 +115,14 @@ export const LocationSelectors = ({
         id="area_name"
         label="Area"
         required
-        value={formData.area_name}
+        value={formData.area_id}
         options={areas}
         disabled={disabled || !formData.city_id}
         placeholder={formData.city_id ? "Select Area" : "Select City first"}
         error={errors.area_id}
         wrapperClassName="mb-0"
+        valueKey="id"
+        labelKey="displayName"
         onChange={handleAreaChange}
       />
     </div>

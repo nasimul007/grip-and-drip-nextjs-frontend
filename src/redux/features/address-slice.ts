@@ -36,7 +36,16 @@ export const createAddress = createAsyncThunk<Address, AddressFormData>(
   }
 );
 
-
+export const updateAddress = createAsyncThunk<Address, { id: number; data: Partial<AddressFormData> }>(
+  "address/updateAddress",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      return await api.updateAddress(id, data);
+    } catch (err) {
+      return rejectWithValue(err instanceof Error ? err.message : "Failed to update address");
+    }
+  }
+);
 
 export const deleteAddress = createAsyncThunk<number, number>(
   "address/deleteAddress",
@@ -98,6 +107,21 @@ const addressSlice = createSlice({
         }
       })
       .addCase(createAddress.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAddress.fulfilled, (state, action: PayloadAction<Address>) => {
+        state.loading = false;
+        if (Array.isArray(state.addresses)) {
+          const idx = state.addresses.findIndex(a => a.id === action.payload.id);
+          if (idx !== -1) state.addresses[idx] = action.payload;
+        }
+      })
+      .addCase(updateAddress.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

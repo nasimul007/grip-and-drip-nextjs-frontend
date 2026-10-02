@@ -8,6 +8,7 @@ import { useAppSelector, useAppDispatch } from "@/redux/store";
 import { setUser } from "@/redux/features/auth-slice";
 import {
   createAddress,
+  updateAddress,
   deleteAddress,
   setDefaultShipping,
   fetchAddresses,
@@ -17,6 +18,7 @@ import type { User, Address, AddressFormData } from "@/lib/types";
 import { useLogout } from "@/lib/useLogout";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "@/components/ui/PasswordInput";
+import toast from "react-hot-toast";
 
 const MyAccount = () => {
   const [activeTab, setActiveTab] = useState("account-details");
@@ -34,6 +36,7 @@ const MyAccount = () => {
 
   const [deleteAddressId, setDeleteAddressId] = useState<number | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editAddress, setEditAddress] = useState<Address | null>(null);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -135,24 +138,38 @@ const MyAccount = () => {
     }
   };
 
-  const openAddressModal = () => {
+const openAddressModal = () => {
+    setEditAddress(null);
     setAddressModal(true);
   };
 
   const closeAddressModal = () => {
     setAddressModal(false);
+    setEditAddress(null);
+  };
+
+  const handleEditAddress = (address: Address) => {
+    setEditAddress(address);
+    setAddressModal(true);
   };
 
   const handleAddressSubmit = async (data: AddressFormData) => {
     try {
-      await dispatch(createAddress(data)).unwrap();
+      if (editAddress) {
+        await dispatch(updateAddress({ id: editAddress.id, data })).unwrap();
+        toast.success("Address updated successfully!");
+      } else {
+        await dispatch(createAddress(data)).unwrap();
+        toast.success("Address added successfully!");
+      }
       setAddressModal(false);
+      setEditAddress(null);
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "Failed to save address");
+      const message = err instanceof Error ? err.message : editAddress ? "Failed to update address" : "Failed to add address";
+      toast.error(message);
+      setErrorMsg(message);
     }
   };
-
-  
 
   const handleDeleteAddress = (id: number) => {
     setDeleteAddressId(id);
@@ -445,6 +462,12 @@ const MyAccount = () => {
                               </button>
                             )}
                             <button
+                              className="text-gray-600 text-xs underline hover:text-gray-800"
+                              onClick={() => handleEditAddress(address)}
+                            >
+                              Edit
+                            </button>
+                            <button
                               className="text-red-600 text-xs underline hover:text-red-800"
                               onClick={() => handleDeleteAddress(address.id)}
                             >
@@ -614,6 +637,8 @@ const MyAccount = () => {
       <AddressModal
         isOpen={addressModal}
         onClose={closeAddressModal}
+        mode={editAddress ? "edit" : "add"}
+        initialData={editAddress ?? undefined}
         onSubmit={handleAddressSubmit}
       />
 

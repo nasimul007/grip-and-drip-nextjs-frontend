@@ -6,6 +6,8 @@ import type { AddressFormData } from "@/lib/types";
 interface AddressModalProps {
   isOpen: boolean;
   onClose: () => void;
+  mode?: "add" | "edit";
+  initialData?: AddressFormData;
   onSubmit: (data: AddressFormData) => Promise<void>;
   loading?: boolean;
 }
@@ -19,6 +21,8 @@ const fieldClass = (error?: string) =>
 const AddressModal = ({
   isOpen,
   onClose,
+  mode = "add",
+  initialData,
   onSubmit,
   loading = false,
 }: AddressModalProps) => {
@@ -37,20 +41,34 @@ const AddressModal = ({
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
-    setFormData({
-      address_name: "",
-      division_id: "",
-      division_name: "",
-      city_id: "",
-      city_name: "",
-      area_id: "",
-      area_name: "",
-      address: "",
-      is_default_shipping: false,
-    });
+    if (initialData && mode === "edit") {
+      setFormData({
+        address_name: initialData.address_name || "",
+        division_id: initialData.division_id || "",
+        division_name: initialData.division_name || "",
+        city_id: initialData.city_id || "",
+        city_name: initialData.city_name || "",
+        area_id: initialData.area_id || "",
+        area_name: initialData.area_name || "",
+        address: initialData.address || "",
+        is_default_shipping: initialData.is_default_shipping || false,
+      });
+    } else {
+      setFormData({
+        address_name: "",
+        division_id: "",
+        division_name: "",
+        city_id: "",
+        city_name: "",
+        area_id: "",
+        area_name: "",
+        address: "",
+        is_default_shipping: false,
+      });
+    }
     setErrors({});
     setSubmitError("");
-  }, [isOpen]);
+  }, [initialData, isOpen, mode]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -86,6 +104,10 @@ const AddressModal = ({
       if (displayName !== undefined) {
         const displayField = field.replace("_id", "_name") as keyof AddressFormData;
         updated[displayField] = displayName;
+      }
+      if (field.endsWith("_name")) {
+        const idField = field.replace("_name", "_id") as keyof AddressFormData;
+        updated[idField] = "";
       }
       return updated as AddressFormData;
     });
@@ -138,7 +160,7 @@ const AddressModal = ({
           <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
             <div className="flex-1 overflow-y-auto px-7.5 pt-7.5">
               <h3 className="font-medium text-xl text-dark mb-6">
-                Add New Address
+                {mode === "edit" ? "Edit Address" : "Add New Address"}
               </h3>
 
               {submitError && (
@@ -218,7 +240,7 @@ const AddressModal = ({
                 disabled={loading}
                 className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-60"
               >
-                {loading ? "Saving..." : "Add Address"}
+                {loading ? "Saving..." : mode === "edit" ? "Save Changes" : "Add Address"}
               </button>
             </div>
           </form>

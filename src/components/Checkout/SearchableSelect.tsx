@@ -15,6 +15,8 @@ type SearchableSelectProps = {
   error?: string;
   placeholder: string;
   wrapperClassName?: string;
+  valueKey?: string;
+  labelKey?: string;
   onChange: (
     e: {
       target: { name: string; value: string };
@@ -47,6 +49,8 @@ const SearchableSelect = ({
   error,
   placeholder,
   wrapperClassName = "mb-5",
+  valueKey = "id",
+  labelKey = "displayName",
   onChange,
 }: SearchableSelectProps) => {
   const [query, setQuery] = useState("");
@@ -56,17 +60,17 @@ const SearchableSelect = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const selectedLabel = useMemo(
-    () => options.find((opt) => opt.displayName === value)?.displayName ?? value,
-    [options, value]
+    () => options.find((opt) => opt[valueKey] === value)?.[labelKey] ?? value,
+    [options, value, valueKey, labelKey]
   );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return options;
     return options.filter((opt) =>
-      opt.displayName.toLowerCase().includes(q)
+      opt[labelKey].toLowerCase().includes(q)
     );
-  }, [options, query]);
+  }, [options, query, labelKey]);
 
   useEffect(() => {
     setHighlight(-1);
@@ -88,7 +92,7 @@ const SearchableSelect = ({
   }, []);
 
   const selectOption = (opt: Option) => {
-    onChange({ target: { name, value: opt.displayName } });
+    onChange({ target: { name, value: opt[valueKey] } });
     setOpen(false);
     setQuery("");
     setHighlight(-1);
@@ -181,7 +185,7 @@ const SearchableSelect = ({
             ) : (
               filtered.map((opt, index) => (
                 <li
-                  key={opt.id}
+                  key={opt[valueKey]}
                   onMouseEnter={() => setHighlight(index)}
                   onClick={() => selectOption(opt)}
                   className={`px-5 py-2.5 text-sm cursor-pointer ease-out duration-150 ${
@@ -190,7 +194,7 @@ const SearchableSelect = ({
                       : "text-white hover:bg-brand-accent/10"
                   }`}
                 >
-                  {opt.displayName}
+                  {opt[labelKey]}
                 </li>
               ))
             )}
