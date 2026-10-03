@@ -26,12 +26,12 @@ const SingleOrder = ({ order, smallView }: { order: OrderListItem; smallView: bo
   return (
     <>
       {!smallView && (
-        <div className="items-center justify-between border-t border-gray-3 py-5 px-7.5 hidden md:flex">
+        <div className="items-center justify-between border-t border-brand-border py-5 px-7.5 hidden md:flex">
           <div className="min-w-[175px]">
             <p className="text-custom-sm text-red">#{order.order_number}</p>
           </div>
           <div className="min-w-[175px]">
-            <p className="text-custom-sm text-dark">{formatDate(order.created_at)}</p>
+            <p className="text-custom-sm text-white">{formatDate(order.created_at)}</p>
           </div>
           <div className="min-w-[128px]">
             <span
@@ -47,10 +47,10 @@ const SingleOrder = ({ order, smallView }: { order: OrderListItem; smallView: bo
             </span>
           </div>
           <div className="min-w-[113px]">
-            <p className="text-custom-sm text-dark">৳{order.total.toFixed(2)}</p>
+            <p className="text-custom-sm text-white">৳{order.total.toFixed(2)}</p>
           </div>
           <div className="min-w-[113px]">
-            <p className="text-custom-sm text-dark">{order.item_count}</p>
+            <p className="text-custom-sm text-white">{order.item_count}</p>
           </div>
           <div className="flex gap-5 items-center">
             <OrderActions toggleDetails={toggleDetails} toggleEdit={toggleEdit} />
@@ -60,14 +60,14 @@ const SingleOrder = ({ order, smallView }: { order: OrderListItem; smallView: bo
 
       {smallView && (
         <div className="block md:hidden">
-          <div className="py-4.5 px-7.5">
-            <p className="text-custom-sm text-dark">
+          <div className="py-4.5 px-7.5 border-b border-brand-border">
+            <p className="text-custom-sm text-white">
               <span className="font-bold pr-2">Order:</span> #{order.order_number}
             </p>
-            <p className="text-custom-sm text-dark">
+            <p className="text-custom-sm text-white">
               <span className="font-bold pr-2">Date:</span> {formatDate(order.created_at)}
             </p>
-            <p className="text-custom-sm text-dark">
+            <p className="text-custom-sm text-white">
               <span className="font-bold pr-2">Status:</span>{" "}
               <span
                 className={`inline-block text-custom-sm py-0.5 px-2.5 rounded-[30px] capitalize ${
@@ -81,13 +81,13 @@ const SingleOrder = ({ order, smallView }: { order: OrderListItem; smallView: bo
                 {order.status}
               </span>
             </p>
-            <p className="text-custom-sm text-dark">
+            <p className="text-custom-sm text-white">
               <span className="font-bold pr-2">Total:</span> ৳{order.total.toFixed(2)}
             </p>
-            <p className="text-custom-sm text-dark">
+            <p className="text-custom-sm text-white">
               <span className="font-bold pr-2">Items:</span> {order.item_count}
             </p>
-            <p className="text-custom-sm text-dark flex items-center">
+            <p className="text-custom-sm text-white flex items-center">
               <span className="font-bold pr-2">Actions:</span>{" "}
               <OrderActions toggleDetails={toggleDetails} toggleEdit={toggleEdit} />
             </p>

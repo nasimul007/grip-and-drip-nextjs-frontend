@@ -4,27 +4,27 @@ import type { Order } from "@/lib/types";
 const OrderDetails = ({ orderItem }: { orderItem: Order }) => {
   return (
     <>
-      <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex">
+      <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex border-b border-brand-border">
         <div className="min-w-[113px]">
-          <p className="text-custom-sm text-dark">Order</p>
+          <p className="text-custom-sm text-brand-muted">Order</p>
         </div>
         <div className="min-w-[113px]">
-          <p className="text-custom-sm text-dark">Date</p>
+          <p className="text-custom-sm text-brand-muted">Date</p>
         </div>
         <div className="min-w-[113px]">
-          <p className="text-custom-sm text-dark">Status</p>
+          <p className="text-custom-sm text-brand-muted">Status</p>
         </div>
         <div className="min-w-[113px]">
-          <p className="text-custom-sm text-dark">Total</p>
+          <p className="text-custom-sm text-brand-muted">Total</p>
         </div>
       </div>
 
-      <div className="items-center justify-between border-t border-gray-3 py-5 px-7.5 hidden md:flex">
+      <div className="items-center justify-between border-t border-brand-border py-5 px-7.5 hidden md:flex">
         <div className="min-w-[111px]">
           <p className="text-custom-sm text-red">#{orderItem.order_number}</p>
         </div>
         <div className="min-w-[175px]">
-          <p className="text-custom-sm text-dark">
+          <p className="text-custom-sm text-white">
             {new Date(orderItem.created_at).toLocaleDateString()}
           </p>
         </div>
@@ -42,16 +42,16 @@ const OrderDetails = ({ orderItem }: { orderItem: Order }) => {
           </span>
         </div>
         <div className="min-w-[113px]">
-          <p className="text-custom-sm text-dark">
+          <p className="text-custom-sm text-white">
             ৳{orderItem.total.toFixed(2)}
           </p>
         </div>
       </div>
 
-      <div className="px-7.5 w-full py-4 border-t border-gray-3">
-        <p className="font-bold mb-2">Items:</p>
+      <div className="px-7.5 w-full py-4 border-t border-brand-border">
+        <p className="font-bold mb-2 text-white">Items:</p>
         {orderItem.items.map((item, i) => (
-          <p key={i} className="text-custom-sm text-dark">
+          <p key={i} className="text-custom-sm text-white">
             {item.product_name} x {item.quantity} — ৳
             {(item.price * item.quantity).toFixed(2)}
           </p>
@@ -60,8 +60,8 @@ const OrderDetails = ({ orderItem }: { orderItem: Order }) => {
 
       {orderItem.shipping_address && (
         <div className="px-7.5 w-full pb-4">
-          <p className="font-bold">Shipping Address:</p>
-          <p className="text-custom-sm text-dark">
+          <p className="font-bold text-white">Shipping Address:</p>
+          <p className="text-custom-sm text-brand-muted">
             {orderItem.shipping_address.full_name},{" "}
             {orderItem.shipping_address.address_line1},{" "}
             {orderItem.shipping_address.city}

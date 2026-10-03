@@ -18,7 +18,7 @@ const Orders = () => {
 
   if (loading) {
     return (
-      <p className="py-9.5 px-4 sm:px-7.5 xl:px-10">Loading orders...</p>
+      <p className="py-9.5 px-4 sm:px-7.5 xl:px-10 text-brand-muted">Loading orders...</p>
     );
   }
 
@@ -27,21 +27,21 @@ const Orders = () => {
       <div className="w-full overflow-x-auto">
         <div className="min-w-[770px]">
           {orders.length > 0 && (
-            <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex ">
+            <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex border-b border-brand-border">
               <div className="min-w-[175px]">
-                <p className="text-custom-sm text-dark">Order</p>
+                <p className="text-custom-sm text-brand-muted">Order</p>
               </div>
               <div className="min-w-[175px]">
-                <p className="text-custom-sm text-dark">Date</p>
+                <p className="text-custom-sm text-brand-muted">Date</p>
               </div>
               <div className="min-w-[128px]">
-                <p className="text-custom-sm text-dark">Status</p>
+                <p className="text-custom-sm text-brand-muted">Status</p>
               </div>
               <div className="min-w-[113px]">
-                <p className="text-custom-sm text-dark">Total</p>
+                <p className="text-custom-sm text-brand-muted">Total</p>
               </div>
               <div className="min-w-[113px]">
-                <p className="text-custom-sm text-dark">Items</p>
+                <p className="text-custom-sm text-brand-muted">Items</p>
               </div>
             </div>
           )}
@@ -50,7 +50,7 @@ const Orders = () => {
               <SingleOrder key={key} order={order} smallView={false} />
             ))
           ) : (
-            <p className="py-9.5 px-4 sm:px-7.5 xl:px-10">
+            <p className="py-9.5 px-4 sm:px-7.5 xl:px-10 text-brand-muted">
               You don&apos;t have any orders!
             </p>
           )}

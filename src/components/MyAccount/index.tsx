@@ -204,42 +204,42 @@ const openAddressModal = () => {
     router.push("/signin");
   };
 
-  return (
-    <>
-      <section className="overflow-hidden pt-[200px] sm:pt-[130px] md:pt-[130px] lg:pt-[72px] xl:pt-[115px] pb-20 bg-gray-2">
-        <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-          <div className="flex flex-col xl:flex-row gap-7.5">
-            {/* <!--== user dashboard menu start ==--> */}
-            <div className="xl:max-w-[370px] w-full bg-white rounded-xl shadow-1">
-              <div className="flex xl:flex-col">
-                <div className="hidden lg:flex flex-wrap items-center gap-5 py-6 px-4 sm:px-7.5 xl:px-9 border-r xl:border-r-0 xl:border-b border-gray-3">
-                  <div className="max-w-[64px] w-full h-16 rounded-full overflow-hidden">
-                    <Image
-                      src="/images/users/user-04.jpg"
-                      alt="user"
-                      width={64}
-                      height={64}
-                    />
-                  </div>
+return (
+        <>
+          <section className="overflow-hidden pt-[200px] sm:pt-[130px] md:pt-[130px] lg:pt-[72px] xl:pt-[115px] pb-20 bg-brand-dark">
+            <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+              <div className="flex flex-col xl:flex-row gap-7.5">
+                {/* <!--== user dashboard menu start ==--> */}
+                <div className="xl:max-w-[370px] w-full bg-brand-card border border-brand-border rounded-xl shadow-1">
+                  <div className="flex xl:flex-col">
+                    <div className="hidden lg:flex flex-wrap items-center gap-5 py-6 px-4 sm:px-7.5 xl:px-9 border-r xl:border-r-0 xl:border-b border-brand-border">
+                      <div className="max-w-[64px] w-full h-16 rounded-full overflow-hidden">
+                        <Image
+                          src="/images/users/user-04.jpg"
+                          alt="user"
+                          width={64}
+                          height={64}
+                        />
+                      </div>
 
-                  <div>
-                    <p className="font-medium text-dark mb-0.5">
-                      {user?.full_name || user?.username || "User"}
-                    </p>
-                    <p className="text-custom-xs">Member</p>
-                  </div>
-                </div>
+                      <div>
+                        <p className="font-medium text-white mb-0.5">
+                          {user?.full_name || user?.username || "User"}
+                        </p>
+                        <p className="text-custom-xs text-brand-muted">Member</p>
+                      </div>
+                    </div>
 
-                <div className="p-4 sm:p-7.5 xl:p-9">
-                  <div className="flex flex-wrap xl:flex-nowrap xl:flex-col gap-4">
-                    <button
-                      onClick={() => setActiveTab("account-details")}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
-                        activeTab === "account-details"
-                          ? "text-white bg-blue"
-                          : "text-dark-2 bg-gray-1"
-                      }`}
-                    >
+                    <div className="p-4 sm:p-7.5 xl:p-9">
+                      <div className="flex flex-wrap xl:flex-nowrap xl:flex-col gap-4">
+                        <button
+                          onClick={() => setActiveTab("account-details")}
+                          className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
+                            activeTab === "account-details"
+                              ? "text-white bg-brand-accent"
+                              : "text-brand-muted bg-brand-surface"
+                          }`}
+                        >
                       <svg
                         className="fill-current"
                         width="22"
@@ -266,10 +266,10 @@ const openAddressModal = () => {
                     
                     <button
                       onClick={() => setActiveTab("orders")}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
+                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
                         activeTab === "orders"
-                          ? "text-white bg-blue"
-                          : "text-dark-2 bg-gray-1"
+                          ? "text-white bg-brand-accent"
+                          : "text-brand-muted bg-brand-surface"
                       }`}
                     >
                       <svg
@@ -306,10 +306,10 @@ const openAddressModal = () => {
 
                     <button
                       onClick={() => setActiveTab("addresses")}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
+                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
                         activeTab === "addresses"
-                          ? "text-white bg-blue"
-                          : "text-dark-2 bg-gray-1"
+                          ? "text-white bg-brand-accent"
+                          : "text-brand-muted bg-brand-surface"
                       }`}
                     >
                       <svg
@@ -338,10 +338,10 @@ const openAddressModal = () => {
 
                     <button
                       onClick={handleLogoutClick}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
+                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
                         activeTab === "logout"
-                          ? "text-white bg-blue"
-                          : "text-dark-2 bg-gray-1"
+                          ? "text-white bg-brand-accent"
+                          : "text-brand-muted bg-brand-surface"
                       }`}
                     >
                       <svg
@@ -373,7 +373,7 @@ const openAddressModal = () => {
           <!--== user dashboard content start ==--> */}
             {/* <!-- orders tab content start --> */}
             <div
-              className={`xl:max-w-[770px] w-full bg-white rounded-xl shadow-1 ${
+              className={`xl:max-w-[770px] w-full bg-brand-card border border-brand-border rounded-xl shadow-1 ${
                 activeTab === "orders" ? "block" : "hidden"
               }`}
             >
@@ -389,14 +389,14 @@ const openAddressModal = () => {
             <div
               className={"flex-col sm:flex-row gap-7.5 " + (activeTab === "addresses" ? "flex" : "hidden")}
             >
-              <div className="xl:max-w-[370px] w-full bg-white shadow-1 rounded-xl">
-                <div className="flex items-center justify-between py-5 px-4 sm:pl-7.5 sm:pr-6 border-b border-gray-3">
-                  <p className="font-medium text-xl text-dark">
+              <div className="xl:max-w-[370px] w-full bg-brand-card border border-brand-border shadow-1 rounded-xl">
+                <div className="flex items-center justify-between py-5 px-4 sm:pl-7.5 sm:pr-6 border-b border-brand-border">
+                  <p className="font-medium text-xl text-white">
                     Shipping Address
                   </p>
 
                   <button
-                    className="text-dark ease-out duration-200 hover:text-blue"
+                    className="text-white ease-out duration-200 hover:text-brand-accent"
                     onClick={openAddressModal}
                   >
                     <svg
@@ -420,12 +420,12 @@ const openAddressModal = () => {
                 <div className="p-4 sm:p-7.5">
                   {addressesLoading ? (
                     <div className="flex flex-col gap-3">
-                      <div className="h-6 w-full rounded bg-gray-200 animate-pulse" />
-                      <div className="h-6 w-2/3 rounded bg-gray-200 animate-pulse" />
-                      <div className="h-6 w-full rounded bg-gray-200 animate-pulse" />
+                      <div className="h-6 w-full rounded bg-brand-surface animate-pulse" />
+                      <div className="h-6 w-2/3 rounded bg-brand-surface animate-pulse" />
+                      <div className="h-6 w-full rounded bg-brand-surface animate-pulse" />
                     </div>
                   ) : addresses.length === 0 ? (
-                    <div className="text-center text-custom-sm text-gray-6 py-6">
+                    <div className="text-center text-custom-sm text-brand-muted py-6">
                       No addresses saved. Click + to add a new address.
                     </div>
                   ) : (
@@ -433,42 +433,42 @@ const openAddressModal = () => {
                       {addresses.map((address) => (
                         <div
                           key={address.id}
-                          className="border border-gray-3 rounded-xl p-4 sm:p-5"
+                          className="border border-brand-border rounded-xl p-4 sm:p-5"
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="font-medium text-sm text-dark">
+                            <span className="font-medium text-sm text-white">
                               {address.address_name}
                             </span>
                             {address.is_default_shipping && (
-                              <span className="text-blue-600 text-xs font-medium">
+                              <span className="text-brand-accent text-xs font-medium">
                                 DEFAULT
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-brand-muted">
                             {address.address}
                             <br />
-                            <span className="text-custom-xs text-gray-5">
+                            <span className="text-custom-xs text-brand-muted">
                               {address.division_name} / {address.city_name} / {address.area_name}
                             </span>
                           </p>
                           <div className="flex gap-3 mt-3">
                             {!address.is_default_shipping && (
                               <button
-                                className="text-blue-600 text-xs underline hover:text-blue-800"
+                                className="text-brand-accent text-xs underline hover:text-brand-hover"
                                 onClick={() => handleSetDefaultShipping(address.id)}
                               >
                                 Set as Default
                               </button>
                             )}
                             <button
-                              className="text-gray-600 text-xs underline hover:text-gray-800"
+                              className="text-brand-muted text-xs underline hover:text-white"
                               onClick={() => handleEditAddress(address)}
                             >
                               Edit
                             </button>
                             <button
-                              className="text-red-600 text-xs underline hover:text-red-800"
+                              className="text-red text-xs underline hover:text-red-light-2"
                               onClick={() => handleDeleteAddress(address.id)}
                             >
                               Delete
@@ -490,7 +490,7 @@ const openAddressModal = () => {
               }`}
             >
               <form onSubmit={handleProfileSubmit}>
-                <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
+                <div className="bg-brand-card border border-brand-border shadow-1 rounded-xl p-4 sm:p-8.5">
                   <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
                     <div className="w-full">
                       <label htmlFor="fullName" className="block mb-2.5">
@@ -504,7 +504,7 @@ const openAddressModal = () => {
                         placeholder="Your full name"
                         value={form.full_name}
                         onChange={handleProfileChange}
-                        className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                        className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white"
                       />
                     </div>
 
@@ -520,7 +520,7 @@ const openAddressModal = () => {
                         placeholder="your@email.com"
                         value={form.email}
                         onChange={handleProfileChange}
-                        className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                        className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white"
                       />
                     </div>
                   </div>
@@ -537,7 +537,7 @@ const openAddressModal = () => {
                         placeholder="+880 17XX-XXXXXX"
                       value={form.phone_number}
                       onChange={handleProfileChange}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white"
                     />
                   </div>
 
@@ -554,7 +554,7 @@ const openAddressModal = () => {
                   <button
                     type="submit"
                     disabled={status === "saving"}
-                    className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-60"
+                    className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
                   >
                     {status === "saving" ? "Saving..." : "Save Changes"}
                   </button>
@@ -566,12 +566,12 @@ const openAddressModal = () => {
                   section and in reviews
                 </p>
 
-                <p className="font-medium text-xl sm:text-2xl text-dark mb-7">
+                <p className="font-medium text-xl sm:text-2xl text-white mb-7">
                   Password Change
                 </p>
 
                 <form onSubmit={handlePasswordSubmit}>
-                <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
+                <div className="bg-brand-card border border-brand-border shadow-1 rounded-xl p-4 sm:p-8.5">
                   <div className="mb-5">
                     <PasswordInput
                       id="oldPassword"
@@ -621,7 +621,7 @@ const openAddressModal = () => {
                   <button
                     type="submit"
                     disabled={pwStatus === "saving"}
-                    className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-60"
+                    className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
                   >
                     {pwStatus === "saving" ? "Changing..." : "Change Password"}
                   </button>

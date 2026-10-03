@@ -13,10 +13,10 @@ interface AddressModalProps {
 }
 
 const inputClass =
-  "rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20";
+  "rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white";
 
 const fieldClass = (error?: string) =>
-  `${inputClass} border ${error ? "border-red" : "border-gray-3"}`;
+  `${inputClass} border ${error ? "border-red" : "border-brand-border"}`;
 
 const AddressModal = ({
   isOpen,
@@ -143,13 +143,13 @@ const AddressModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 overflow-y-auto no-scrollbar bg-dark/70 sm:px-8 px-4 z-99999">
+    <div className="fixed inset-0 overflow-y-auto no-scrollbar bg-brand-dark/70 sm:px-8 px-4 z-99999">
       <div className="min-h-full flex items-center justify-center py-8 sm:py-12">
-        <div className="w-full max-w-2xl rounded-xl shadow-3 bg-white relative modal-content flex flex-col max-h-[calc(100vh-4rem)]">
+        <div className="w-full max-w-2xl rounded-xl shadow-3 bg-brand-card border border-brand-border relative modal-content flex flex-col max-h-[calc(100vh-4rem)]">
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="absolute top-3 right-3 z-10 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-gray-1 text-dark-2 hover:text-dark hover:bg-gray-2"
+            className="absolute top-3 right-3 z-10 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-brand-surface text-brand-muted hover:text-white hover:bg-brand-hover"
             disabled={loading}
           >
             <svg className="fill-current" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -159,7 +159,7 @@ const AddressModal = ({
 
           <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
             <div className="flex-1 overflow-y-auto px-7.5 pt-7.5">
-              <h3 className="font-medium text-xl text-dark mb-6">
+              <h3 className="font-medium text-xl text-white mb-6">
                 {mode === "edit" ? "Edit Address" : "Add New Address"}
               </h3>
 
@@ -170,7 +170,7 @@ const AddressModal = ({
               )}
 
               <div className="mb-5">
-                <label htmlFor="address_name" className="block mb-2.5">
+                <label htmlFor="address_name" className="block mb-2.5 text-white">
                   Address Name <span className="text-red">*</span>
                 </label>
                 <input
@@ -194,7 +194,7 @@ const AddressModal = ({
               />
 
               <div className="mb-5">
-                <label htmlFor="address" className="block mb-2.5">
+                <label htmlFor="address" className="block mb-2.5 text-white">
                   Address <span className="text-red">*</span>
                 </label>
                 <textarea
@@ -217,28 +217,28 @@ const AddressModal = ({
                   id="is_default_shipping"
                   checked={formData.is_default_shipping}
                   onChange={handleDefaultShippingChange}
-                  className="w-4 h-4 rounded border-gray-3 text-blue focus:ring-blue/20"
+                  className="w-4 h-4 rounded border-brand-border text-brand-accent focus:ring-brand-accent/20"
                   disabled={loading}
                 />
-                <label htmlFor="is_default_shipping" className="ml-2 text-dark-2 text-sm">
+                <label htmlFor="is_default_shipping" className="ml-2 text-brand-muted text-sm">
                   Set as default shipping address
                 </label>
               </div>
             </div>
 
-            <div className="flex gap-3 justify-end border-t border-gray-3 p-7.5">
+            <div className="flex gap-3 justify-end border-t border-brand-border p-7.5">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={loading}
-                className="inline-flex font-medium text-dark bg-gray-1 py-3 px-7 rounded-md ease-out duration-200 hover:bg-gray-2 disabled:opacity-60"
+                className="inline-flex font-medium text-brand-muted bg-brand-surface py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover hover:text-white disabled:opacity-60"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark disabled:opacity-60"
+                className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
               >
                 {loading ? "Saving..." : mode === "edit" ? "Save Changes" : "Add Address"}
               </button>

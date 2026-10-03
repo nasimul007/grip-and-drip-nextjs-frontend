@@ -20,10 +20,10 @@ const EditOrder = ({ order, toggleModal }: any) => {
 
   return (
     <div className="w-full px-10">
-      <p className="pb-2 font-medium text-dark">Order Status</p>
+      <p className="pb-2 font-medium text-white">Order Status</p>
       <div className="w-full">
         <select
-          className="w-full rounded-[10px] border border-gray-3 bg-gray-1 text-dark py-3.5 px-5 text-custom-sm"
+          className="w-full rounded-[10px] border border-brand-border bg-brand-surface text-white py-3.5 px-5 text-custom-sm"
           name="status"
           id="status"
           required
@@ -36,7 +36,7 @@ const EditOrder = ({ order, toggleModal }: any) => {
         </select>
 
         <button
-          className="mt-5 w-full rounded-[10px] border border-blue-1 bg-blue-1 text-white py-3.5 px-5 text-custom-sm bg-blue"
+          className="mt-5 w-full rounded-[10px] border border-brand-accent bg-brand-accent text-white py-3.5 px-5 text-custom-sm"
           onClick={handleSubmit}
         >
           Save Changes

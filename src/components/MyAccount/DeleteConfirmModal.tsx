@@ -38,13 +38,13 @@ const DeleteConfirmModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-dark/70 sm:px-8 px-4 py-5 z-99999 block">
+    <div className="fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-brand-dark/70 sm:px-8 px-4 py-5 z-99999 block">
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-md rounded-xl shadow-3 bg-white p-7.5 relative modal-content">
+        <div className="w-full max-w-md rounded-xl shadow-3 bg-brand-card border border-brand-border p-7.5 relative modal-content">
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="absolute top-3 right-3 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-gray-1 text-dark-2 hover:text-dark hover:bg-gray-2"
+            className="absolute top-3 right-3 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-brand-surface text-brand-muted hover:text-white hover:bg-brand-hover"
             disabled={loading}
           >
             <svg className="fill-current" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,14 +53,14 @@ const DeleteConfirmModal = ({
           </button>
 
           <div className="text-center">
-            <h3 className="font-medium text-xl text-dark mb-2">{title}</h3>
-            <p className="text-dark-2 text-custom-sm mb-6">{message}</p>
+            <h3 className="font-medium text-xl text-white mb-2">{title}</h3>
+            <p className="text-brand-muted text-custom-sm mb-6">{message}</p>
 
             <div className="flex gap-3 justify-center">
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="inline-flex font-medium text-dark bg-gray-1 py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-gray-2 disabled:opacity-60"
+                className="inline-flex font-medium text-brand-muted bg-brand-surface py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover hover:text-white disabled:opacity-60"
               >
                 Cancel
               </button>
