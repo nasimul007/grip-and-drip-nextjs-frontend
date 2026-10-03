@@ -33,18 +33,26 @@ const Checkout = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     address: "",
-    division: "",
-    city: "",
-    area: "",
+    division_id: "",
+    division_name: "",
+    city_id: "",
+    city_name: "",
+    area_id: "",
+    area_name: "",
     phone: "",
     email: "",
   });
 
   const handleChange = (
-    e: { target: { name: string; value: string } }
+    e: { target: { name: string; value: string } },
+    displayName?: string
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (displayName !== undefined) {
+      const displayField = name.replace("_id", "_name");
+      setFormData((prev) => ({ ...prev, [displayField]: displayName }));
+    }
     setErrors((prev) => {
       if (!prev[name]) return prev;
       const next = { ...prev };
@@ -65,7 +73,7 @@ const Checkout = () => {
     0
   );
 
-  const cityKey = formData.city.toLowerCase().replace(/[-\s]/g, "");
+  const cityKey = formData.city_name.toLowerCase().replace(/[-\s]/g, "");
   const insideDhaka = cityKey === "dhakanorth" || cityKey === "dhakasouth";
   const shippingRate =
     rates.find(
@@ -84,9 +92,9 @@ const Checkout = () => {
     if (!formData.phone.trim()) newErrors.phone = "Phone is required.";
     if (!formData.address.trim())
       newErrors.address = "Address is required.";
-    if (!formData.division) newErrors.division = "Please select a Division.";
-    if (!formData.city) newErrors.city = "Please select a City.";
-    if (!formData.area) newErrors.area = "Please select an Area.";
+    if (!formData.division_id) newErrors.division = "Please select a Division.";
+    if (!formData.city_id) newErrors.city = "Please select a City.";
+    if (!formData.area_id) newErrors.area = "Please select an Area.";
     if (!agree)
       newErrors.terms = "Please accept the terms and conditions.";
 
@@ -115,8 +123,8 @@ const Checkout = () => {
           phone: formData.phone,
           address_line1: formData.address,
           address_line2: "",
-          city: `${formData.area}, ${formData.city}`,
-          state: formData.division,
+          city: `${formData.area_name}, ${formData.city_name}`,
+          state: formData.division_name,
           country: "Bangladesh",
         },
       };

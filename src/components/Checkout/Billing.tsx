@@ -20,37 +20,53 @@ const FieldError = ({ message }: { message?: string }) =>
 const Billing = ({ formData, onChange, errors = {} }: any) => {
   const divisions = getDivisions();
 
-  const cities = useMemo(() => {
-    if (!formData.division) return [];
-    const division = divisions.find((d) => d.displayName === formData.division);
-    return division ? getCities(division.id) : [];
-  }, [formData.division, divisions]);
+  const cities = useMemo(
+    () => getCities(formData.division_id),
+    [formData.division_id]
+  );
 
-  const areas = useMemo(() => {
-    if (!formData.city) return [];
-    const city = cities.find((c) => c.displayName === formData.city);
-    return city ? getAreas(city.id) : [];
-  }, [formData.city, cities]);
+  const areas = useMemo(
+    () => getAreas(formData.city_id),
+    [formData.city_id]
+  );
 
   const handleDivisionChange = (
     e: { target: { name: string; value: string } }
   ) => {
-    onChange({
-      target: { name: "city", value: "" },
-    });
-    onChange({
-      target: { name: "area", value: "" },
-    });
-    onChange(e);
+    const divisionId = e.target.value;
+    const division = divisions.find((d) => d.id === divisionId);
+    if (division) {
+      onChange({ target: { name: "division_id", value: division.id } }, division.displayName);
+    } else {
+      onChange({ target: { name: "division_id", value: "" } }, "");
+    }
+    onChange({ target: { name: "city_id", value: "" } }, "");
+    onChange({ target: { name: "area_id", value: "" } }, "");
   };
 
   const handleCityChange = (
     e: { target: { name: string; value: string } }
   ) => {
-    onChange({
-      target: { name: "area", value: "" },
-    });
-    onChange(e);
+    const cityId = e.target.value;
+    const city = cities.find((c) => c.id === cityId);
+    if (city) {
+      onChange({ target: { name: "city_id", value: city.id } }, city.displayName);
+    } else {
+      onChange({ target: { name: "city_id", value: "" } }, "");
+    }
+    onChange({ target: { name: "area_id", value: "" } }, "");
+  };
+
+  const handleAreaChange = (
+    e: { target: { name: string; value: string } }
+  ) => {
+    const areaId = e.target.value;
+    const area = areas.find((a) => a.id === areaId);
+    if (area) {
+      onChange({ target: { name: "area_id", value: area.id } }, area.displayName);
+    } else {
+      onChange({ target: { name: "area_id", value: "" } }, "");
+    }
   };
 
   return (
@@ -107,44 +123,50 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
 
         <div className="grid gap-x-5 gap-y-5 mb-5 sm:grid-cols-3 sm:gap-y-6">
         <SearchableSelect
-          name="division"
+          name="division_id"
           id="division"
           label="Division"
           required
-          value={formData.division}
+          value={formData.division_id}
           options={divisions}
           placeholder="Select Division"
           error={errors.division}
           wrapperClassName="mb-0"
+          valueKey="id"
+          labelKey="displayName"
           onChange={handleDivisionChange}
         />
 
         <SearchableSelect
-          name="city"
+          name="city_id"
           id="city"
           label="City"
           required
-          value={formData.city}
+          value={formData.city_id}
           options={cities}
-          disabled={!formData.division}
-          placeholder={formData.division ? "Select City" : "Select Division first"}
+          disabled={!formData.division_id}
+          placeholder={formData.division_id ? "Select City" : "Select Division first"}
           error={errors.city}
           wrapperClassName="mb-0"
+          valueKey="id"
+          labelKey="displayName"
           onChange={handleCityChange}
         />
 
         <SearchableSelect
-          name="area"
+          name="area_id"
           id="area"
           label="Area"
           required
-          value={formData.area}
+          value={formData.area_id}
           options={areas}
-          disabled={!formData.city}
-          placeholder={formData.city ? "Select Area" : "Select City first"}
+          disabled={!formData.city_id}
+          placeholder={formData.city_id ? "Select Area" : "Select City first"}
           error={errors.area}
           wrapperClassName="mb-0"
-          onChange={onChange}
+          valueKey="id"
+          labelKey="displayName"
+          onChange={handleAreaChange}
         />
       </div>
 
