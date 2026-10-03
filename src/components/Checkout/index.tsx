@@ -140,7 +140,7 @@ const Checkout = () => {
       await api.post("/api/orders/", body);
       setErrors({});
       await clearCart();
-      router.push("/mail-success");
+      router.push("/order-success");
     } catch (err: any) {
       alert(err?.message || "Failed to place order.");
     } finally {
