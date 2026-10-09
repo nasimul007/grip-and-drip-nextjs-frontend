@@ -2,7 +2,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const PromoBanner = () => {
+type Props = { links: { audio: string; charger: string; watch: string } };
+
+const PromoBanner = ({ links }: Props) => {
   return (
     <section className="overflow-hidden py-20 bg-brand-dark">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
@@ -23,7 +25,7 @@ const PromoBanner = () => {
             </p>
 
             <Link
-              href="/shop"
+              href={links.audio}
               className="inline-flex font-medium text-custom-sm text-brand-dark bg-brand-accent py-[11px] px-9.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
             >
               Shop Audio
@@ -63,7 +65,7 @@ const PromoBanner = () => {
               </p>
 
               <Link
-                href="/shop"
+                href={links.charger}
                 className="inline-flex font-medium text-custom-sm text-brand-dark bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-9"
               >
                 Explore Now
@@ -95,7 +97,7 @@ const PromoBanner = () => {
               </p>
 
               <Link
-                href="/shop"
+                href={links.watch}
                 className="inline-flex font-medium text-custom-sm text-brand-dark bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
               >
                 Shop Now

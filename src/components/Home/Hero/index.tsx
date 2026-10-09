@@ -4,7 +4,9 @@ import HeroFeature from "./HeroFeature";
 import Image from "next/image";
 import Link from "next/link";
 
-const Hero = () => {
+type Props = { links: { charger: string; audio: string } };
+
+const Hero = ({ links }: Props) => {
   return (
     <section className="overflow-hidden pb-5 lg:pb-7.5 pt-4 lg:pt-7.5 bg-brand-dark">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
@@ -19,7 +21,7 @@ const Hero = () => {
                 height={520}
               />
 
-              <HeroCarousel />
+              <HeroCarousel links={links} />
             </div>
           </div>
 
@@ -29,7 +31,7 @@ const Hero = () => {
                 <div className="flex items-center gap-8">
                   <div>
                     <h2 className="max-w-[153px] font-semibold text-white text-xl mb-10">
-                      <Link href="/shop?q=JBL">JBL Speakers</Link>
+                      <Link href={links.audio}>JBL Speakers</Link>
                     </h2>
 
                     <div>
@@ -59,7 +61,7 @@ const Hero = () => {
                 <div className="flex items-center gap-8">
                   <div>
                     <h2 className="max-w-[153px] font-semibold text-white text-xl mb-10">
-                      <Link href="/shop?q=Anker">Anker Chargers</Link>
+                      <Link href={links.charger}>Anker Chargers</Link>
                     </h2>
 
                     <div>
