@@ -12,7 +12,7 @@ const Home = async () => {
   const [categories, newArrivals, featured] = await Promise.all([
     getCategoryTree(),
     getProducts("ordering=-created_at&page_size=8"),
-    getProducts("is_featured=true&page_size=6"),
+    getProducts("is_featured=true&page_size=8"),
   ]);
 
   return (

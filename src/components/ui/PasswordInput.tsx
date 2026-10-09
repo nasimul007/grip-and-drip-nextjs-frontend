@@ -16,9 +16,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     const [show, setShow] = useState(false);
 
     const authClasses =
-      "pr-12 rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20";
+      "pr-12 rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20";
     const accountClasses =
-      "pr-12 rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white";
+      "pr-12 rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 text-white";
 
     return (
       <div className="relative">
@@ -35,7 +35,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           <button
             type="button"
             onClick={() => setShow(!show)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-5 hover:text-dark"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-white"
             aria-label={show ? "Hide password" : "Show password"}
           >
             {show ? (

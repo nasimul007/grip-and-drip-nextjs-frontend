@@ -36,7 +36,7 @@ const EditOrder = ({ order, toggleModal }: any) => {
         </select>
 
         <button
-          className="mt-5 w-full rounded-[10px] border border-brand-accent bg-brand-accent text-white py-3.5 px-5 text-custom-sm"
+          className="mt-5 w-full rounded-[10px] border border-brand-accent bg-brand-accent text-brand-dark py-3.5 px-5 text-custom-sm"
           onClick={handleSubmit}
         >
           Save Changes

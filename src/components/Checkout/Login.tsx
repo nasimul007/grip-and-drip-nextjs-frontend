@@ -13,7 +13,7 @@ const Login = () => {
       >
         <Link
           href="/cart"
-          className="inline-flex items-center gap-2 font-medium text-white bg-brand-accent py-2 px-4 rounded-md ease-out duration-200 hover:bg-brand-hover"
+          className="inline-flex items-center gap-2 font-medium text-brand-dark bg-brand-accent py-2 px-4 rounded-md ease-out duration-200 hover:bg-brand-hover"
         >
           <svg
             className="fill-current"
@@ -78,7 +78,7 @@ const Login = () => {
             type="text"
             name="name"
             id="name"
-            className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+            className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
           />
         </div>
 
@@ -92,13 +92,13 @@ const Login = () => {
             name="password"
             id="password"
             autoComplete="on"
-            className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+            className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
           />
         </div>
 
         <button
           type="button"
-          className="inline-flex font-medium text-white bg-brand-accent py-3 px-10.5 rounded-md ease-out duration-200 hover:bg-brand-hover"
+          className="inline-flex font-medium text-brand-dark bg-brand-accent py-3 px-10.5 rounded-md ease-out duration-200 hover:bg-brand-hover"
         >
           Login
         </button>

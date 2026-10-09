@@ -47,6 +47,26 @@ export const CONTACT = {
   address: "Dhaka, Bangladesh",
   phone: process.env.NEXT_PUBLIC_CONTACT_PHONE || "",
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "",
+  /** International format without "+" or spaces, e.g. 8801XXXXXXXXX. */
+  whatsapp: (process.env.NEXT_PUBLIC_WHATSAPP || "").replace(/[^\d]/g, ""),
 };
+
+export const DELIVERY_TIME = {
+  insideDhaka: "1–2 days",
+  outsideDhaka: "2–4 days",
+};
+
+/** Shown when a product has no `warranty` attribute. */
+export const DEFAULT_WARRANTY = "7-day replacement warranty";
+
+export function telHref(phone: string): string {
+  return `tel:${phone.replace(/[^+\d]/g, "")}`;
+}
+
+export function whatsappHref(message?: string): string | null {
+  if (!CONTACT.whatsapp) return null;
+  const text = message ? `?text=${encodeURIComponent(message)}` : "";
+  return `https://wa.me/${CONTACT.whatsapp}${text}`;
+}
 
 export const PAYMENT_METHODS = ["Cash on Delivery", "bKash", "Bank Transfer"];

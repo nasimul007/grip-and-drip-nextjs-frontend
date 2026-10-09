@@ -206,7 +206,7 @@ const openAddressModal = () => {
 
 return (
         <>
-          <section className="overflow-hidden pt-[200px] sm:pt-[130px] md:pt-[130px] lg:pt-[72px] xl:pt-[115px] pb-20 bg-brand-dark">
+          <section className="overflow-hidden pt-10 pb-20 bg-brand-dark">
             <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
               <div className="flex flex-col xl:flex-row gap-7.5">
                 {/* <!--== user dashboard menu start ==--> */}
@@ -234,9 +234,9 @@ return (
                       <div className="flex flex-wrap xl:flex-nowrap xl:flex-col gap-4">
                         <button
                           onClick={() => setActiveTab("account-details")}
-                          className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
+                          className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark ${
                             activeTab === "account-details"
-                              ? "text-white bg-brand-accent"
+                              ? "text-brand-dark bg-brand-accent"
                               : "text-brand-muted bg-brand-surface"
                           }`}
                         >
@@ -266,9 +266,9 @@ return (
                     
                     <button
                       onClick={() => setActiveTab("orders")}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
+                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark ${
                         activeTab === "orders"
-                          ? "text-white bg-brand-accent"
+                          ? "text-brand-dark bg-brand-accent"
                           : "text-brand-muted bg-brand-surface"
                       }`}
                     >
@@ -306,9 +306,9 @@ return (
 
                     <button
                       onClick={() => setActiveTab("addresses")}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
+                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark ${
                         activeTab === "addresses"
-                          ? "text-white bg-brand-accent"
+                          ? "text-brand-dark bg-brand-accent"
                           : "text-brand-muted bg-brand-surface"
                       }`}
                     >
@@ -338,9 +338,9 @@ return (
 
                     <button
                       onClick={handleLogoutClick}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-white ${
+                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark ${
                         activeTab === "logout"
-                          ? "text-white bg-brand-accent"
+                          ? "text-brand-dark bg-brand-accent"
                           : "text-brand-muted bg-brand-surface"
                       }`}
                     >
@@ -504,7 +504,7 @@ return (
                         placeholder="Your full name"
                         value={form.full_name}
                         onChange={handleProfileChange}
-                        className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white"
+                        className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 text-white"
                       />
                     </div>
 
@@ -520,7 +520,7 @@ return (
                         placeholder="your@email.com"
                         value={form.email}
                         onChange={handleProfileChange}
-                        className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white"
+                        className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 text-white"
                       />
                     </div>
                   </div>
@@ -537,7 +537,7 @@ return (
                         placeholder="+880 17XX-XXXXXX"
                       value={form.phone_number}
                       onChange={handleProfileChange}
-                      className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white"
+                      className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 text-white"
                     />
                   </div>
 
@@ -554,7 +554,7 @@ return (
                   <button
                     type="submit"
                     disabled={status === "saving"}
-                    className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
+                    className="inline-flex font-medium text-brand-dark bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
                   >
                     {status === "saving" ? "Saving..." : "Save Changes"}
                   </button>
@@ -621,7 +621,7 @@ return (
                   <button
                     type="submit"
                     disabled={pwStatus === "saving"}
-                    className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
+                    className="inline-flex font-medium text-brand-dark bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
                   >
                     {pwStatus === "saving" ? "Changing..." : "Change Password"}
                   </button>

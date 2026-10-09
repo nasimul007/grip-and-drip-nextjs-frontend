@@ -5,7 +5,7 @@ import SearchableSelect from "./SearchableSelect";
 import { getDivisions, getCities, getAreas } from "@/lib/location-data";
 
 const inputClass =
-  "rounded-md bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
+  "rounded-md bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
 
 const fieldClass = (error?: string) =>
   `${inputClass} border ${

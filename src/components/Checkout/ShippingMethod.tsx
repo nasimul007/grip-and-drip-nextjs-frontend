@@ -7,9 +7,9 @@ const ShippingMethod = ({ rates, selectedRate, onSelect }: any) => {
   };
 
   return (
-    <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
-      <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
-        <h3 className="font-medium text-xl text-dark">Shipping Method</h3>
+    <div className="bg-brand-card shadow-1 rounded-[10px] mt-7.5">
+      <div className="border-b border-brand-border py-5 px-4 sm:px-8.5">
+        <h3 className="font-medium text-xl text-white">Shipping Method</h3>
       </div>
 
       <div className="p-4 sm:p-8.5">
@@ -32,25 +32,25 @@ const ShippingMethod = ({ rates, selectedRate, onSelect }: any) => {
                 <div
                   className={`flex h-4 w-4 items-center justify-center rounded-full ${
                     selectedRate?.id === rate.id
-                      ? "border-4 border-blue"
+                      ? "border-4 border-brand-accent"
                       : "border border-gray-4"
                   }`}
                 ></div>
               </div>
 
-              <div className="rounded-md border-[0.5px] py-3.5 px-5 w-full ease-out duration-200 hover:bg-gray-2 hover:border-transparent hover:shadow-none">
+              <div className="rounded-md border-[0.5px] py-3.5 px-5 w-full ease-out duration-200 hover:bg-brand-card hover:border-transparent hover:shadow-none">
                 <div className="flex items-center justify-between">
-                  <p className="font-semibold text-dark">
+                  <p className="font-semibold text-white">
                     {label(rate)}
                   </p>
-                  <p className="text-dark">
+                  <p className="text-white">
                     {rate.charge === 0
                       ? "Free"
                       : `৳${rate.charge.toFixed(2)}`}
                   </p>
                 </div>
                 {rate.free_shipping_minimum && (
-                  <p className="text-custom-xs text-dark-4">
+                  <p className="text-custom-xs text-white">
                     Free shipping on orders over ৳{rate.free_shipping_minimum}
                   </p>
                 )}

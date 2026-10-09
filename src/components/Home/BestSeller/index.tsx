@@ -1,4 +1,4 @@
-import SingleItem from "./SingleItem";
+import ProductItem from "@/components/Common/ProductItem";
 import Link from "next/link";
 import type { Product } from "@/types/product";
 
@@ -22,16 +22,16 @@ const BestSeller = ({ items }: { items: Product[] }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-7.5">
-          {items.slice(0, 6).map((item, key) => (
-            <SingleItem item={item} key={key} />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+          {items.slice(0, 8).map((item) => (
+            <ProductItem item={item} key={item.id} />
           ))}
         </div>
 
         <div className="text-center mt-12.5">
           <Link
             href="/shop"
-            className="inline-flex font-medium text-custom-sm py-3 px-7 sm:px-12.5 rounded-md border border-brand-border bg-brand-card text-white ease-out duration-200 hover:bg-brand-accent hover:text-white hover:border-brand-accent"
+            className="inline-flex font-medium text-custom-sm py-3 px-7 sm:px-12.5 rounded-md border border-brand-border bg-brand-card text-white ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark hover:border-brand-accent"
           >
             View All
           </Link>

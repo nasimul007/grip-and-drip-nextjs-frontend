@@ -8,7 +8,16 @@ import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { updateproductDetails } from "@/redux/features/product-details";
 import { useCart } from "@/lib/useCart";
 import { discountPercent, formatPrice } from "@/lib/format";
-import { PAYMENT_METHODS } from "@/lib/site";
+import {
+  CONTACT,
+  DEFAULT_WARRANTY,
+  DELIVERY_TIME,
+  PAYMENT_METHODS,
+  absoluteUrl,
+  telHref,
+  whatsappHref,
+} from "@/lib/site";
+import { BadgeIcon, PhoneIcon, ShieldIcon, TruckIcon, WhatsAppIcon } from "@/components/Common/icons";
 import WishlistButton from "@/components/Common/WishlistButton";
 import type { Product, VariantItem } from "@/types/product";
 import type { ShippingRate } from "@/lib/types";
@@ -115,6 +124,14 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   };
 
   const freeShipping = shippingRates.find((r) => r.free_shipping_minimum);
+  const warrantyEntry = Object.entries(product.attributes || {}).find(([k]) =>
+    k.toLowerCase().includes("warranty")
+  );
+  const warranty = warrantyEntry ? `${warrantyEntry[1]} warranty`.replace(/warranty warranty$/i, "warranty") : DEFAULT_WARRANTY;
+  const orderMessage = `Hi, I want to order: ${product.title}${
+    matchedVariant ? ` (${matchedVariant.name})` : ""
+  } x${quantity} – ${formatPrice(salePrice)}\n${absoluteUrl(`/shop/${product.slug}`)}`;
+  const whatsappOrder = whatsappHref(orderMessage);
 
   return (
     <>
@@ -322,6 +339,44 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 </div>
               </form>
 
+              {(CONTACT.phone || whatsappOrder) && (
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {whatsappOrder && (
+                    <a
+                      href={whatsappOrder}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 min-w-[150px] inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] py-3 px-5 font-medium text-white hover:opacity-90"
+                    >
+                      <WhatsAppIcon size={20} /> Order on WhatsApp
+                    </a>
+                  )}
+                  {CONTACT.phone && (
+                    <a
+                      href={telHref(CONTACT.phone)}
+                      className="flex-1 min-w-[150px] inline-flex items-center justify-center gap-2 rounded-md border border-brand-border py-3 px-5 font-medium text-white hover:border-brand-accent"
+                    >
+                      <PhoneIcon size={18} /> Call to order
+                    </a>
+                  )}
+                </div>
+              )}
+
+              <ul className="mt-6 grid grid-cols-3 gap-2 text-center text-custom-xs sm:text-custom-sm">
+                <li className="flex flex-col items-center gap-1.5 rounded-lg border border-brand-border bg-brand-card p-3">
+                  <ShieldIcon className="text-brand-accent" />
+                  <span className="text-white">100% original</span>
+                </li>
+                <li className="flex flex-col items-center gap-1.5 rounded-lg border border-brand-border bg-brand-card p-3">
+                  <BadgeIcon className="text-brand-accent" />
+                  <span className="text-white">{warranty}</span>
+                </li>
+                <li className="flex flex-col items-center gap-1.5 rounded-lg border border-brand-border bg-brand-card p-3">
+                  <TruckIcon className="text-brand-accent" />
+                  <span className="text-white">Cash on delivery</span>
+                </li>
+              </ul>
+
               {/* Delivery & payment */}
               <ul className="mt-7.5 rounded-lg border border-brand-border bg-brand-card divide-y divide-brand-border text-custom-sm">
                 {shippingRates.length > 0 && (
@@ -332,6 +387,9 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                         <li key={r.id}>
                           {r.area_type === "inside_dhaka" ? "Inside Dhaka" : "Outside Dhaka"}:{" "}
                           <span className="text-white">{formatPrice(r.charge)}</span>
+                          <span className="text-brand-muted">
+                            {" "}· {r.area_type === "inside_dhaka" ? DELIVERY_TIME.insideDhaka : DELIVERY_TIME.outsideDhaka}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -345,6 +403,11 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 <li className="p-4">
                   <p className="text-white font-medium mb-1">Payment</p>
                   <p>{PAYMENT_METHODS.join(" · ")}</p>
+                </li>
+                <li className="p-4 flex flex-wrap gap-x-4 gap-y-1">
+                  <Link href="/return-policy" className="text-brand-accent hover:underline">Return policy</Link>
+                  <Link href="/warranty-policy" className="text-brand-accent hover:underline">Warranty policy</Link>
+                  <Link href="/shipping-policy" className="text-brand-accent hover:underline">Delivery info</Link>
                 </li>
               </ul>
             </div>

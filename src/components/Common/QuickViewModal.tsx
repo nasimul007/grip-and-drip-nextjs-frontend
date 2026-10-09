@@ -423,7 +423,7 @@ const QuickViewModal = () => {
                                 />
                                 <div
                                   className={`px-4 py-2 rounded-md border text-sm font-medium transition ${selectedAttrs[attrKey] === opt.id
-                                    ? "border-brand-accent bg-brand-accent text-white"
+                                    ? "border-brand-accent bg-brand-accent text-brand-dark"
                                     : "border-brand-border bg-brand-card text-white hover:border-brand-accent"
                                   }`}
                                 >
@@ -520,7 +520,7 @@ const QuickViewModal = () => {
                 <button
                   disabled={displayStock === 0}
                   onClick={() => handleAddToCart()}
-                  className={`inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent-dark ${displayStock === 0 ? "opacity-40 cursor-not-allowed" : ""}`}
+                  className={`inline-flex font-medium text-brand-dark bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent-dark ${displayStock === 0 ? "opacity-40 cursor-not-allowed" : ""}`}
                 >
                   {displayStock > 0 ? "Add to Cart" : "Out of Stock"}
                 </button>

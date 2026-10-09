@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCategoryTree } from "@/lib/server-api";
-import { CONTACT, PAYMENT_METHODS, SITE_NAME } from "@/lib/site";
+import { CONTACT, PAYMENT_METHODS, SITE_NAME, telHref, whatsappHref } from "@/lib/site";
+import { POLICIES } from "@/lib/policies";
 
 const linkClass = "ease-out duration-200 text-white hover:text-brand-accent";
 
@@ -21,8 +22,13 @@ const Footer = async () => {
             <address className="not-italic flex flex-col gap-3 text-white">
               <span>{CONTACT.address}</span>
               {CONTACT.phone && (
-                <a href={`tel:${CONTACT.phone.replace(/[^+\d]/g, "")}`} className={linkClass}>
+                <a href={telHref(CONTACT.phone)} className={linkClass}>
                   {CONTACT.phone}
+                </a>
+              )}
+              {whatsappHref() && (
+                <a href={whatsappHref()!} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  WhatsApp us
                 </a>
               )}
               {CONTACT.email && (
@@ -68,7 +74,11 @@ const Footer = async () => {
             <ul className="flex flex-col gap-3">
               <li><Link className={linkClass} href="/contact">Contact us</Link></li>
               <li><Link className={linkClass} href="/my-account">Track your order</Link></li>
-              <li><Link className={linkClass} href="/shop">Browse all products</Link></li>
+              {POLICIES.map((p) => (
+                <li key={p.slug}>
+                  <Link className={linkClass} href={`/${p.slug}`}>{p.title}</Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>

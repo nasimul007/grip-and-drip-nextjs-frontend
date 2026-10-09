@@ -19,21 +19,21 @@ const featureData = [
   },
   {
     img: "/images/icons/icon-04.svg",
-    title: "24/7 Support",
-    description: "Anywhere & anytime",
+    title: "Cash on Delivery",
+    description: "Pay when you receive",
   },
 ];
 
 const HeroFeature = () => {
   return (
     <div className="max-w-[1060px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-7.5 xl:gap-12.5 mt-5">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-x-4 gap-y-3 sm:gap-7.5 xl:gap-12.5 mt-5">
         {featureData.map((item, key) => (
           <div className="flex items-center gap-4" key={key}>
-            <Image src={item.img} alt="" width={40} height={41} />
+            <Image src={item.img} alt="" width={40} height={41} className="w-7 h-7 sm:w-10 sm:h-10" />
             <div>
-              <h3 className="font-medium text-lg text-white">{item.title}</h3>
-              <p className="text-sm text-brand-muted">{item.description}</p>
+              <h3 className="font-medium text-custom-sm sm:text-lg text-white">{item.title}</h3>
+              <p className="text-custom-xs sm:text-sm text-brand-muted">{item.description}</p>
             </div>
           </div>
         ))}

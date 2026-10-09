@@ -39,8 +39,8 @@ const GenderItem = ({ category }) => {
 
       <span
         className={`${
-          selected ? "text-white bg-brand-accent" : "bg-brand-surface"
-        } inline-flex rounded-[30px] text-custom-xs px-2 ease-out duration-200 group-hover:text-white group-hover:bg-brand-accent`}
+          selected ? "text-brand-dark bg-brand-accent" : "bg-brand-surface"
+        } inline-flex rounded-[30px] text-custom-xs px-2 ease-out duration-200 group-hover:text-brand-dark group-hover:bg-brand-accent`}
       >
         {category.products}
       </span>

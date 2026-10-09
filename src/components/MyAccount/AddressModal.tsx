@@ -13,7 +13,7 @@ interface AddressModalProps {
 }
 
 const inputClass =
-  "rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20 text-white";
+  "rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 text-white";
 
 const fieldClass = (error?: string) =>
   `${inputClass} border ${error ? "border-red" : "border-brand-border"}`;
@@ -238,7 +238,7 @@ const AddressModal = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex font-medium text-white bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
+                className="inline-flex font-medium text-brand-dark bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
               >
                 {loading ? "Saving..." : mode === "edit" ? "Save Changes" : "Add Address"}
               </button>

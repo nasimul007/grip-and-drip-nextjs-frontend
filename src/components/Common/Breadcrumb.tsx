@@ -24,7 +24,7 @@ const Breadcrumb = ({ title, items }: Props) => {
   };
 
   return (
-    <div className="overflow-hidden shadow-breadcrumb pt-[178px] sm:pt-[108px] lg:pt-[95px] xl:pt-[95px]">
+    <div className="overflow-hidden shadow-breadcrumb">
       <JsonLd data={schema} />
       <div className="border-t border-brand-border">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 py-5 xl:py-3">

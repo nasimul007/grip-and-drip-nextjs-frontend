@@ -50,7 +50,7 @@ const Signin = () => {
 
   return (
     <>
-      <section className="pt-[200px] sm:pt-[130px] lg:pt-[108px] py-20 bg-brand-dark">
+      <section className="py-12 lg:py-20 bg-brand-dark">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="max-w-[570px] w-full mx-auto rounded-[10px] bg-brand-card border border-brand-border p-4 sm:p-7.5 xl:p-8">
             <div className="text-center mb-8">
@@ -74,7 +74,7 @@ const Signin = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                    className="rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
                   />
                 </div>
 
@@ -95,7 +95,7 @@ const Signin = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex justify-center font-medium text-white bg-brand-accent py-3 px-6 rounded-lg ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
+                    className="flex justify-center font-medium text-brand-dark bg-brand-accent py-3 px-6 rounded-lg ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
                   >
                     {loading ? "Signing in..." : "Sign in"}
                   </button>

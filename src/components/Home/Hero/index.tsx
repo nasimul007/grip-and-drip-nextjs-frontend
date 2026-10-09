@@ -6,9 +6,9 @@ import Link from "next/link";
 
 const Hero = () => {
   return (
-    <section className="overflow-hidden pb-5 lg:pb-7.5 pt-40 sm:pt-30 lg:pt-28 xl:pt-28.5 bg-brand-dark">
+    <section className="overflow-hidden pb-5 lg:pb-7.5 pt-4 lg:pt-7.5 bg-brand-dark">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
-        <div className="flex flex-wrap gap-5 mt-10 sm:mt-0">
+        <div className="flex flex-wrap gap-5">
           <div className="xl:max-w-[757px] w-full">
             <div className="relative z-1 rounded-[10px] bg-brand-surface overflow-hidden">
               <Image
@@ -23,7 +23,7 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="xl:max-w-[393px] w-full">
+          <div className="hidden md:block xl:max-w-[393px] w-full">
             <div className="flex flex-col sm:flex-row xl:flex-col gap-5">
               <div className="w-full relative rounded-[10px] bg-brand-surface p-4 sm:p-6 lg:p-7.5">
                 <div className="flex items-center gap-8">

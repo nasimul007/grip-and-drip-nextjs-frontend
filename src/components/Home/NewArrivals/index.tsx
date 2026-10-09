@@ -39,13 +39,13 @@ const NewArrival = ({ items }: { items: Product[] }) => {
 
           <Link
             href="/shop"
-            className="inline-flex font-medium text-custom-sm py-2.5 px-7 rounded-md border border-brand-border bg-brand-card text-white ease-out duration-200 hover:bg-brand-accent hover:text-white hover:border-brand-accent"
+            className="inline-flex font-medium text-custom-sm py-2.5 px-7 rounded-md border border-brand-border bg-brand-card text-white ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark hover:border-brand-accent"
           >
             View All
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-7.5 gap-y-9">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {items.map((item) => (
             <ProductItem item={item} key={item.id} />
           ))}

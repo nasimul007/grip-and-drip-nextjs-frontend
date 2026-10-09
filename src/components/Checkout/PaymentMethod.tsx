@@ -109,7 +109,7 @@ const PaymentMethod = ({
                     value={bkashNumber}
                     onChange={(e) => onBkashNumberChange(e.target.value)}
                     placeholder="01XXXXXXXXX"
-                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
                   />
                 </div>
 
@@ -124,7 +124,7 @@ const PaymentMethod = ({
                     value={transactionId}
                     onChange={(e) => onTransactionIdChange(e.target.value)}
                     placeholder="Transaction ID"
-                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
                   />
                 </div>
               </div>

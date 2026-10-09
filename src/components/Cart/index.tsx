@@ -18,7 +18,7 @@ const Cart = () => {
   return (
     <>
       {cartItems.length > 0 ? (
-        <section className="pt-[200px] sm:pt-[130px] lg:pt-[114px] py-20 bg-brand-dark">
+        <section className="py-12 lg:py-20 bg-brand-dark">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="flex flex-wrap items-center justify-between gap-5 mb-3.5">
               <h2 className="font-medium text-white text-2xl">Your Cart</h2>
@@ -50,7 +50,7 @@ const Cart = () => {
         </section>
       ) : (
         <>
-          <div className="pt-[200px] sm:pt-[130px] lg:pt-[114px] text-center">
+          <div className="pt-12 text-center">
             <div className="mx-auto pb-7.5">
               <svg
                 className="mx-auto"
@@ -86,7 +86,7 @@ const Cart = () => {
 
             <Link
               href="/shop"
-              className="w-96 mx-auto flex justify-center font-medium text-white bg-brand-accent py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
+              className="w-96 mx-auto flex justify-center font-medium text-brand-dark bg-brand-accent py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
             >
               Continue Shopping
             </Link>

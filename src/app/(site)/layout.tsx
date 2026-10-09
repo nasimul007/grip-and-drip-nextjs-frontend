@@ -4,6 +4,8 @@ import "../css/style.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ScrollToTop from "@/components/Common/ScrollToTop";
+import MobileBottomNav from "@/components/Common/MobileBottomNav";
+import WhatsAppFloat from "@/components/Common/WhatsAppFloat";
 import JsonLd from "@/components/Common/JsonLd";
 import Providers from "./providers";
 import {
@@ -100,9 +102,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Header />
           {children}
+          <Footer />
+          <MobileBottomNav />
+          <WhatsAppFloat />
         </Providers>
         <ScrollToTop />
-        <Footer />
       </body>
     </html>
   );
