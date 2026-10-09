@@ -83,7 +83,7 @@ const QuickViewModal = () => {
   const handlePreviewSlider = () => {
     dispatch(updateproductDetails(product));
 
-    openPreviewModal();
+    openPreviewModal(activePreview);
   };
 
   // add to cart
@@ -131,7 +131,7 @@ const QuickViewModal = () => {
   return (
     <div
       className={`${isModalOpen ? "z-99999" : "hidden"
-        } fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-black/80 sm:px-8 px-4 py-5`}
+        } fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-[#000000CC] sm:px-8 px-4 py-5`}
     >
       <div className="flex items-center justify-center ">
         <div className="w-full max-w-[1100px] rounded-xl shadow-3 bg-brand-card p-7.5 relative modal-content">
@@ -183,8 +183,8 @@ const QuickViewModal = () => {
                   ))}
                 </div>
 
-                <div className="relative z-1 overflow-hidden flex items-center justify-center w-full sm:min-h-[508px] bg-brand-surface rounded-lg border border-brand-border">
-                  <div>
+                <div className="relative z-1 overflow-hidden w-full aspect-square bg-brand-surface rounded-lg border border-brand-border">
+                  <>
                     <button
                       onClick={handlePreviewSlider}
                       aria-label="button for zoom"
@@ -208,14 +208,17 @@ const QuickViewModal = () => {
                     </button>
 
                     {product?.imgs?.previews?.[activePreview] && (
-                      <Image
-                        src={product.imgs.previews[activePreview]}
-                        alt="products-details"
-                        width={400}
-                        height={400}
-                      />
+                      <div className="absolute inset-4 sm:inset-6">
+                        <Image
+                          src={product.imgs.previews[activePreview]}
+                          alt={product.title}
+                          fill
+                          sizes="(max-width: 640px) 80vw, 400px"
+                          className="object-contain"
+                        />
+                      </div>
                     )}
-                  </div>
+                  </>
                 </div>
               </div>
             </div>

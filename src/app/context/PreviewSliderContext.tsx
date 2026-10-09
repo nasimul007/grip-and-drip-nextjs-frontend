@@ -3,7 +3,9 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 
 interface PreviewSliderType {
   isModalPreviewOpen: boolean;
-  openPreviewModal: () => void;
+  /** Index of the image the preview should open on. */
+  startIndex: number;
+  openPreviewModal: (index?: number) => void;
   closePreviewModal: () => void;
 }
 
@@ -19,8 +21,10 @@ export const usePreviewSlider = () => {
 
 export const PreviewSliderProvider = ({ children }) => {
   const [isModalPreviewOpen, setIsModalOpen] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
 
-  const openPreviewModal = useCallback(() => {
+  const openPreviewModal = useCallback((index = 0) => {
+    setStartIndex(index);
     setIsModalOpen(true);
   }, []);
 
@@ -29,8 +33,8 @@ export const PreviewSliderProvider = ({ children }) => {
   }, []);
 
   const value = useMemo(
-    () => ({ isModalPreviewOpen, openPreviewModal, closePreviewModal }),
-    [isModalPreviewOpen, openPreviewModal, closePreviewModal]
+    () => ({ isModalPreviewOpen, startIndex, openPreviewModal, closePreviewModal }),
+    [isModalPreviewOpen, startIndex, openPreviewModal, closePreviewModal]
   );
 
   return (
