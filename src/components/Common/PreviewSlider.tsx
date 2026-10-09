@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef } from "react";
-import Image from "next/image";
+import FallbackImage from "./FallbackImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
@@ -85,19 +85,24 @@ const PreviewSliderModal = () => {
         className="w-full h-full"
       >
         {images.map((src, i) => (
-          <SwiperSlide key={src} data-backdrop="true">
+          <SwiperSlide key={`${src}-${i}`} data-backdrop="true">
             <div
               data-backdrop="true"
               className="relative w-full h-[100dvh] flex items-center justify-center p-4 sm:p-16"
             >
               <div className="relative w-full h-full max-w-[1000px]">
-                <Image
+                {/* Spinner sits behind the image until it has loaded. */}
+                <span
+                  aria-hidden="true"
+                  className="absolute left-1/2 top-1/2 -ml-4 -mt-4 h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-brand-accent"
+                />
+                <FallbackImage
                   src={src}
                   alt={`${title} – image ${i + 1} of ${images.length}`}
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 1024px) 100vw, 1000px"
                   className="object-contain"
-                  priority={i === startIndex}
+                  {...(i === startIndex ? { priority: true } : { loading: "eager" as const })}
                 />
               </div>
             </div>

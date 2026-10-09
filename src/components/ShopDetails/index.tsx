@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -19,6 +18,7 @@ import {
 } from "@/lib/site";
 import { BadgeIcon, PhoneIcon, ShieldIcon, TruckIcon, WhatsAppIcon } from "@/components/Common/icons";
 import WishlistButton from "@/components/Common/WishlistButton";
+import FallbackImage from "@/components/Common/FallbackImage";
 import type { Product, VariantItem } from "@/types/product";
 import type { ShippingRate } from "@/lib/types";
 
@@ -36,6 +36,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   const { openPreviewModal } = usePreviewSlider();
   const { addItem } = useCart();
   const [previewImg, setPreviewImg] = useState(0);
+  const thumbsRef = useRef<HTMLDivElement>(null);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"description" | "specs">("description");
 
@@ -95,6 +96,20 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
     setQuantity(1);
   }, [matchedVariant?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Keep the selected thumbnail visible inside the fixed-height strip.
+  useEffect(() => {
+    const box = thumbsRef.current;
+    const el = box?.children[previewImg] as HTMLElement | undefined;
+    if (!box || !el) return;
+    // Scroll only the strip itself (scrollIntoView could also move the page).
+    if (el.offsetTop < box.scrollTop) box.scrollTop = el.offsetTop;
+    else if (el.offsetTop + el.offsetHeight > box.scrollTop + box.clientHeight)
+      box.scrollTop = el.offsetTop + el.offsetHeight - box.clientHeight;
+    if (el.offsetLeft < box.scrollLeft) box.scrollLeft = el.offsetLeft;
+    else if (el.offsetLeft + el.offsetWidth > box.scrollLeft + box.clientWidth)
+      box.scrollLeft = el.offsetLeft + el.offsetWidth - box.clientWidth;
+  }, [previewImg]);
+
   const specs = Object.entries(product.attributes || {}).filter(
     ([, v]) => v !== null && v !== undefined && String(v).trim() !== ""
   );
@@ -139,8 +154,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
             {/* Gallery */}
-            <div className="lg:max-w-[570px] w-full flex flex-col sm:flex-row gap-4 lg:self-start">
-              <div className="flex-1 min-w-0 aspect-square rounded-lg border border-brand-border bg-brand-surface relative">
+            <div className="w-full lg:w-auto lg:shrink-0 flex flex-col sm:flex-row gap-4 lg:self-start">
+              <div className="relative shrink-0 w-full max-w-[400px] sm:w-[400px] aspect-square sm:h-[400px] rounded-lg border border-brand-border bg-brand-surface">
                 {images.length > 0 && (
                   <button
                     type="button"
@@ -156,12 +171,12 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 )}
                 {images[previewImg] ? (
                   <div className="absolute inset-4 sm:inset-6">
-                    <Image
+                    <FallbackImage
                       src={images[previewImg]}
                       alt={matchedVariant ? `${product.title} – ${matchedVariant.name}` : product.title}
                       fill
                       priority
-                      sizes="(max-width: 1024px) 90vw, 480px"
+                      sizes="(max-width: 640px) 90vw, 400px"
                       className="object-contain"
                     />
                   </div>
@@ -173,7 +188,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
               </div>
 
               {images.length > 1 && (
-                <div className="flex sm:flex-col gap-2 sm:order-first overflow-x-auto no-scrollbar">
+                <div ref={thumbsRef} className="relative flex sm:flex-col gap-2 sm:order-first overflow-x-auto sm:overflow-x-hidden sm:overflow-y-auto sm:h-[400px] sm:w-20 shrink-0 no-scrollbar">
                   {images.map((src, i) => (
                     <button
                       type="button"
@@ -185,7 +200,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                         i === previewImg ? "border-brand-accent" : "border-transparent"
                       }`}
                     >
-                      <Image width={64} height={64} src={src} alt="" className="object-contain" />
+                      <FallbackImage width={64} height={64} src={src} alt="" fallbackLabel="" className="object-contain" />
                     </button>
                   ))}
                 </div>
