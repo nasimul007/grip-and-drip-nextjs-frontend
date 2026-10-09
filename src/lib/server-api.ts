@@ -102,3 +102,29 @@ export function findCategoryPath(
   }
   return null;
 }
+
+/** Flat list of every category in the tree. */
+export function flattenCategories(tree: CategoryNode[]): CategoryNode[] {
+  return tree.flatMap((n) => [n, ...flattenCategories(n.children || [])]);
+}
+
+/** Link for a promo/banner: the first category whose name matches, else a search. */
+export function promoHref(tree: CategoryNode[], pattern: RegExp, searchTerm: string): string {
+  const match = flattenCategories(tree).find((c) => pattern.test(c.name));
+  return match ? `/category/${match.slug}` : `/shop?q=${encodeURIComponent(searchTerm)}`;
+}
+
+/**
+ * The newest ~300 active products (3 pages), shared by the deals and brands
+ * features. serverGet caches each page, so this is cheap after the first call.
+ */
+export async function getRecentProducts(pages = 3): Promise<ProductListItem[]> {
+  const out: ProductListItem[] = [];
+  for (let page = 1; page <= pages; page++) {
+    const data = await getProducts(`ordering=-created_at&page_size=100&page=${page}`);
+    if (!data) break;
+    out.push(...data.results);
+    if (!data.next) break;
+  }
+  return out;
+}

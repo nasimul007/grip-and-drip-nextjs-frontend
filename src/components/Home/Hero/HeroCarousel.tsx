@@ -1,4 +1,6 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
+import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 
@@ -8,14 +10,40 @@ import "swiper/css";
 import Image from "next/image";
 import Link from "next/link";
 
-const HeroCarousal = () => {
+type Links = { charger: string; audio: string };
+
+const HeroCarousal = ({ links }: { links: Links }) => {
+  const swiperRef = useRef<SwiperType | null>(null);
+  const [playing, setPlaying] = useState(true);
+
+  // Respect "reduce motion": start paused.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      swiperRef.current?.autoplay?.stop();
+      setPlaying(false);
+    }
+  }, []);
+
+  const toggle = () => {
+    const a = swiperRef.current?.autoplay;
+    if (!a) return;
+    if (playing) a.stop();
+    else a.start();
+    setPlaying(!playing);
+  };
+
   return (
+    <div className="relative">
     <Swiper
+      onSwiper={(s) => {
+        swiperRef.current = s;
+      }}
       spaceBetween={30}
       centeredSlides={true}
       autoplay={{
-        delay: 2500,
+        delay: 6000,
         disableOnInteraction: false,
+        pauseOnMouseEnter: true,
       }}
       pagination={{
         clickable: true,
@@ -32,13 +60,13 @@ const HeroCarousal = () => {
 
             <h1 className="font-semibold text-white text-lg sm:text-3xl mb-2 sm:mb-3">
               <Link href="/shop">
-                Welcome to Gadget & Widget
+                Original gadgets & accessories, delivered across Bangladesh
               </Link>
             </h1>
 
             <p className="hidden sm:block text-[#A0A0A8]">
               Bangladesh&apos;s premier destination for authentic tech accessories.
-              Genuine chargers, earbuds, smartwatches and more with cash on delivery across Bangladesh.
+              Chargers, earbuds, smartwatches and more — genuine products, warranty and cash on delivery.
             </p>
 
             <Link
@@ -76,7 +104,7 @@ const HeroCarousal = () => {
             </div>
 
             <h2 className="font-semibold text-white text-lg sm:text-3xl mb-2 sm:mb-3">
-              <Link href="/shop">
+              <Link href={links.charger}>
                 Premium Chargers & Cables
               </Link>
             </h2>
@@ -87,7 +115,7 @@ const HeroCarousal = () => {
             </p>
 
             <Link
-              href="/shop"
+              href={links.charger}
               className="inline-flex font-medium text-brand-dark text-custom-sm rounded-md bg-brand-accent py-2 px-5 sm:py-3 sm:px-9 ease-out duration-200 hover:bg-brand-hover mt-3 sm:mt-6"
             >
               Shop Now
@@ -120,7 +148,7 @@ const HeroCarousal = () => {
             </div>
 
             <h2 className="font-semibold text-white text-lg sm:text-3xl mb-2 sm:mb-3">
-              <Link href="/shop">
+              <Link href={links.audio}>
                 Wireless Audio Collection
               </Link>
             </h2>
@@ -131,7 +159,7 @@ const HeroCarousal = () => {
             </p>
 
             <Link
-              href="/shop"
+              href={links.audio}
               className="inline-flex font-medium text-brand-dark text-custom-sm rounded-md bg-brand-accent py-2 px-5 sm:py-3 sm:px-9 ease-out duration-200 hover:bg-brand-hover mt-3 sm:mt-6"
             >
               Browse Audio
@@ -150,6 +178,20 @@ const HeroCarousal = () => {
         </div>
       </SwiperSlide>
     </Swiper>
+    <button
+      type="button"
+      onClick={toggle}
+      aria-pressed={!playing}
+      aria-label={playing ? "Pause slideshow" : "Play slideshow"}
+      className="absolute bottom-3 right-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-brand-border bg-brand-card/90 text-white hover:text-brand-accent"
+    >
+      {playing ? (
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><rect x="1" y="0" width="3" height="10" /><rect x="6" y="0" width="3" height="10" /></svg>
+      ) : (
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M1 0l9 5-9 5z" /></svg>
+      )}
+    </button>
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import type { PaginatedResponse, ShippingRate } from "@/lib/types";
+export { freeShippingThreshold } from "@/lib/shipping";
 
 let cache: ShippingRate[] | null = null;
 let inflight: Promise<ShippingRate[]> | null = null;
@@ -32,12 +33,4 @@ export function useShippingRates(): ShippingRate[] {
     };
   }, []);
   return rates;
-}
-
-/** Lowest subtotal at which any delivery area becomes free, or null. */
-export function freeShippingThreshold(rates: ShippingRate[]): number | null {
-  const mins = rates
-    .map((r) => (r.free_shipping_minimum != null ? Number(r.free_shipping_minimum) : NaN))
-    .filter((n) => Number.isFinite(n) && n > 0);
-  return mins.length ? Math.min(...mins) : null;
 }
