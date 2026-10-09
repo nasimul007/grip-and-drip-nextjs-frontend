@@ -3,8 +3,10 @@ import OrderSuccess from "@/components/OrderSuccess";
 
 import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Order Success | NextCommerce Nextjs E-commerce template",
-  description: "Order placed successfully page for NextCommerce Template",
+  title: "Order placed",
+  description: "Thank you for your order.",
+  alternates: { canonical: "/order-success" },
+  robots: { index: false, follow: true },
 };
 
 const OrderSuccessPage = () => {

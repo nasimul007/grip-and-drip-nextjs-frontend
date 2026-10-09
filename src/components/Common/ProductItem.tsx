@@ -8,6 +8,7 @@ import { updateproductDetails } from "@/redux/features/product-details";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
+import { formatPrice } from "@/lib/format";
 import { api } from "@/lib/api";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
 import { useCart, resolveAddableItem } from "@/lib/useCart";
@@ -43,9 +44,9 @@ const ProductItem = ({ item }: { item: Product }) => {
     <div className="group">
       <div className="relative overflow-hidden rounded-lg bg-brand-card mb-4 aspect-[1/1]">
         <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
-        <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"} className="relative block w-full h-full">
+        <Link href={item.slug ? `/shop/${item.slug}` : "/shop"} className="relative block w-full h-full">
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-            <Image src={item.imgs.previews[0]} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw" />
+            <Image src={item.imgs.previews[0]} alt={item.title} fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-brand-muted text-sm">
               No Image
@@ -97,58 +98,23 @@ const ProductItem = ({ item }: { item: Product }) => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5 mb-2">
-        <div className="flex items-center gap-1">
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={14}
-            height={14}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={14}
-            height={14}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={14}
-            height={14}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={14}
-            height={14}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={14}
-            height={14}
-          />
-        </div>
-
-        <p className="text-custom-sm text-brand-muted">({item.reviews})</p>
-      </div>
+      
 
         <h3
           className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5 line-clamp-1"
           title={item.title}
           onClick={() => handleProductDetails()}
       >
-        <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
+        <Link href={item.slug ? `/shop/${item.slug}` : "/shop"}>
           {" "}
           {item.title}{" "}
         </Link>
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-white">৳{item.discountedPrice}</span>
+        <span className="text-white">{formatPrice(item.discountedPrice)}</span>
         {item.price !== item.discountedPrice && (
-          <span className="text-brand-muted line-through">৳{item.price}</span>
+          <span className="text-brand-muted line-through">{formatPrice(item.price)}</span>
         )}
       </span>
     </div>

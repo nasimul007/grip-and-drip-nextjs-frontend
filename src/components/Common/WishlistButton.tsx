@@ -13,6 +13,7 @@ type WishlistButtonProps = {
     title: string;
     price: number;
     discountedPrice: number;
+    slug?: string;
     imgs?: {
       thumbnails: string[];
       previews: string[];
@@ -39,6 +40,7 @@ const WishlistButton = ({ item, className = "" }: WishlistButtonProps) => {
         discountedPrice: Number(item.discountedPrice),
         quantity: 1,
         status: "available",
+        slug: item.slug,
         imgs: item.imgs,
       })
     );

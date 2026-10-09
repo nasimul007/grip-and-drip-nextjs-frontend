@@ -1,88 +1,136 @@
 import type { Metadata } from "next";
-import { api } from "@/lib/api";
-import type { ProductDetail } from "@/lib/types";
-import { mapProductDetailForDisplay } from "@/lib/mappers";
+import { notFound } from "next/navigation";
 import ShopDetails from "@/components/ShopDetails";
+import Breadcrumb, { type BreadcrumbItem } from "@/components/Common/Breadcrumb";
+import ProductGrid from "@/components/Common/ProductGrid";
+import JsonLd from "@/components/Common/JsonLd";
+import { getProduct, getRelatedProducts, serverGet } from "@/lib/server-api";
+import { mapProductDetailForDisplay, mapProductForDisplay } from "@/lib/mappers";
+import { SITE_NAME, absoluteUrl, mediaUrl, stripHtml, truncate } from "@/lib/site";
+import type { PaginatedResponse, ProductDetail, ProductListItem, ShippingRate } from "@/lib/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+type Props = { params: Promise<{ slug: string }> };
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+function productImages(product: ProductDetail): string[] {
+  const sorted = [...product.images].sort(
+    (a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order
+  );
+  return sorted.map((img) => mediaUrl(img.image)).filter(Boolean) as string[];
 }
 
-function getFullUrl(path: string): string {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  return `${API_BASE}${path.startsWith("/") ? "" : "/"}${path}`;
+function describe(product: ProductDetail): string {
+  if (product.meta_description) return product.meta_description;
+  const text = stripHtml(product.description);
+  if (text) return truncate(text);
+  return truncate(
+    `Buy ${product.name}${product.brand ? ` by ${product.brand}` : ""} online in Bangladesh at the best price. Cash on delivery available.`
+  );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  try {
-    const product: ProductDetail = await api.get(`/api/products/${slug}/`);
-    const title = product.meta_title || `${product.name} | Gadget & Widget`;
-    const description =
-      product.meta_description ||
-      (product.description ? stripHtml(product.description).slice(0, 157) : "");
-    const ogImageUrl = product.og_image ? getFullUrl(product.og_image) : "";
+  const product = await getProduct(slug);
+  if (!product) return { title: "Product not found", robots: { index: false } };
 
-    return {
-      title,
+  // A CMS meta title is used verbatim; otherwise the layout template appends the brand.
+  const title = product.meta_title ? { absolute: product.meta_title } : product.name;
+  const socialTitle = product.meta_title || product.name;
+  const description = describe(product);
+  const image = mediaUrl(product.og_image) || productImages(product)[0];
+  const url = `/shop/${product.slug}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      url,
+      title: socialTitle,
       description,
-      alternates: {
-        canonical: `${API_BASE}/shop/${slug}/`,
-      },
-      openGraph: {
-        title,
-        description,
-        type: "website",
-        ...(ogImageUrl && {
-          images: [{ url: ogImageUrl, width: 1200, height: 1200 }],
-        }),
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        ...(ogImageUrl && { images: [ogImageUrl] }),
-      },
-    };
-  } catch {
-    return { title: "Product Not Found" };
-  }
+      siteName: SITE_NAME,
+      ...(image && { images: [{ url: image, alt: product.name }] }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: socialTitle,
+      description,
+      ...(image && { images: [image] }),
+    },
+  };
 }
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  let product: ProductDetail | null = null;
-  try {
-    product = await api.get(`/api/products/${slug}/`);
-  } catch {
-    /* product will be null → handled in ShopDetails */
-  }
+  const product = await getProduct(slug);
+  if (!product) notFound();
 
-  const mapped = product ? mapProductDetailForDisplay(product) : null;
+  const [related, rates] = await Promise.all([
+    getRelatedProducts(slug),
+    serverGet<PaginatedResponse<ShippingRate> | ShippingRate[]>("/api/shipping-rates/", 600),
+  ]);
+  const shippingRates = rates ? (Array.isArray(rates) ? rates : rates.results) : [];
+
+  const url = absoluteUrl(`/shop/${product.slug}`);
+  const images = productImages(product);
+  const variants = (product.variants || []).filter((v) => v.is_active);
+  const prices = variants.length
+    ? variants.map((v) => Number(v.price_override ?? product.effective_price))
+    : [Number(product.effective_price)];
+  const inStock = variants.length
+    ? variants.some((v) => v.stock > 0)
+    : product.stock > 0;
+
+  const offerBase = {
+    priceCurrency: "BDT",
+    availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    itemCondition: "https://schema.org/NewCondition",
+    url,
+    seller: { "@id": absoluteUrl("/#organization") },
+  };
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${url}#product`,
+    name: product.name,
+    description: truncate(stripHtml(product.description) || describe(product), 5000),
+    sku: product.sku,
+    ...(images.length && { image: images }),
+    ...(product.brand && { brand: { "@type": "Brand", name: product.brand } }),
+    ...(product.category_name && { category: product.category_name }),
+    offers:
+      Math.min(...prices) === Math.max(...prices)
+        ? { "@type": "Offer", price: prices[0].toFixed(2), ...offerBase }
+        : {
+            "@type": "AggregateOffer",
+            lowPrice: Math.min(...prices).toFixed(2),
+            highPrice: Math.max(...prices).toFixed(2),
+            offerCount: prices.length,
+            ...offerBase,
+          },
+  };
+
+  const crumbs: BreadcrumbItem[] = [
+    { name: "Shop", href: "/shop" },
+    ...(product.breadcrumb || []).map((c) => ({ name: c.name, href: `/category/${c.slug}` })),
+    { name: product.name },
+  ];
+
+  const display = {
+    ...mapProductDetailForDisplay(product),
+    categoryName: product.category_name,
+    categorySlug: product.category_slug,
+  };
 
   return (
     <main>
-      {product?.schema_markup && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              ...product.schema_markup,
-              "@id": `${API_BASE}/shop/${slug}/#product`,
-              url: `${API_BASE}/shop/${slug}/`,
-              image: product.og_image ? getFullUrl(product.og_image) : undefined,
-            }),
-          }}
-        />
-      )}
-      <ShopDetails apiProduct={mapped} />
+      <JsonLd data={productSchema} />
+      <Breadcrumb items={crumbs} />
+      <ShopDetails product={display} shippingRates={shippingRates} />
+      <ProductGrid
+        title="You may also like"
+        products={related.map((p) => mapProductForDisplay(p as ProductListItem))}
+      />
     </main>
   );
 }

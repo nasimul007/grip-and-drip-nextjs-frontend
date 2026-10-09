@@ -150,7 +150,7 @@ const Checkout = () => {
 
   return (
     <>
-      <Breadcrumb title={"Checkout"} pages={["checkout"]} />
+      <Breadcrumb title="Checkout" items={[{ name: "Cart", href: "/cart" }, { name: "Checkout" }]} />
       <section className="overflow-hidden pt-4 pb-20 bg-brand-dark">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <form onSubmit={handleSubmit}>
@@ -232,7 +232,7 @@ const Checkout = () => {
                       <div className="py-8 text-center">
                         <p className="text-brand-muted mb-4">Your cart is empty!</p>
                         <Link
-                          href="/shop-with-sidebar"
+                          href="/shop"
                           className="inline-flex font-medium text-white bg-brand-accent py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
                         >
                           Continue Shopping

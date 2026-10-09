@@ -38,18 +38,18 @@ const HeroCarousal = () => {
             </div>
 
             <h1 className="font-semibold text-white text-xl sm:text-3xl mb-3">
-              <Link href="/shop-with-sidebar">
+              <Link href="/shop">
                 Welcome to Gadget & Widget
               </Link>
             </h1>
 
             <p className="text-[#A0A0A8]">
               Bangladesh&apos;s premier destination for authentic tech accessories.
-              Use code <span className="font-semibold text-brand-accent">GRIP5</span> at checkout for 5% off your first order.
+              Genuine chargers, earbuds, smartwatches and more with cash on delivery across Bangladesh.
             </p>
 
             <Link
-              href="/shop-with-sidebar"
+              href="/shop"
               className="inline-flex font-medium text-white text-custom-sm rounded-md bg-brand-accent py-3 px-9 ease-out duration-200 hover:bg-brand-hover mt-6"
             >
               Explore Now
@@ -59,7 +59,8 @@ const HeroCarousal = () => {
           <div>
             <Image
               src="/images/hero/hero-05.png"
-              alt="Gadget & Widget"
+              alt="Gadgets and accessories from Gadget & Widget"
+              priority
               width={351}
               height={358}
             />
@@ -80,11 +81,11 @@ const HeroCarousal = () => {
               </span>
             </div>
 
-            <h1 className="font-semibold text-white text-xl sm:text-3xl mb-3">
-              <Link href="/shop-with-sidebar">
+            <h2 className="font-semibold text-white text-xl sm:text-3xl mb-3">
+              <Link href="/shop">
                 Premium Chargers & Cables
               </Link>
-            </h1>
+            </h2>
 
             <p className="text-[#A0A0A8]">
               Fast charging solutions for all your devices. From Apple to Samsung,
@@ -92,7 +93,7 @@ const HeroCarousal = () => {
             </p>
 
             <Link
-              href="/shop-with-sidebar"
+              href="/shop"
               className="inline-flex font-medium text-white text-custom-sm rounded-md bg-brand-accent py-3 px-9 ease-out duration-200 hover:bg-brand-hover mt-6"
             >
               Shop Now
@@ -123,11 +124,11 @@ const HeroCarousal = () => {
               </span>
             </div>
 
-            <h1 className="font-semibold text-white text-xl sm:text-3xl mb-3">
-              <Link href="/shop-with-sidebar">
+            <h2 className="font-semibold text-white text-xl sm:text-3xl mb-3">
+              <Link href="/shop">
                 Wireless Audio Collection
               </Link>
-            </h1>
+            </h2>
 
             <p className="text-[#A0A0A8]">
               Discover premium sound with JBL, Sony, Soundcore, and CMF
@@ -135,7 +136,7 @@ const HeroCarousal = () => {
             </p>
 
             <Link
-              href="/shop-with-sidebar"
+              href="/shop"
               className="inline-flex font-medium text-white text-custom-sm rounded-md bg-brand-accent py-3 px-9 ease-out duration-200 hover:bg-brand-hover mt-6"
             >
               Browse Audio

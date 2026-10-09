@@ -6,6 +6,7 @@ import { removeItemFromWishlist } from "@/redux/features/wishlist-slice";
 import { useCart, resolveAddableItem } from "@/lib/useCart";
 
 import Image from "next/image";
+import Link from "next/link";
 
 const SingleItem = ({ item }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -62,8 +63,8 @@ const SingleItem = ({ item }) => {
             </div>
 
             <div>
-              <h3 className="text-dark ease-out duration-200 hover:text-blue">
-                <a href="#"> {item.title} </a>
+              <h3 className="text-white ease-out duration-200 hover:text-brand-accent">
+                <Link href={item.slug ? `/shop/${item.slug}` : "/shop"}>{item.title}</Link>
               </h3>
             </div>
           </div>

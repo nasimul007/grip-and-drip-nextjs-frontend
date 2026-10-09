@@ -2,9 +2,9 @@ import Contact from "@/components/Contact";
 
 import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Contact Page | NextCommerce Nextjs E-commerce template",
-  description: "This is Contact Page for NextCommerce Template",
-  // other metadata
+  title: "Contact us",
+  description: "Questions about an order, a product or delivery? Contact Gadget & Widget customer support in Dhaka, Bangladesh.",
+  alternates: { canonical: "/contact" },
 };
 
 const ContactPage = () => {

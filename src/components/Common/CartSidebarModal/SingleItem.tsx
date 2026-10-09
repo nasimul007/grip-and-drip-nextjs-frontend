@@ -2,6 +2,7 @@ import React from "react";
 import { useCart } from "@/lib/useCart";
 import { makeLineKey } from "@/redux/features/cart-slice";
 import Image from "next/image";
+import Link from "next/link";
 
 const SingleItem = ({ item }) => {
   const { removeItem } = useCart();
@@ -24,8 +25,8 @@ const SingleItem = ({ item }) => {
         </div>
 
         <div>
-          <h3 className="font-medium text-dark mb-1 ease-out duration-200 hover:text-blue">
-            <a href="#"> {item.title} </a>
+          <h3 className="font-medium text-white mb-1 ease-out duration-200 hover:text-brand-accent">
+            <Link href={item.slug ? `/shop/${item.slug}` : "/shop"}>{item.title}</Link>
           </h3>
           <p className="text-custom-sm">Price: ৳{item.discountedPrice} {item.quantity > 1 && `× ${item.quantity}`}</p>
         </div>

@@ -35,7 +35,7 @@ type InitialState = {
 
 const LOCAL_KEY = "guest_cart";
 
-function loadLocalCart(): ReduxCartItem[] {
+export function loadLocalCart(): ReduxCartItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(LOCAL_KEY);
@@ -72,11 +72,10 @@ function saveLocalCart(items: ReduxCartItem[]) {
   } catch {}
 }
 
+// Starts empty so server and client render the same markup; the guest cart is
+// loaded from localStorage after mount (see StoreHydrator).
 const initialState: InitialState = {
-  items:
-    typeof window !== "undefined" && !localStorage.getItem("access_token")
-      ? loadLocalCart()
-      : [],
+  items: [],
 };
 
 export const cart = createSlice({

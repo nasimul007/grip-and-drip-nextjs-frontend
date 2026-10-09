@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 
@@ -31,7 +30,7 @@ const HeroFeature = () => {
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-7.5 xl:gap-12.5 mt-5">
         {featureData.map((item, key) => (
           <div className="flex items-center gap-4" key={key}>
-            <Image src={item.img} alt="icons" width={40} height={41} />
+            <Image src={item.img} alt="" width={40} height={41} />
             <div>
               <h3 className="font-medium text-lg text-white">{item.title}</h3>
               <p className="text-sm text-brand-muted">{item.description}</p>

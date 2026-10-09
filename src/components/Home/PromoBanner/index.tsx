@@ -23,7 +23,7 @@ const PromoBanner = () => {
             </p>
 
             <Link
-              href="/shop-with-sidebar"
+              href="/shop"
               className="inline-flex font-medium text-custom-sm text-white bg-brand-accent py-[11px] px-9.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
             >
               Shop Audio
@@ -32,7 +32,7 @@ const PromoBanner = () => {
 
           <Image
             src="/images/promo/promo-01.png"
-            alt="promo img"
+            alt=""
             className="absolute bottom-0 right-4 lg:right-26 -z-1 opacity-40"
             width={274}
             height={350}
@@ -43,7 +43,7 @@ const PromoBanner = () => {
           <div className="relative z-1 overflow-hidden rounded-lg bg-brand-surface py-10 xl:py-16 px-4 sm:px-7.5 xl:px-10">
             <Image
               src="/images/promo/Anker-Nano-3-30W-Adapter-with-Type-C.png"
-              alt="promo img"
+              alt=""
               className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-10 -z-1 opacity-40"
               width={241}
               height={241}
@@ -63,7 +63,7 @@ const PromoBanner = () => {
               </p>
 
               <Link
-                href="/shop-with-sidebar"
+                href="/shop"
                 className="inline-flex font-medium text-custom-sm text-white bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-9"
               >
                 Explore Now
@@ -74,7 +74,7 @@ const PromoBanner = () => {
           <div className="relative z-1 overflow-hidden rounded-lg bg-brand-surface py-10 xl:py-16 px-4 sm:px-7.5 xl:px-10">
             <Image
               src="/images/promo/promo-03.png"
-              alt="promo img"
+              alt=""
               className="absolute top-1/2 -translate-y-1/2 right-3 sm:right-8.5 -z-1 opacity-40"
               width={200}
               height={200}
@@ -95,7 +95,7 @@ const PromoBanner = () => {
               </p>
 
               <Link
-                href="/shop-with-sidebar"
+                href="/shop"
                 className="inline-flex font-medium text-custom-sm text-white bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
               >
                 Shop Now
