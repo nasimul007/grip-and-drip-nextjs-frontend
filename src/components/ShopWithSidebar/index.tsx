@@ -6,7 +6,7 @@ import CustomSelect from "./CustomSelect";
 import CategoryDropdown from "./CategoryDropdown";
 import PriceDropdown, { MAX_PRICE } from "./PriceDropdown";
 import BrandDropdown from "./BrandDropdown";
-import SingleGridItem from "../Shop/SingleGridItem";
+import ProductItem from "../Common/ProductItem";
 import SingleListItem from "../Shop/SingleListItem";
 import { mapProductForDisplay } from "@/lib/mappers";
 import { PAGE_SIZE, SORT_OPTIONS, parseFilters } from "@/lib/shop-query";
@@ -252,7 +252,7 @@ const ShopWithSidebar = ({ categories, initialData, lockedCategoryId }: Props) =
               aria-busy={loading}
               className={`transition-opacity ${loading ? "opacity-50 pointer-events-none" : ""} ${
                 productStyle === "grid"
-                  ? "grid grid-cols-2 lg:grid-cols-4 gap-x-2.5 gap-y-7.5"
+                  ? "grid grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-4"
                   : "flex flex-col gap-7.5"
               }`}
             >
@@ -268,7 +268,7 @@ const ShopWithSidebar = ({ categories, initialData, lockedCategoryId }: Props) =
               )}
               {products.map((item) =>
                 productStyle === "grid" ? (
-                  <SingleGridItem item={item} key={item.id} />
+                  <ProductItem item={item} key={item.id} />
                 ) : (
                   <SingleListItem item={item} key={item.id} />
                 )

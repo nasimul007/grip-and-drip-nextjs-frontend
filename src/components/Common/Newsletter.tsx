@@ -64,7 +64,7 @@ const Newsletter = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex justify-center py-3 px-7 text-white bg-brand-accent font-medium rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
+                    className="inline-flex justify-center py-3 px-7 text-brand-dark bg-brand-accent font-medium rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
                   >
                     {loading ? "Subscribing..." : "Subscribe"}
                   </button>

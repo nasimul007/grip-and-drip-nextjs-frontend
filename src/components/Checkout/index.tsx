@@ -170,7 +170,7 @@ const Checkout = () => {
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Notes about your order, e.g. speacial notes for delivery."
-                      className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                      className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full p-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
                     ></textarea>
                   </div>
                 </div>
@@ -233,7 +233,7 @@ const Checkout = () => {
                         <p className="text-brand-muted mb-4">Your cart is empty!</p>
                         <Link
                           href="/shop"
-                          className="inline-flex font-medium text-white bg-brand-accent py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
+                          className="inline-flex font-medium text-brand-dark bg-brand-accent py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
                         >
                           Continue Shopping
                         </Link>
@@ -295,7 +295,7 @@ const Checkout = () => {
                 <button
                   type="submit"
                   disabled={loading || cartItems.length === 0}
-                  className="w-full flex justify-center font-medium text-white bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-3 disabled:opacity-50"
+                  className="w-full flex justify-center font-medium text-brand-dark bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-3 disabled:opacity-50"
                 >
                   {loading ? "Processing..." : "Place Order"}
                 </button>

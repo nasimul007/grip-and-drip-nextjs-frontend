@@ -103,7 +103,7 @@ const CartSidebarModal = () => {
               <Link
                 onClick={() => closeCartModal()}
                 href="/cart"
-                className="w-full flex justify-center font-medium text-white bg-brand-accent py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
+                className="w-full flex justify-center font-medium text-brand-dark bg-brand-accent py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
               >
                 View Cart
               </Link>

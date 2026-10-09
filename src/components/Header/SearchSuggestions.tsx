@@ -112,7 +112,7 @@ const SearchSuggestions = ({ query, isOpen, onClose }: SearchSuggestionsProps) =
                     : "text-brand-muted hover:bg-brand-hover hover:text-white"
                 }`}
               >
-                <div className="relative shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-3">
+                <div className="relative shrink-0 w-10 h-10 rounded overflow-hidden bg-brand-hover">
                   <div className="absolute inset-1 bg-white/[0.04] blur-xl rounded-full pointer-events-none" />
                   {item.primary_image?.image ? (
                     <Image

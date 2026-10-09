@@ -50,7 +50,7 @@ const OrderSummary = ({
   };
 
   return (
-    <div className={sticky ? "lg:sticky lg:top-[110px]" : ""}>
+    <div className={sticky ? "lg:sticky lg:top-40" : ""}>
       <div className="bg-brand-card rounded-[10px] border border-brand-border">
         <div className="border-b border-brand-border py-3 px-4 sm:px-8.5">
           <h3 className="font-medium text-xl text-white">Order Summary</h3>
@@ -115,13 +115,13 @@ const OrderSummary = ({
                       handleApplyCoupon();
                     }
                   }}
-                  className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-brand-accent/20"
+                  className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
                 />
                 <button
                   type="button"
                   onClick={handleApplyCoupon}
                   disabled={applying}
-                  className="inline-flex font-medium text-white bg-brand-accent py-2.5 px-5 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
+                  className="inline-flex font-medium text-brand-dark bg-brand-accent py-2.5 px-5 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
                 >
                   Apply
                 </button>
@@ -148,7 +148,7 @@ const OrderSummary = ({
           {showProceedLink && (
             <Link
               href="/checkout"
-              className="w-full flex justify-center font-medium text-white bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
+              className="w-full flex justify-center font-medium text-brand-dark bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
             >
               Proceed to Checkout
             </Link>

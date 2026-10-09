@@ -24,7 +24,7 @@ const PromoBanner = () => {
 
             <Link
               href="/shop"
-              className="inline-flex font-medium text-custom-sm text-white bg-brand-accent py-[11px] px-9.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
+              className="inline-flex font-medium text-custom-sm text-brand-dark bg-brand-accent py-[11px] px-9.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
             >
               Shop Audio
             </Link>
@@ -64,7 +64,7 @@ const PromoBanner = () => {
 
               <Link
                 href="/shop"
-                className="inline-flex font-medium text-custom-sm text-white bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-9"
+                className="inline-flex font-medium text-custom-sm text-brand-dark bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-9"
               >
                 Explore Now
               </Link>
@@ -96,7 +96,7 @@ const PromoBanner = () => {
 
               <Link
                 href="/shop"
-                className="inline-flex font-medium text-custom-sm text-white bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
+                className="inline-flex font-medium text-custom-sm text-brand-dark bg-brand-accent py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
               >
                 Shop Now
               </Link>

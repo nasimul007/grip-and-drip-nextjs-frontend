@@ -24,7 +24,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
 
 
   return (
-    <section className="overflow-hidden pt-17.5 bg-brand-dark">
+    <section className="overflow-hidden pt-8 lg:pt-17.5 bg-brand-dark">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pb-15 border-b border-brand-border">
         <div className="swiper categories-carousel common-carousel">
           <div className="mb-10 flex items-center justify-between">
