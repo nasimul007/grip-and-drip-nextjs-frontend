@@ -5,7 +5,7 @@ import SearchableSelect from "./SearchableSelect";
 import { getDivisions, getCities, getAreas } from "@/lib/location-data";
 
 const inputClass =
-  "rounded-md bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
+  "rounded-md bg-brand-surface placeholder:text-brand-muted text-white w-full h-10 px-3.5 text-sm outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
 
 const fieldClass = (error?: string) =>
   `${inputClass} border ${
@@ -14,7 +14,7 @@ const fieldClass = (error?: string) =>
 
 const FieldError = ({ message }: { message?: string }) =>
   message ? (
-    <p className="text-red text-custom-sm mt-1">{message}</p>
+    <p className="text-red text-custom-xs mt-1" role="alert">{message}</p>
   ) : null;
 
 const Billing = ({ formData, onChange, errors = {} }: any) => {
@@ -69,124 +69,102 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
     }
   };
 
-  return (
-    <div className="mt-9">
-      <h2 className="font-medium text-white text-xl sm:text-2xl mb-5.5">
-        Billing details
-      </h2>
-
-      <div className="bg-brand-card border border-brand-border rounded-[10px] p-4 sm:p-8.5">
-        <div className="mb-5">
-          <label htmlFor="fullName" className="block mb-2.5">
-            Full Name <span className="text-red">*</span>
-          </label>
-          <input
-            type="text"
-            name="fullName"
-            id="fullName"
-            value={formData.fullName}
-            onChange={onChange}
-            placeholder="Jhon Deo"
-            className={fieldClass(errors.fullName)}
-          />
-          <FieldError message={errors.fullName} />
-        </div>
-
-        <div className="mb-5">
-          <label htmlFor="phone" className="block mb-2.5">
-            Phone <span className="text-red">*</span>
-          </label>
-          <input
-            type="text"
-            name="phone"
-            id="phone"
-            value={formData.phone}
-            onChange={onChange}
-            className={fieldClass(errors.phone)}
-          />
-          <FieldError message={errors.phone} />
-        </div>
-
-        <div className="mb-5.5">
-          <label htmlFor="email" className="block mb-2.5">
-            Email Address
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            value={formData.email}
-            onChange={onChange}
-            className={fieldClass(undefined)}
-          />
-        </div>
-
-        <div className="grid gap-x-5 gap-y-5 mb-5 sm:grid-cols-3 sm:gap-y-6">
-        <SearchableSelect
-          name="division_id"
-          id="division"
-          label="Division"
-          required
-          value={formData.division_id}
-          options={divisions}
-          placeholder="Select Division"
-          error={errors.division}
-          wrapperClassName="mb-0"
-          valueKey="id"
-          labelKey="displayName"
-          onChange={handleDivisionChange}
-        />
-
-        <SearchableSelect
-          name="city_id"
-          id="city"
-          label="City"
-          required
-          value={formData.city_id}
-          options={cities}
-          disabled={!formData.division_id}
-          placeholder={formData.division_id ? "Select City" : "Select Division first"}
-          error={errors.city}
-          wrapperClassName="mb-0"
-          valueKey="id"
-          labelKey="displayName"
-          onChange={handleCityChange}
-        />
-
-        <SearchableSelect
-          name="area_id"
-          id="area"
-          label="Area"
-          required
-          value={formData.area_id}
-          options={areas}
-          disabled={!formData.city_id}
-          placeholder={formData.city_id ? "Select Area" : "Select City first"}
-          error={errors.area}
-          wrapperClassName="mb-0"
-          valueKey="id"
-          labelKey="displayName"
-          onChange={handleAreaChange}
-        />
-      </div>
-
-        <div className="mb-5.5">
-          <label htmlFor="address" className="block mb-2.5">
-            Address <span className="text-red">*</span>
-          </label>
-          <input
-            type="text"
-            name="address"
-            id="address"
-            value={formData.address}
-            onChange={onChange}
-            placeholder="House number and street name"
-            className={fieldClass(errors.address)}
-          />
-          <FieldError message={errors.address} />
-        </div>
-      </div>
+  const field = (name: string, label: string, opts: { required?: boolean; type?: string; placeholder?: string; autoComplete?: string; span?: string; error?: string; hint?: string } = {}) => (
+    <div className={opts.span}>
+      <label htmlFor={name} className="block mb-1.5 text-custom-sm text-white">
+        {label} {opts.required && <span className="text-red">*</span>}
+      </label>
+      <input
+        type={opts.type || "text"}
+        name={name}
+        id={name}
+        value={formData[name]}
+        onChange={onChange}
+        placeholder={opts.placeholder}
+        autoComplete={opts.autoComplete}
+        inputMode={name === "phone" ? "tel" : undefined}
+        aria-invalid={opts.error ? true : undefined}
+        className={fieldClass(opts.error)}
+      />
+      <FieldError message={opts.error} />
     </div>
+  );
+
+  return (
+    <section className="rounded-lg border border-brand-border bg-brand-card">
+      <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">Delivery details</h2>
+      <div className="grid gap-x-3 gap-y-3 p-4 sm:grid-cols-6">
+        {field("fullName", "Full name", { required: true, placeholder: "Your name", autoComplete: "name", span: "sm:col-span-3", error: errors.fullName })}
+        {field("phone", "Phone", { required: true, placeholder: "01XXXXXXXXX", autoComplete: "tel", span: "sm:col-span-3", error: errors.phone })}
+        {field("email", "Email (optional)", { type: "email", placeholder: "you@example.com", autoComplete: "email", span: "sm:col-span-6" })}
+
+        <div className="sm:col-span-2">
+          <SearchableSelect
+            name="division_id"
+            id="division"
+            label="Division"
+            required
+            value={formData.division_id}
+            options={divisions}
+            placeholder="Select division"
+            error={errors.division}
+            wrapperClassName="mb-0"
+            valueKey="id"
+            labelKey="displayName"
+            onChange={handleDivisionChange}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <SearchableSelect
+            name="city_id"
+            id="city"
+            label="City"
+            required
+            value={formData.city_id}
+            options={cities}
+            disabled={!formData.division_id}
+            placeholder={formData.division_id ? "Select city" : "Select division first"}
+            error={errors.city}
+            wrapperClassName="mb-0"
+            valueKey="id"
+            labelKey="displayName"
+            onChange={handleCityChange}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <SearchableSelect
+            name="area_id"
+            id="area"
+            label="Area"
+            required
+            value={formData.area_id}
+            options={areas}
+            disabled={!formData.city_id}
+            placeholder={formData.city_id ? "Select area" : "Select city first"}
+            error={errors.area}
+            wrapperClassName="mb-0"
+            valueKey="id"
+            labelKey="displayName"
+            onChange={handleAreaChange}
+          />
+        </div>
+
+        {field("address", "Full address", { required: true, placeholder: "House, road, landmark", autoComplete: "street-address", span: "sm:col-span-6", error: errors.address })}
+
+        <div className="sm:col-span-6">
+          <label htmlFor="notes" className="block mb-1.5 text-custom-sm text-white">Order note (optional)</label>
+          <textarea
+            name="notes"
+            id="notes"
+            rows={2}
+            value={formData.notes}
+            onChange={onChange}
+            placeholder="Delivery instructions, preferred time…"
+            className={`${fieldClass(undefined)} h-auto py-2 resize-none`}
+          />
+        </div>
+      </div>
+    </section>
   );
 };
 

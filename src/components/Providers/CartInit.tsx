@@ -3,38 +3,29 @@ import { useEffect, useRef } from "react";
 import { useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { useCart } from "@/lib/useCart";
-import {
-  removeAllItemsFromCart,
-  persistGuestCart,
-} from "@/redux/features/cart-slice";
+import { removeAllItemsFromCart, clearLocalCart } from "@/redux/features/cart-slice";
 
 export default function CartInit() {
   const isAuthenticated = useAppSelector(
     (state) => state.authReducer.isAuthenticated
   );
   const dispatch = useDispatch();
-  const { fetchCart, syncGuestCart } = useCart();
-  const didSync = useRef(false);
+  const { syncGuestCart } = useCart();
   const wasAuthed = useRef(false);
 
-  const fetchCartRef = useRef(fetchCart);
-  fetchCartRef.current = fetchCart;
   const syncGuestCartRef = useRef(syncGuestCart);
   syncGuestCartRef.current = syncGuestCart;
 
+  // On login (and on reload while logged in): merge any guest cart into the
+  // server cart, then load the server cart.
   useEffect(() => {
-    if (!isAuthenticated) return;
-    fetchCartRef.current();
-    if (!didSync.current) {
-      didSync.current = true;
-      syncGuestCartRef.current();
-    }
+    if (isAuthenticated) syncGuestCartRef.current();
   }, [isAuthenticated]);
 
   useEffect(() => {
     if (wasAuthed.current && !isAuthenticated) {
       dispatch(removeAllItemsFromCart());
-      persistGuestCart([]);
+      clearLocalCart();
     }
     wasAuthed.current = isAuthenticated;
   }, [isAuthenticated, dispatch]);

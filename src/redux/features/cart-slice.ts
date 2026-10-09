@@ -5,9 +5,12 @@ export type ReduxCartItem = {
   id: number;
   cartItemId?: number;
   title: string;
+  /** Regular (list) price; equals discountedPrice when there is no discount. */
   price: number;
+  /** Price actually charged for one unit. */
   discountedPrice: number;
   quantity: number;
+  /** Units available; undefined when unknown. */
   stock?: number;
   slug?: string;
   variantName?: string;
@@ -24,56 +27,78 @@ export function makeLineKey(item: {
   cartItemId?: number;
   variantName?: string;
 }): string {
-  return item.cartItemId
-    ? String(item.cartItemId)
-    : `${item.id}:${item.variantName || ""}`;
+  if (item.cartItemId) return String(item.cartItemId);
+  return `${item.id}:${item.variantName || ""}`;
 }
+
+export const lineKeyOf = (item: ReduxCartItem) => item.lineKey || makeLineKey(item);
 
 type InitialState = {
   items: ReduxCartItem[];
 };
 
-const LOCAL_KEY = "guest_cart";
+const GUEST_CART_KEY = "guest_cart";
+
+/** Quantity allowed for an item: at least 1, at most the known stock. */
+function clampQuantity(quantity: number, stock?: number): number {
+  const q = Math.max(1, Math.floor(Number(quantity) || 1));
+  return stock !== undefined && stock > 0 ? Math.min(q, stock) : q;
+}
+
+function normalize(item: ReduxCartItem): ReduxCartItem {
+  const stock = item.stock !== undefined && item.stock !== null ? Number(item.stock) : undefined;
+  return {
+    ...item,
+    price: Number(item.price),
+    discountedPrice: Number(item.discountedPrice),
+    stock,
+    quantity: clampQuantity(item.quantity, stock),
+    lineKey: item.lineKey || makeLineKey(item),
+  };
+}
+
+/** Merge lines that share a key (summing quantities, capped at stock). */
+function mergeLines(items: ReduxCartItem[]): ReduxCartItem[] {
+  const merged = new Map<string, ReduxCartItem>();
+  for (const raw of items) {
+    const item = normalize(raw);
+    const existing = merged.get(item.lineKey!);
+    if (existing) {
+      existing.quantity = clampQuantity(existing.quantity + item.quantity, existing.stock ?? item.stock);
+    } else {
+      merged.set(item.lineKey!, item);
+    }
+  }
+  return Array.from(merged.values());
+}
 
 export function loadLocalCart(): ReduxCartItem[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(LOCAL_KEY);
+    const raw = localStorage.getItem(GUEST_CART_KEY);
     const items: ReduxCartItem[] = raw ? JSON.parse(raw) : [];
-    const merged = new Map<string, ReduxCartItem>();
-    for (const item of items) {
-      const normalized = {
-        ...item,
-        price: Number(item.price),
-        discountedPrice: Number(item.discountedPrice),
-        lineKey: item.lineKey || makeLineKey(item),
-      };
-      const lineKey = normalized.lineKey;
-      const existing = merged.get(lineKey);
-      if (existing) {
-        existing.quantity = Math.min(
-          existing.quantity + normalized.quantity,
-          existing.stock ?? Infinity
-        );
-      } else {
-        merged.set(lineKey, normalized);
-      }
-    }
-    return Array.from(merged.values());
+    return Array.isArray(items) ? mergeLines(items) : [];
   } catch {
     return [];
   }
 }
 
-function saveLocalCart(items: ReduxCartItem[]) {
+export function saveLocalCart(items: ReduxCartItem[]) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(items));
+    localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+  } catch {}
+}
+
+export function clearLocalCart() {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(GUEST_CART_KEY);
   } catch {}
 }
 
 // Starts empty so server and client render the same markup; the guest cart is
-// loaded from localStorage after mount (see StoreHydrator).
+// loaded from localStorage after mount and saved by StoreHydrator.
 const initialState: InitialState = {
   items: [],
 };
@@ -83,73 +108,20 @@ export const cart = createSlice({
   initialState,
   reducers: {
     setCartItems: (state, action: PayloadAction<ReduxCartItem[]>) => {
-      state.items = action.payload;
+      state.items = mergeLines(action.payload);
     },
     addItemToCart: (state, action: PayloadAction<ReduxCartItem>) => {
-      const {
-        id,
-        cartItemId,
-        title,
-        price,
-        quantity,
-        discountedPrice,
-        imgs,
-        variantName,
-        variantId,
-        stock,
-        slug,
-      } = action.payload;
-      const lineKey = action.payload.lineKey || makeLineKey(action.payload);
-
-      const existingItem = state.items.find((item) =>
-        item.lineKey ? item.lineKey === lineKey : item.id === id
-      );
-
-      if (existingItem) {
-        existingItem.quantity = Math.max(
-          1,
-          Math.min(
-            existingItem.quantity + quantity,
-            existingItem.stock ?? Infinity
-          )
-        );
-      } else {
-        state.items.push({
-          id,
-          cartItemId,
-          title,
-          price: Number(price),
-          quantity,
-          discountedPrice: Number(discountedPrice),
-          imgs,
-          variantName,
-          variantId,
-          stock,
-          slug,
-          lineKey,
-        });
-      }
+      state.items = mergeLines([...state.items, action.payload]);
     },
     removeItemFromCart: (state, action: PayloadAction<string>) => {
-      const lineKey = action.payload;
-      state.items = state.items.filter(
-        (item) => (item.lineKey || makeLineKey(item)) !== lineKey
-      );
+      state.items = state.items.filter((item) => lineKeyOf(item) !== action.payload);
     },
     updateCartItemQuantity: (
       state,
       action: PayloadAction<{ lineKey: string; quantity: number }>
     ) => {
-      const { lineKey, quantity } = action.payload;
-      const existingItem = state.items.find(
-        (item) => (item.lineKey || makeLineKey(item)) === lineKey
-      );
-      if (existingItem) {
-        existingItem.quantity = Math.min(
-          quantity,
-          existingItem.stock ?? Infinity
-        );
-      }
+      const item = state.items.find((i) => lineKeyOf(i) === action.payload.lineKey);
+      if (item) item.quantity = clampQuantity(action.payload.quantity, item.stock);
     },
     removeAllItemsFromCart: (state) => {
       state.items = [];
@@ -159,11 +131,13 @@ export const cart = createSlice({
 
 export const selectCartItems = (state: RootState) => state.cartReducer.items;
 
-export const selectTotalPrice = createSelector([selectCartItems], (items) => {
-  return items.reduce((total, item) => {
-    return total + item.discountedPrice * item.quantity;
-  }, 0);
-});
+export const selectTotalPrice = createSelector([selectCartItems], (items) =>
+  items.reduce((total, item) => total + item.discountedPrice * item.quantity, 0)
+);
+
+export const selectCartCount = createSelector([selectCartItems], (items) =>
+  items.reduce((sum, item) => sum + item.quantity, 0)
+);
 
 export const {
   setCartItems,
@@ -172,9 +146,5 @@ export const {
   updateCartItemQuantity,
   removeAllItemsFromCart,
 } = cart.actions;
-
-export function persistGuestCart(items: ReduxCartItem[]) {
-  saveLocalCart(items);
-}
 
 export default cart.reducer;

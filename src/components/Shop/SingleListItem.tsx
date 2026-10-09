@@ -5,7 +5,7 @@ import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { updateQuickView } from "@/redux/features/quickView-slice";
 import WishlistButton from "@/components/Common/WishlistButton";
-import { useCart, resolveAddableItem } from "@/lib/useCart";
+import { useCart } from "@/lib/useCart";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import type { ProductDetail } from "@/lib/types";
 const SingleListItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
   const dispatch = useDispatch<AppDispatch>();
-  const { addItem } = useCart();
+  const { addResolved } = useCart();
 
   // update the QuickView state with full product detail
   const handleQuickViewUpdate = async () => {
@@ -34,8 +34,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
 
   // add to cart
   const handleAddToCart = async () => {
-    const payload = await resolveAddableItem(item);
-    if (payload) addItem(payload);
+    await addResolved(item);
   };
 
   const href = item.slug ? `/shop/${item.slug}` : "/shop";

@@ -3,22 +3,21 @@ import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 
 import { removeItemFromWishlist } from "@/redux/features/wishlist-slice";
-import { useCart, resolveAddableItem } from "@/lib/useCart";
+import { useCart } from "@/lib/useCart";
 
 import Image from "next/image";
 import Link from "next/link";
 
 const SingleItem = ({ item }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { addItem } = useCart();
+  const { addResolved } = useCart();
 
   const handleRemoveFromWishlist = () => {
     dispatch(removeItemFromWishlist(item.id));
   };
 
   const handleAddToCart = async () => {
-    const payload = await resolveAddableItem(item);
-    if (payload) addItem(payload);
+    await addResolved(item);
   };
 
   return (
