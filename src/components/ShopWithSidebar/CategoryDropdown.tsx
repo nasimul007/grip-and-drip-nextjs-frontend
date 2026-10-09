@@ -68,7 +68,7 @@ const CategoryItem = ({
 
           <div
             className={`cursor-pointer flex items-center justify-center rounded w-4 h-4 border shrink-0 ${
-              selected ? "border-brand-accent bg-brand-accent" : "bg-brand-card border-brand-border"
+              selected ? "border-brand-accent bg-brand-accent" : "bg-brand-surface border-brand-muted"
             }`}
           >
             <svg
@@ -81,7 +81,7 @@ const CategoryItem = ({
             >
               <path
                 d="M8.33317 2.5L3.74984 7.08333L1.6665 5"
-                stroke="white"
+                stroke="#0A0A0F"
                 strokeWidth="1.94437"
                 strokeLinecap="round"
                 strokeLinejoin="round"

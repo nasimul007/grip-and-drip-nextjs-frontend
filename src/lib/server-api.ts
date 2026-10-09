@@ -128,3 +128,13 @@ export async function getRecentProducts(pages = 3): Promise<ProductListItem[]> {
   }
   return out;
 }
+
+export type FilterFacets = {
+  brands: { name: string; count: number }[];
+  price: { min: number; max: number };
+  count: number;
+};
+
+/** Brands with counts and the price range for the shop sidebar (null on older backends). */
+export const getFilterFacets = (query: string) =>
+  serverGet<FilterFacets>(`/api/products/filters/?${query}`, 120);

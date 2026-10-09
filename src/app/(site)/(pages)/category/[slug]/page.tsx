@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import ShopWithSidebar from "@/components/ShopWithSidebar";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import JsonLd from "@/components/Common/JsonLd";
-import { getCategory, getProducts } from "@/lib/server-api";
-import { PAGE_SIZE, buildApiQuery, hasFacetFilters, parseFilters } from "@/lib/shop-query";
+import { getCategory, getFilterFacets, getProducts } from "@/lib/server-api";
+import { PAGE_SIZE, buildApiQuery, buildFacetQuery, hasFacetFilters, parseFilters } from "@/lib/shop-query";
 import { absoluteUrl, mediaUrl, stripHtml, truncate } from "@/lib/site";
 
 type Props = {
@@ -49,7 +49,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   if (!category) notFound();
 
   const filters = parseFilters(sp);
-  const initial = await getProducts(buildApiQuery(filters, category.id));
+  const [initial, facets] = await Promise.all([
+    getProducts(buildApiQuery(filters, category.id)),
+    getFilterFacets(buildFacetQuery(filters, category.id)),
+  ]);
   const intro = stripHtml(category.description);
 
   const crumbs = [
@@ -93,6 +96,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <Suspense>
         <ShopWithSidebar
           categories={category.subcategories}
+          facets={facets}
           lockedCategoryId={category.id}
           initialData={initial ? { results: initial.results, count: initial.count } : null}
         />

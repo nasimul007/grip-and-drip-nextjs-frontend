@@ -1,126 +1,105 @@
 import { useState } from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
+import { ChevronDownIcon } from '@/components/Common/icons';
 
-export const MAX_PRICE = 100000;
+export const FALLBACK_MAX_PRICE = 100000;
 
 const PriceDropdown = ({
   onPriceChange,
-  initialMin = 0,
-  initialMax = MAX_PRICE,
+  rangeMin = 0,
+  rangeMax = FALLBACK_MAX_PRICE,
+  initialMin,
+  initialMax,
 }: {
   onPriceChange?: (min: number, max: number) => void;
+  /** Cheapest / most expensive product in the current selection. */
+  rangeMin?: number;
+  rangeMax?: number;
   initialMin?: number;
   initialMax?: number;
 }) => {
-  const [toggleDropdown, setToggleDropdown] = useState(true);
-  const [selectedPrice, setSelectedPrice] = useState({
-    from: initialMin,
-    to: initialMax,
-  });
+  const [open, setOpen] = useState(true);
+  const lo = Math.max(rangeMin, initialMin || rangeMin);
+  const hi = Math.min(rangeMax, initialMax || rangeMax);
+  const [price, setPrice] = useState({ from: lo, to: Math.max(lo, hi) });
+  const [minStr, setMinStr] = useState(String(lo));
+  const [maxStr, setMaxStr] = useState(String(Math.max(lo, hi)));
+  // Prices are in whole taka; keep the slider usable on both small and large ranges.
+  const step = rangeMax - rangeMin > 5000 ? 50 : 10;
 
-  const [minStr, setMinStr] = useState(String(initialMin));
-  const [maxStr, setMaxStr] = useState(String(initialMax));
+  const apply = (from: number, to: number) => {
+    setPrice({ from, to });
+    setMinStr(String(from));
+    setMaxStr(String(to));
+    onPriceChange?.(from, to);
+  };
 
   const commitMin = (raw: string) => {
-    const val = Math.max(0, Math.min(Number(raw) || 0, selectedPrice.to));
-    setSelectedPrice((prev) => ({ ...prev, from: val }));
-    setMinStr(String(val));
-    if (onPriceChange) onPriceChange(val, selectedPrice.to);
+    const val = Math.max(rangeMin, Math.min(Number(raw) || rangeMin, price.to));
+    apply(val, price.to);
+  };
+  const commitMax = (raw: string) => {
+    const val = Math.min(rangeMax, Math.max(Number(raw) || rangeMax, price.from));
+    apply(price.from, val);
   };
 
-  const commitMax = (raw: string) => {
-    const val = Math.max(selectedPrice.from, Math.min(Number(raw) || 0, MAX_PRICE));
-    setSelectedPrice((prev) => ({ ...prev, to: val }));
-    setMaxStr(String(val));
-    if (onPriceChange) onPriceChange(selectedPrice.from, val);
-  };
+  const box = "flex items-center flex-1 min-w-0 rounded border border-brand-border bg-brand-surface";
+  const field = "w-full min-w-0 bg-transparent text-white px-1 py-1.5 text-sm outline-none";
 
   return (
     <div className="bg-brand-card border border-brand-border rounded-lg">
-      <div
-        onClick={() => setToggleDropdown(!toggleDropdown)}
-        className="cursor-pointer flex items-center justify-between py-3 pl-6 pr-5.5"
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between px-4 py-3 text-left text-white"
       >
-        <p className="text-white">Price</p>
-        <button
-          onClick={() => setToggleDropdown(!toggleDropdown)}
-          id="price-dropdown-btn"
-          aria-label="button for price dropdown"
-          className={`text-white ease-out duration-200 ${
-            toggleDropdown && 'rotate-180'
-          }`}
-        >
-          <svg
-            className="fill-current"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M4.43057 8.51192C4.70014 8.19743 5.17361 8.161 5.48811 8.43057L12 14.0122L18.5119 8.43057C18.8264 8.16101 19.2999 8.19743 19.5695 8.51192C19.839 8.82642 19.8026 9.29989 19.4881 9.56946L12.4881 15.5695C12.2072 15.8102 11.7928 15.8102 11.5119 15.5695L4.51192 9.56946C4.19743 9.29989 4.161 8.82641 4.43057 8.51192Z"
-              fill=""
-            />
-          </svg>
-        </button>
-      </div>
-
-      {/* // <!-- dropdown menu --> */}
-      <div className={`p-6 ${toggleDropdown ? 'block' : 'hidden'}`}>
-        <div id="pricingOne">
-          <div className="price-range">
-            <RangeSlider
-              id="range-slider-gradient"
-              className="margin-lg"
-              step={'any'}
-              max={MAX_PRICE}
-              value={[selectedPrice.from, selectedPrice.to]}
-              onInput={(e) => {
-                const from = Math.floor(e[0]);
-                const to = Math.ceil(e[1]);
-                setSelectedPrice({ from, to });
-                setMinStr(String(from));
-                setMaxStr(String(to));
-                if (onPriceChange) onPriceChange(from, to);
-              }}
-            />
-
-            <div className="price-amount flex items-center justify-between pt-4 gap-2">
-              <div className="flex items-center flex-1 min-w-0 rounded border border-brand-border bg-brand-card">
-                <span className="shrink-0 px-2 py-1.5 text-white">৳</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  aria-label="Minimum price"
-                  value={minStr}
-                  onChange={(e) => setMinStr(e.target.value)}
-                  onBlur={(e) => commitMin(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && commitMin(e.currentTarget.value)}
-                  className="w-full min-w-0 bg-transparent text-white px-1 py-1.5 outline-none"
-                />
-              </div>
-              <span className="shrink-0 text-brand-muted">—</span>
-              <div className="flex items-center flex-1 min-w-0 rounded border border-brand-border bg-brand-card">
-                <span className="shrink-0 px-2 py-1.5 text-white">৳</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  aria-label="Maximum price"
-                  value={maxStr}
-                  onChange={(e) => setMaxStr(e.target.value)}
-                  onBlur={(e) => commitMax(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && commitMax(e.currentTarget.value)}
-                  className="w-full min-w-0 bg-transparent text-white px-1 py-1.5 outline-none"
-                />
-              </div>
+        Price
+        <ChevronDownIcon className={`ease-out duration-200 ${open ? "rotate-180" : ""}`} size={18} />
+      </button>
+      {open && (
+        <div className="border-t border-brand-border px-4 py-4">
+          <RangeSlider
+            id="range-slider-gradient"
+            className="margin-lg"
+            step={step}
+            min={rangeMin}
+            max={rangeMax}
+            value={[price.from, price.to]}
+            onInput={(e) => apply(Math.floor(e[0]), Math.ceil(e[1]))}
+          />
+          <div className="flex items-center justify-between pt-4 gap-2">
+            <div className={box}>
+              <span className="shrink-0 pl-2 text-white">৳</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                aria-label="Minimum price"
+                value={minStr}
+                onChange={(e) => setMinStr(e.target.value)}
+                onBlur={(e) => commitMin(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && commitMin(e.currentTarget.value)}
+                className={field}
+              />
+            </div>
+            <span className="shrink-0 text-brand-muted">–</span>
+            <div className={box}>
+              <span className="shrink-0 pl-2 text-white">৳</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                aria-label="Maximum price"
+                value={maxStr}
+                onChange={(e) => setMaxStr(e.target.value)}
+                onBlur={(e) => commitMax(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && commitMax(e.currentTarget.value)}
+                className={field}
+              />
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
