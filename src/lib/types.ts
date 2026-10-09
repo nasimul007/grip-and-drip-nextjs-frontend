@@ -119,7 +119,9 @@ export type CartItem = {
   product_slug: string;
   product_image: string | null;
   price: number;
+  compare_price?: number | null;
   quantity: number;
+  variant_id?: number | null;
   variant_name: string;
   total: number;
   stock?: number;
@@ -130,6 +132,8 @@ export type Cart = {
   id: number;
   items: CartItem[];
   total: number;
+  /** Set by the API when a quantity was capped at available stock. */
+  warning?: string;
   created_at: string;
   updated_at: string;
 };

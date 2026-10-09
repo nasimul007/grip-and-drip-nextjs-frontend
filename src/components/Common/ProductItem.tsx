@@ -10,7 +10,7 @@ import { updateQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
 import { api } from "@/lib/api";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
-import { useCart, resolveAddableItem } from "@/lib/useCart";
+import { useCart } from "@/lib/useCart";
 import { discountPercent, formatPrice } from "@/lib/format";
 import WishlistButton from "@/components/Common/WishlistButton";
 import { CartIcon, SearchIcon } from "@/components/Common/icons";
@@ -18,7 +18,7 @@ import type { ProductDetail } from "@/lib/types";
 
 const ProductItem = ({ item, priority = false }: { item: Product; priority?: boolean }) => {
   const { openModal } = useModalContext();
-  const { addItem } = useCart();
+  const { addResolved } = useCart();
   const dispatch = useDispatch<AppDispatch>();
   const [adding, setAdding] = useState(false);
 
@@ -40,8 +40,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
   const handleAddToCart = async () => {
     setAdding(true);
     try {
-      const payload = await resolveAddableItem(item);
-      if (payload) addItem(payload);
+      await addResolved(item);
     } finally {
       setAdding(false);
     }
@@ -122,7 +121,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={outOfStock || adding}
+          disabled={outOfStock}
           className="mt-auto flex items-center justify-center gap-2 w-full rounded-md border border-brand-accent/60 py-2 text-custom-sm font-medium text-brand-accent hover:bg-brand-accent hover:text-brand-dark disabled:border-brand-border disabled:text-brand-muted disabled:hover:bg-transparent disabled:cursor-not-allowed transition"
         >
           <CartIcon size={16} />

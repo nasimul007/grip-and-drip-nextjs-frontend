@@ -25,7 +25,7 @@ type SearchableSelectProps = {
 };
 
 const inputClass =
-  "rounded-md bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
+  "rounded-md bg-brand-surface placeholder:text-brand-muted w-full h-10 px-3.5 text-sm outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
 
 const fieldClass = (error?: string) =>
   `${inputClass} border ${
@@ -130,7 +130,7 @@ const SearchableSelect = ({
 
   return (
     <div className={wrapperClassName} ref={containerRef}>
-      <label htmlFor={id} className="block mb-2.5">
+      <label htmlFor={id} className="block mb-1.5 text-custom-sm text-white">
         {label} {required && <span className="text-red">*</span>}
       </label>
       <div className="relative">
@@ -156,7 +156,7 @@ const SearchableSelect = ({
           onKeyDown={handleKeyDown}
         />
 
-        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-brand-muted">
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted">
           <svg
             className={`fill-current ease-out duration-200 ${
               open && "rotate-180"
@@ -179,7 +179,7 @@ const SearchableSelect = ({
         {open && !disabled && (
           <ul className="absolute z-20 mt-1 w-full max-h-56 overflow-y-auto rounded-md border border-brand-border bg-brand-card shadow-1">
             {filtered.length === 0 ? (
-              <li className="px-5 py-2.5 text-brand-muted text-sm">
+              <li className="px-3.5 py-2 text-brand-muted text-sm">
                 No matches
               </li>
             ) : (
@@ -188,7 +188,7 @@ const SearchableSelect = ({
                   key={opt[valueKey]}
                   onMouseEnter={() => setHighlight(index)}
                   onClick={() => selectOption(opt)}
-                  className={`px-5 py-2.5 text-sm cursor-pointer ease-out duration-150 ${
+                  className={`px-3.5 py-2 text-sm cursor-pointer ease-out duration-150 ${
                     index === highlight
                       ? "bg-brand-accent/10 text-brand-accent"
                       : "text-white hover:bg-brand-accent/10"

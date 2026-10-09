@@ -1,123 +1,106 @@
 "use client";
-import React, { useEffect, useState } from "react";
-
-import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
-import {
-  selectTotalPrice,
-} from "@/redux/features/cart-slice";
-import { useAppSelector } from "@/redux/store";
-import { useSelector } from "react-redux";
-import SingleItem from "./SingleItem";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
+import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
+import { lineKeyOf, selectCartCount, selectTotalPrice } from "@/redux/features/cart-slice";
+import { useAppSelector } from "@/redux/store";
+import { formatPrice } from "@/lib/format";
+import SingleItem from "./SingleItem";
 import EmptyCart from "./EmptyCart";
+import FreeShippingProgress from "@/components/Common/FreeShippingProgress";
+import { CloseIcon } from "@/components/Common/icons";
 
 const CartSidebarModal = () => {
   const { isCartModalOpen, closeCartModal } = useCartModalContext();
   const cartItems = useAppSelector((state) => state.cartReducer.items);
-
-  const totalPrice = useSelector(selectTotalPrice);
+  const count = useAppSelector(selectCartCount);
+  const totalPrice = useAppSelector(selectTotalPrice);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // closing modal while clicking outside
-    function handleClickOutside(event) {
-      if (!event.target.closest(".modal-content")) {
-        closeCartModal();
-      }
-    }
-
-    if (isCartModalOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      // lock background page scroll while the cart modal is open
-      document.body.style.overflow = "hidden";
-    }
-
+    if (!isCartModalOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeCartModal();
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden"; // lock page scroll while open
+    closeRef.current?.focus();
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
   }, [isCartModalOpen, closeCartModal]);
 
   return (
     <div
-      className={`fixed top-0 left-0 z-99999 overflow-y-auto no-scrollbar overscroll-contain w-full h-screen bg-[#000000CC] ease-linear duration-300 ${
-        isCartModalOpen ? "translate-x-0" : "translate-x-full"
-      }`}
+      className={`fixed inset-0 z-99999 ${isCartModalOpen ? "visible" : "invisible delay-300"}`}
+      aria-hidden={!isCartModalOpen}
+      {...(!isCartModalOpen ? { inert: true } : {})}
     >
-      <div className="flex h-full justify-end">
-        <div className="flex h-full w-full max-w-[500px] flex-col shadow-1 bg-brand-card px-4 sm:px-7.5 lg:px-11 relative modal-content">
-          <div className="sticky top-0 bg-brand-card flex items-center justify-between pb-7 pt-4 sm:pt-7.5 lg:pt-11 border-b border-brand-border mb-7.5 shrink-0">
-            <h2 className="font-medium text-white text-lg sm:text-2xl">
-              Cart View
-            </h2>
-            <button
-              onClick={() => closeCartModal()}
-              aria-label="button for close modal"
-              className="flex items-center justify-center ease-in duration-150 bg-brand-surface text-brand-muted hover:text-white"
-            >
-              <svg
-                className="fill-current"
-                width="30"
-                height="30"
-                viewBox="0 0 30 30"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.5379 11.2121C12.1718 10.846 11.5782 10.846 11.212 11.2121C10.8459 11.5782 10.8459 12.1718 11.212 12.5379L13.6741 15L11.2121 17.4621C10.846 17.8282 10.846 18.4218 11.2121 18.7879C11.5782 19.154 12.1718 19.154 12.5379 18.7879L15 16.3258L17.462 18.7879C17.8281 19.154 18.4217 19.154 18.7878 18.7879C19.154 18.4218 19.154 17.8282 18.7878 17.462L16.3258 15L18.7879 12.5379C19.154 12.1718 19.154 11.5782 18.7879 11.2121C18.4218 10.846 17.8282 10.846 17.462 11.2121L15 13.6742L12.5379 11.2121Z"
-                  fill=""
-                />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M15 1.5625C7.57867 1.5625 1.5625 7.57867 1.5625 15C1.5625 22.4213 7.57867 28.4375 15 28.4375C22.4213 28.4375 28.4375 22.4213 28.4375 15C28.4375 7.57867 22.4213 1.5625 15 1.5625ZM3.4375 15C3.4375 8.61421 8.61421 3.4375 15 3.4375C21.3858 3.4375 26.5625 8.61421 26.5625 15C26.5625 21.3858 21.3858 26.5625 15 26.5625C8.61421 26.5625 3.4375 21.3858 3.4375 15Z"
-                  fill=""
-                />
-              </svg>
-            </button>
-          </div>
+      <div
+        className={`absolute inset-0 bg-[#000000CC] transition-opacity duration-300 ${isCartModalOpen ? "opacity-100" : "opacity-0"}`}
+        onClick={closeCartModal}
+      />
 
-          <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar overscroll-contain">
-            <div className="flex flex-col gap-6">
-              {/* <!-- cart item --> */}
-              {cartItems.length > 0 ? (
-                cartItems.map((item, key) => (
-                  <SingleItem
-                    key={key}
-                    item={item}
-                  />
-                ))
-              ) : (
-                <EmptyCart />
-              )}
+      <aside
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping cart"
+        className={`absolute right-0 top-0 flex h-full w-full max-w-[400px] flex-col bg-brand-card shadow-1 transition-transform duration-300 ${
+          isCartModalOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex shrink-0 items-center justify-between border-b border-brand-border px-4 py-3">
+          <h2 className="text-base font-semibold text-white">
+            Shopping cart{count > 0 && <span className="ml-1.5 text-brand-muted font-normal">({count})</span>}
+          </h2>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={closeCartModal}
+            aria-label="Close cart"
+            className="rounded-md p-1.5 text-brand-muted hover:text-white"
+          >
+            <CloseIcon size={20} />
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 no-scrollbar">
+          {cartItems.length > 0 ? (
+            <ul>
+              {cartItems.map((item) => (
+                <SingleItem key={lineKeyOf(item)} item={item} onNavigate={closeCartModal} />
+              ))}
+            </ul>
+          ) : (
+            <EmptyCart />
+          )}
+        </div>
+
+        {cartItems.length > 0 && (
+          <div className="shrink-0 border-t border-brand-border px-4 py-3 flex flex-col gap-3">
+            <FreeShippingProgress subtotal={totalPrice} />
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-brand-muted">Subtotal</span>
+              <span className="text-lg font-semibold text-white">{formatPrice(totalPrice)}</span>
             </div>
-          </div>
-
-          <div className="border-t border-brand-border bg-brand-card pt-5 pb-4 sm:pb-7.5 lg:pb-11 mt-7.5 sticky bottom-0 shrink-0">
-            <div className="flex items-center justify-between gap-5 mb-6">
-              <p className="font-medium text-xl text-white">Subtotal:</p>
-
-              <p className="font-medium text-xl text-white">৳{totalPrice}</p>
-            </div>
-
-            <div className="flex items-center gap-4">
+            <div className="grid grid-cols-2 gap-2.5">
               <Link
-                onClick={() => closeCartModal()}
                 href="/cart"
-                className="w-full flex justify-center font-medium text-brand-dark bg-brand-accent py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-brand-hover"
+                onClick={closeCartModal}
+                className="flex h-10 items-center justify-center rounded-md border border-brand-border text-sm font-medium text-white hover:border-brand-accent"
               >
-                View Cart
+                View cart
               </Link>
-
               <Link
                 href="/checkout"
-                className="w-full flex justify-center font-medium text-white bg-brand-surface py-[13px] px-6 rounded-md ease-out duration-200 hover:bg-brand-border"
+                onClick={closeCartModal}
+                className="flex h-10 items-center justify-center rounded-md bg-brand-accent text-sm font-medium text-brand-dark hover:bg-brand-hover"
               >
                 Checkout
               </Link>
             </div>
           </div>
-        </div>
-      </div>
+        )}
+      </aside>
     </div>
   );
 };

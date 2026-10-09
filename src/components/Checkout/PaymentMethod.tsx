@@ -1,5 +1,5 @@
+"use client";
 import React from "react";
-import Image from "next/image";
 
 export type PaymentMethodValue = "cash" | "bkash" | "bank";
 
@@ -12,8 +12,47 @@ type Props = {
   onTransactionIdChange: (value: string) => void;
 };
 
-const BkashNumber =
-  process.env.NEXT_PUBLIC_BKASH_NUMBER || "01XXX-XXXXXX";
+const BKASH_NUMBER = process.env.NEXT_PUBLIC_BKASH_NUMBER || "01XXX-XXXXXX";
+
+const input =
+  "rounded-md border border-brand-border bg-brand-card text-white placeholder:text-brand-muted w-full h-10 px-3.5 text-sm outline-none focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20";
+
+const Option = ({
+  id,
+  checked,
+  disabled,
+  onSelect,
+  title,
+  note,
+}: {
+  id: string;
+  checked: boolean;
+  disabled?: boolean;
+  onSelect: () => void;
+  title: string;
+  note: string;
+}) => (
+  <label
+    htmlFor={id}
+    className={`flex items-center gap-3 rounded-md border px-3.5 py-2.5 select-none ${
+      disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-brand-accent"
+    } ${checked ? "border-brand-accent bg-brand-surface" : "border-brand-border"}`}
+  >
+    <input
+      type="radio"
+      name="payment"
+      id={id}
+      checked={checked}
+      disabled={disabled}
+      onChange={onSelect}
+      className="h-4 w-4 accent-brand-accent"
+    />
+    <span>
+      <span className="block text-sm font-medium text-white">{title}</span>
+      <span className="block text-custom-xs text-brand-muted">{note}</span>
+    </span>
+  </label>
+);
 
 const PaymentMethod = ({
   payment,
@@ -22,166 +61,51 @@ const PaymentMethod = ({
   onPayment,
   onBkashNumberChange,
   onTransactionIdChange,
-}: Props) => {
-  return (
-    <div className="bg-brand-card border border-brand-border rounded-[10px] mt-7.5">
-      <div className="border-b border-brand-border py-5 px-4 sm:px-8.5">
-        <h3 className="font-medium text-xl text-white">Payment Method</h3>
-      </div>
+}: Props) => (
+  <section className="rounded-lg border border-brand-border bg-brand-card">
+    <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">Payment method</h2>
+    <div className="flex flex-col gap-2.5 p-4">
+      <Option
+        id="pay-cash"
+        checked={payment === "cash"}
+        onSelect={() => onPayment("cash")}
+        title="Cash on delivery"
+        note="Pay when you receive. Minimum advance ৳200 via bKash to confirm the order."
+      />
 
-      <div className="p-4 sm:p-8.5">
-        <div className="flex flex-col gap-3">
-          <label
-            htmlFor="cash"
-            className="flex cursor-pointer select-none items-center gap-4"
-          >
-            <div className="relative">
-              <input
-                type="checkbox"
-                name="cash"
-                id="cash"
-                className="sr-only"
-                onChange={() => onPayment("cash")}
-              />
-              <div
-                className={`flex h-4 w-4 items-center justify-center rounded-full ${
-                  payment === "cash"
-                    ? "border-4 border-brand-accent"
-                    : "border border-brand-border"
-                }`}
-              ></div>
+      {payment === "cash" && (
+        <div className="rounded-md border border-brand-border bg-brand-surface p-3.5 text-custom-sm">
+          <p className="text-white mb-2.5">
+            অর্ডার কনফার্ম করতে অনুগ্রহ করে নিচের বিকাশ মার্চেন্ট নাম্বারে ২০০ টাকা সেন্ড মানি করে, বিকাশ নাম্বার ও
+            ট্রান্সেকশন আইডি নিচের বক্সে লিখুন।
+          </p>
+          <p className="mb-3 flex items-center justify-between gap-3">
+            <span className="text-white font-medium">bKash merchant number</span>
+            <span className="font-semibold text-brand-accent">{BKASH_NUMBER}</span>
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label htmlFor="bkashNumber" className="block mb-1.5 text-white">Your bKash number</label>
+              <input id="bkashNumber" type="text" inputMode="tel" value={bkashNumber} onChange={(e) => onBkashNumberChange(e.target.value)} placeholder="01XXXXXXXXX" className={input} />
             </div>
-
-            <div
-              className={`rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-brand-surface hover:border-transparent hover:shadow-none min-w-[240px] ${
-                payment === "cash"
-                  ? "border-transparent bg-brand-surface"
-                  : " border-brand-border"
-              }`}
-            >
-              <div className="flex items-center">
-                <div className="pr-2.5">
-                  <Image
-                    src="/images/checkout/cash.svg"
-                    alt="cash"
-                    width={21}
-                    height={21}
-                  />
-                </div>
-
-                <div className="border-l border-brand-border pl-2.5">
-                  <p>Cash on delivery</p>
-                  <p className="text-custom-xs text-brand-muted">
-                    minimum advance 200tk
-                  </p>
-                </div>
-              </div>
-            </div>
-          </label>
-
-          <div
-            className={`grid transition-[grid-template-rows] ease-out duration-300 ${
-              payment === "cash" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-            }`}
-          >
-            <div className="overflow-hidden">
-              <div className="rounded-md border border-brand-border bg-brand-surface p-5">
-                <p className="text-custom-sm text-white mb-4">
-                  অর্ডার কনফার্ম করতে অনুগ্রহ করে নিচের বিকাশ মার্চেন্ট নাম্বারে ২০০ টাকা সেন্ড মানি করে,
-                  বিকাশ নাম্বার ও ট্রান্সেকশন আইডি নিচের বক্সে লিখুন।
-                </p>
-
-                <div className="flex items-center justify-between mb-5 text-custom-sm">
-                  <span className="text-white font-medium">
-                    bKash Merchant Number:
-                  </span>
-                  <span className="font-semibold text-brand-accent">{BkashNumber}</span>
-                </div>
-
-                <div className="mb-4">
-                  <label htmlFor="bkashNumber" className="block mb-2.5">
-                    bKash Number
-                  </label>
-                  <input
-                    type="text"
-                    name="bkashNumber"
-                    id="bkashNumber"
-                    value={bkashNumber}
-                    onChange={(e) => onBkashNumberChange(e.target.value)}
-                    placeholder="01XXXXXXXXX"
-                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="transactionId" className="block mb-2.5">
-                    Transaction ID
-                  </label>
-                  <input
-                    type="text"
-                    name="transactionId"
-                    id="transactionId"
-                    value={transactionId}
-                    onChange={(e) => onTransactionIdChange(e.target.value)}
-                    placeholder="Transaction ID"
-                    className="rounded-md border border-brand-border bg-brand-card placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
-                  />
-                </div>
-              </div>
+            <div>
+              <label htmlFor="transactionId" className="block mb-1.5 text-white">Transaction ID</label>
+              <input id="transactionId" type="text" value={transactionId} onChange={(e) => onTransactionIdChange(e.target.value)} placeholder="Transaction ID" className={input} />
             </div>
           </div>
-
-          <label
-            htmlFor="bank"
-            className="flex cursor-pointer select-none items-center gap-4"
-          >
-            <div className="relative">
-              <input
-                type="checkbox"
-                name="bank"
-                id="bank"
-                className="sr-only"
-                onChange={() => onPayment("bank")}
-              />
-              <div
-                className={`flex h-4 w-4 items-center justify-center rounded-full ${
-                  payment === "bank"
-                    ? "border-4 border-brand-accent"
-                    : "border border-brand-border"
-                }`}
-              ></div>
-            </div>
-
-            <div
-              className={`rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-brand-surface hover:border-transparent hover:shadow-none ${
-                payment === "bank"
-                  ? "border-transparent bg-brand-surface"
-                  : " border-brand-border"
-              }`}
-            >
-              <div className="flex items-center">
-                <div className="pr-2.5">
-                  <Image
-                    src="/images/checkout/bank.svg"
-                    alt="bank"
-                    width={29}
-                    height={12}
-                  />
-                </div>
-
-                <div className="border-l border-brand-border pl-2.5">
-                  <p>Bank payment</p>
-                  <p className="text-custom-xs text-brand-muted">
-                    Stripe payment coming soon
-                  </p>
-                </div>
-              </div>
-            </div>
-          </label>
         </div>
-      </div>
+      )}
+
+      <Option
+        id="pay-bank"
+        checked={payment === "bank"}
+        disabled
+        onSelect={() => onPayment("bank")}
+        title="Bank / card payment"
+        note="Coming soon"
+      />
     </div>
-  );
-};
+  </section>
+);
 
 export default PaymentMethod;

@@ -8,7 +8,7 @@ export default function WhatsAppFloat() {
   const pathname = usePathname();
   const href = whatsappHref("Hi, I have a question about a product.");
   // Product pages have their own "Order on WhatsApp" button.
-  if (!href || pathname.startsWith("/checkout") || /^\/shop\/[^/]+$/.test(pathname)) return null;
+  if (!href || /^\/(checkout|cart)/.test(pathname) || /^\/shop\/[^/]+$/.test(pathname)) return null;
   return (
     <a
       href={href}

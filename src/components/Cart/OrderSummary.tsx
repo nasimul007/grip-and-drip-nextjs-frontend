@@ -1,17 +1,31 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import type { ReduxCartItem } from "@/redux/features/cart-slice";
-import { api } from "@/lib/api";
+import { formatPrice } from "@/lib/format";
+import FreeShippingProgress from "@/components/Common/FreeShippingProgress";
+import FallbackImage from "@/components/Common/FallbackImage";
 
 type Props = {
   cartItems: ReduxCartItem[];
   subtotal: number;
+  /** When set, the shipping fee row and total include it (checkout). */
   shippingCost?: number;
   shippingLabel?: string;
   showProceedLink?: boolean;
   sticky?: boolean;
+  /** Extra content between the totals and the action (checkout: terms + button). */
+  children?: React.ReactNode;
+  /** Show the compact item list (checkout). */
+  showItems?: boolean;
 };
+
+const Row = ({ label, value, muted, strong }: { label: React.ReactNode; value: React.ReactNode; muted?: boolean; strong?: boolean }) => (
+  <div className="flex items-baseline justify-between gap-3 py-1.5">
+    <span className={muted ? "text-brand-muted" : "text-white"}>{label}</span>
+    <span className={strong ? "text-lg font-semibold text-white" : "text-white"}>{value}</span>
+  </div>
+);
 
 const OrderSummary = ({
   cartItems,
@@ -20,139 +34,69 @@ const OrderSummary = ({
   shippingLabel,
   showProceedLink = true,
   sticky = true,
+  showItems = false,
+  children,
 }: Props) => {
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const [discount, setDiscount] = useState(0);
-  const [couponError, setCouponError] = useState("");
-  const [couponCode, setCouponCode] = useState("");
-  const [applying, setApplying] = useState(false);
-
-  const total = subtotal - discount + (shippingCost ?? 0);
-
-  const handleApplyCoupon = async () => {
-    const code = couponCode.trim();
-    if (!code) return;
-
-    setApplying(true);
-    setCouponError("");
-    try {
-      const res = await api.post<{ discount: number }>("/api/coupons/validate/", {
-        code,
-        subtotal,
-      });
-      setDiscount(Number(res.discount) || 0);
-    } catch {
-      setDiscount(0);
-      setCouponError("Sorry, this coupon is not valid.");
-    } finally {
-      setApplying(false);
-    }
-  };
+  const total = subtotal + (shippingCost ?? 0);
 
   return (
-    <div className={sticky ? "lg:sticky lg:top-40" : ""}>
-      <div className="bg-brand-card rounded-[10px] border border-brand-border">
-        <div className="border-b border-brand-border py-3 px-4 sm:px-8.5">
-          <h3 className="font-medium text-xl text-white">Order Summary</h3>
-        </div>
+    <div className={sticky ? "lg:sticky lg:top-[calc(var(--header-h,60px)+16px)]" : ""}>
+      <div className="rounded-lg border border-brand-border bg-brand-card text-sm">
+        <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">Order summary</h2>
 
-        <div className="pt-1.5 pb-8.5 px-4 sm:px-8.5">
-          <div className="flex items-center justify-between py-3 border-b border-brand-border">
-            <div>
-              <p className="text-white">Subtotal ({itemCount} items)</p>
-            </div>
-            <div>
-              <p className="text-white text-right">
-                ৳{subtotal.toFixed(2)}
-              </p>
-            </div>
+        {showItems && (
+          <ul className="max-h-[320px] overflow-y-auto divide-y divide-brand-border px-4">
+            {cartItems.map((item) => (
+              <li key={item.lineKey || `${item.id}:${item.variantName || ""}`} className="flex items-center gap-3 py-2.5">
+                <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-brand-surface">
+                  {item.imgs?.thumbnails?.[0] && (
+                    <FallbackImage src={item.imgs.thumbnails[0]} alt="" fill sizes="48px" fallbackLabel="" className="object-cover" />
+                  )}
+                  <span className="absolute -right-0 -top-0 rounded-bl bg-brand-accent px-1.5 text-[10px] font-semibold text-brand-dark">
+                    {item.quantity}
+                  </span>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block line-clamp-2 text-white leading-snug">{item.title}</span>
+                  {item.variantName && <span className="block text-custom-xs text-brand-muted">{item.variantName}</span>}
+                </span>
+                <span className="shrink-0 text-white">{formatPrice(item.discountedPrice * item.quantity)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="px-4 py-3 flex flex-col gap-3">
+          <div className="border-b border-brand-border pb-2">
+            <Row label={`Subtotal (${itemCount} ${itemCount === 1 ? "item" : "items"})`} value={formatPrice(subtotal)} />
+            {shippingCost !== undefined ? (
+              <Row
+                muted
+                label={
+                  <>
+                    Delivery{shippingLabel && <span className="block text-custom-xs">{shippingLabel}</span>}
+                  </>
+                }
+                value={shippingCost === 0 ? <span className="text-brand-accent">Free</span> : formatPrice(shippingCost)}
+              />
+            ) : (
+              <Row muted label="Delivery" value={<span className="text-brand-muted">Calculated at checkout</span>} />
+            )}
           </div>
 
-          {discount > 0 && (
-            <div className="flex items-center justify-between py-3 border-b border-brand-border">
-              <div>
-                <p className="text-white">Discount</p>
-              </div>
-              <div>
-                <p className="text-green text-right">
-                  -৳{discount.toFixed(2)}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {shippingCost !== undefined && (
-            <div className="flex items-center justify-between py-3 border-b border-brand-border">
-              <div>
-                <p className="text-white">Shipping Fee</p>
-              </div>
-              <div>
-                <p className="text-white text-right">
-                  {shippingCost === 0 ? "Free" : `৳${shippingCost.toFixed(2)}`}
-                </p>
-                {shippingLabel && (
-                  <p className="text-custom-xs text-brand-muted text-right">
-                    {shippingLabel}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {showProceedLink && (
-            <div className="pt-5">
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  name="coupon"
-                  id="cart-coupon"
-                  placeholder="Enter coupon code"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleApplyCoupon();
-                    }
-                  }}
-                  className="rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyCoupon}
-                  disabled={applying}
-                  className="inline-flex font-medium text-brand-dark bg-brand-accent py-2.5 px-5 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
-                >
-                  Apply
-                </button>
-              </div>
-              {couponError && (
-                <p className="text-red text-custom-sm mt-2.5">
-                  {couponError}
-                </p>
-              )}
-            </div>
-          )}
-
-          <div className="flex items-center justify-between pt-5">
-            <div>
-              <p className="font-medium text-lg text-white">Total</p>
-            </div>
-            <div>
-              <p className="font-medium text-lg text-white text-right">
-                ৳{total.toFixed(2)}
-              </p>
-            </div>
-          </div>
+          <Row label="Total" value={formatPrice(total)} strong />
+          {shippingCost === undefined && <FreeShippingProgress subtotal={subtotal} />}
 
           {showProceedLink && (
             <Link
               href="/checkout"
-              className="w-full flex justify-center font-medium text-brand-dark bg-brand-accent py-3 px-6 rounded-md ease-out duration-200 hover:bg-brand-hover mt-7.5"
+              className="flex h-11 items-center justify-center rounded-md bg-brand-accent font-medium text-brand-dark hover:bg-brand-hover"
             >
-              Proceed to Checkout
+              Proceed to checkout
             </Link>
           )}
+          {children}
         </div>
       </div>
     </div>
