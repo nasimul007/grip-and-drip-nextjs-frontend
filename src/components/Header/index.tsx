@@ -59,6 +59,7 @@ const Header = () => {
   const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([
     { label: "All Categories", value: "0" },
   ]);
+  const headerRef = useRef<HTMLElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
   const { openCartModal } = useCartModalContext();
@@ -80,6 +81,18 @@ const Header = () => {
       )
       .catch(() => {});
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Publish the header height so sticky bars / anchors can sit below it.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   // Close menus on navigation.
@@ -176,6 +189,7 @@ const Header = () => {
 
   return (
     <header
+      ref={headerRef}
       className={`sticky top-0 w-full z-9999 bg-brand-surface transition-shadow ${
         scrolled ? "shadow-lg shadow-[#00000066]" : ""
       }`}
