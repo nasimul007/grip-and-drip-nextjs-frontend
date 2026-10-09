@@ -1,9 +1,13 @@
-import { getRecentProducts } from "./server-api";
+import { getFilterFacets, getRecentProducts } from "./server-api";
 
 export type BrandCount = { name: string; count: number };
 
-/** Most common brands among the newest ~300 products. */
+/** Most common brands in the whole catalogue. */
 export async function getTopBrands(limit = 8): Promise<BrandCount[]> {
+  const facets = await getFilterFacets("in_stock=true");
+  if (facets && Array.isArray(facets.brands)) return facets.brands.slice(0, limit);
+
+  // Older backend: count brands among the newest ~300 products.
   const counts = new Map<string, number>();
   for (const p of await getRecentProducts()) {
     const name = (p.brand || "").trim();

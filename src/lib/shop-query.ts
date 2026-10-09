@@ -1,9 +1,11 @@
 // Shared between the server pages and the client listing so both build the same API query.
 
-export const PAGE_SIZE = 12;
+export const PAGE_SIZE = 24;
 
 export const SORT_OPTIONS = [
   { label: "Latest", value: "-created_at" },
+  { label: "Best selling", value: "-sold" },
+  { label: "Biggest discount", value: "-discount_pct" },
   { label: "Price: Low to High", value: "price" },
   { label: "Price: High to Low", value: "-price" },
   { label: "Name: A-Z", value: "name" },
@@ -30,6 +32,8 @@ export type ShopFilters = {
   min: number;
   max: number;
   categories: string[];
+  /** Only products that can be ordered right now. */
+  stock: boolean;
 };
 
 export function parseFilters(src: ParamSource): ShopFilters {
@@ -44,6 +48,7 @@ export function parseFilters(src: ParamSource): ShopFilters {
     min: num("min"),
     max: num("max"),
     categories: getAll(src, "category").filter((c) => /^\d+$/.test(c)),
+    stock: get(src, "stock") === "1",
   };
 }
 
@@ -58,13 +63,35 @@ export function buildApiQuery(f: ShopFilters, lockedCategoryId?: number): string
   if (f.min > 0) p.set("price__gte", String(f.min));
   if (f.max > 0) p.set("price__lte", String(f.max));
   if (f.brand) p.set("brand", f.brand);
+  if (f.stock) p.set("in_stock", "true");
   if (f.q) p.set("search", f.q);
   return p.toString();
+}
+
+/** Query for GET /api/products/filters/: everything except brand and price. */
+export function buildFacetQuery(f: ShopFilters, lockedCategoryId?: number): string {
+  const p = new URLSearchParams();
+  const cats = lockedCategoryId ? [String(lockedCategoryId)] : f.categories;
+  cats.forEach((id) => p.append("category", id));
+  if (f.stock) p.set("in_stock", "true");
+  if (f.q) p.set("search", f.q);
+  return p.toString();
+}
+
+/** Number of filters the shopper applied (a category page does not count its own category). */
+export function activeFilterCount(f: ShopFilters, locked = false): number {
+  return (
+    (f.q ? 1 : 0) +
+    (f.brand ? 1 : 0) +
+    (f.min || f.max ? 1 : 0) +
+    (f.stock ? 1 : 0) +
+    (locked ? 0 : f.categories.length)
+  );
 }
 
 /** True when the URL carries anything beyond plain pagination (used for noindex). */
 export function hasFacetFilters(f: ShopFilters): boolean {
   return Boolean(
-    f.q || f.brand || f.min || f.max || f.categories.length || f.sort !== DEFAULT_SORT
+    f.q || f.brand || f.min || f.max || f.stock || f.categories.length || f.sort !== DEFAULT_SORT
   );
 }
