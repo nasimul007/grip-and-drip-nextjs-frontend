@@ -177,7 +177,7 @@ const Header = () => {
   return (
     <header
       className={`sticky top-0 w-full z-9999 bg-brand-surface transition-shadow ${
-        scrolled ? "shadow-lg shadow-black/30" : ""
+        scrolled ? "shadow-lg shadow-[#00000066]" : ""
       }`}
     >
       {/* Contact strip (desktop) */}

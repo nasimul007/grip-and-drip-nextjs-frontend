@@ -39,7 +39,7 @@ const CartSidebarModal = () => {
 
   return (
     <div
-      className={`fixed top-0 left-0 z-99999 overflow-y-auto no-scrollbar overscroll-contain w-full h-screen bg-black/80 ease-linear duration-300 ${
+      className={`fixed top-0 left-0 z-99999 overflow-y-auto no-scrollbar overscroll-contain w-full h-screen bg-[#000000CC] ease-linear duration-300 ${
         isCartModalOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >

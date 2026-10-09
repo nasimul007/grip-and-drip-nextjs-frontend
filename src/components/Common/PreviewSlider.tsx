@@ -1,121 +1,115 @@
 "use client";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { useCallback, useRef } from "react";
-import "swiper/css/navigation";
-import "swiper/css";
+import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+import "swiper/css";
 
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { useAppSelector } from "@/redux/store";
+import { CloseIcon } from "./icons";
+
+const arrowClass =
+  "absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-11 h-11 rounded-full bg-brand-card/90 border border-brand-border text-white hover:text-brand-accent hover:border-brand-accent";
 
 const PreviewSliderModal = () => {
-  const { closePreviewModal, isModalPreviewOpen } = usePreviewSlider();
+  const { closePreviewModal, isModalPreviewOpen, startIndex } = usePreviewSlider();
+  const product = useAppSelector((state) => state.productDetailsReducer.value);
+  const swiperRef = useRef<SwiperType | null>(null);
 
-  const data = useAppSelector((state) => state.productDetailsReducer.value);
+  const images: string[] = (product?.imgs?.previews || []).filter(Boolean);
+  const title = product?.title || "Product";
 
-  const sliderRef = useRef(null);
+  // Open on the image the shopper was looking at.
+  useEffect(() => {
+    if (isModalPreviewOpen) swiperRef.current?.slideTo(startIndex, 0);
+  }, [isModalPreviewOpen, startIndex, images.length]);
 
-  const handlePrev = useCallback(() => {
-    if (!sliderRef.current) return;
-    sliderRef.current.swiper.slidePrev();
-  }, []);
+  useEffect(() => {
+    if (!isModalPreviewOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closePreviewModal();
+      if (e.key === "ArrowLeft") swiperRef.current?.slidePrev();
+      if (e.key === "ArrowRight") swiperRef.current?.slideNext();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isModalPreviewOpen, closePreviewModal]);
 
-  const handleNext = useCallback(() => {
-    if (!sliderRef.current) return;
-    sliderRef.current.swiper.slideNext();
-  }, []);
+  const handlePrev = useCallback(() => swiperRef.current?.slidePrev(), []);
+  const handleNext = useCallback(() => swiperRef.current?.slideNext(), []);
+
+  if (!isModalPreviewOpen || images.length === 0) return null;
 
   return (
     <div
-      className={`preview-slider w-full h-screen  z-999999 inset-0 flex justify-center items-center bg-[#000000F2] bg-opacity-70 ${isModalPreviewOpen ? "fixed" : "hidden"
-        }`}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${title} images`}
+      className="fixed inset-0 z-999999 flex items-center justify-center bg-[#000000F2]"
+      onClick={(e) => {
+        // Click on the dark backdrop (not on an image or button) closes.
+        if (e.target === e.currentTarget || (e.target as HTMLElement).dataset.backdrop) {
+          closePreviewModal();
+        }
+      }}
     >
       <button
-        onClick={() => closePreviewModal()}
-        aria-label="button for close modal"
-        className="absolute top-0 right-0 sm:top-6 sm:right-6 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 text-white hover:text-brand-accent z-10"
+        type="button"
+        onClick={closePreviewModal}
+        aria-label="Close image preview"
+        className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 flex items-center justify-center w-11 h-11 rounded-full text-white hover:text-brand-accent"
       >
-        <svg
-          className="fill-current"
-          width="36"
-          height="36"
-          viewBox="0 0 26 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M14.3108 13L19.2291 8.08167C19.5866 7.72417 19.5866 7.12833 19.2291 6.77083C19.0543 6.59895 18.8189 6.50262 18.5737 6.50262C18.3285 6.50262 18.0932 6.59895 17.9183 6.77083L13 11.6892L8.08164 6.77083C7.90679 6.59895 7.67142 6.50262 7.42623 6.50262C7.18104 6.50262 6.94566 6.59895 6.77081 6.77083C6.41331 7.12833 6.41331 7.72417 6.77081 8.08167L11.6891 13L6.77081 17.9183C6.41331 18.2758 6.41331 18.8717 6.77081 19.2292C7.12831 19.5867 7.72414 19.5867 8.08164 19.2292L13 14.3108L17.9183 19.2292C18.2758 19.5867 18.8716 19.5867 19.2291 19.2292C19.5866 18.8717 19.5866 18.2758 19.2291 17.9183L14.3108 13Z"
-            fill=""
-          />
-        </svg>
+        <CloseIcon size={28} />
       </button>
 
-      <div>
-        <button
-          className="rotate-180 absolute left-100 p-5 cursor-pointer z-10 "
-          onClick={handlePrev}
-        >
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 26 26"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M14.5918 5.92548C14.9091 5.60817 15.4236 5.60817 15.7409 5.92548L22.2409 12.4255C22.5582 12.7428 22.5582 13.2572 22.2409 13.5745L15.7409 20.0745C15.4236 20.3918 14.9091 20.3918 14.5918 20.0745C14.2745 19.7572 14.2745 19.2428 14.5918 18.9255L19.7048 13.8125H4.33301C3.88428 13.8125 3.52051 13.4487 3.52051 13C3.52051 12.5513 3.88428 12.1875 4.33301 12.1875H19.7048L14.5918 7.07452C14.2745 6.75722 14.2745 6.24278 14.5918 5.92548Z"
-              fill="#FDFDFD"
-            />
-          </svg>
-        </button>
+      {images.length > 1 && (
+        <>
+          <button type="button" onClick={handlePrev} aria-label="Previous image" className={`${arrowClass} left-2 sm:left-6`}>
+            <span aria-hidden="true">‹</span>
+          </button>
+          <button type="button" onClick={handleNext} aria-label="Next image" className={`${arrowClass} right-2 sm:right-6`}>
+            <span aria-hidden="true">›</span>
+          </button>
+        </>
+      )}
 
-        <button
-          className="absolute right-100 p-5 cursor-pointer z-10"
-          onClick={handleNext}
-        >
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 26 26"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M14.5918 5.92548C14.9091 5.60817 15.4236 5.60817 15.7409 5.92548L22.2409 12.4255C22.5582 12.7428 22.5582 13.2572 22.2409 13.5745L15.7409 20.0745C15.4236 20.3918 14.9091 20.3918 14.5918 20.0745C14.2745 19.7572 14.2745 19.2428 14.5918 18.9255L19.7048 13.8125H4.33301C3.88428 13.8125 3.52051 13.4487 3.52051 13C3.52051 12.5513 3.88428 12.1875 4.33301 12.1875H19.7048L14.5918 7.07452C14.2745 6.75722 14.2745 6.24278 14.5918 5.92548Z"
-              fill="#FDFDFD"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <Swiper ref={sliderRef} slidesPerView={1} spaceBetween={20}>
-        <SwiperSlide>
-          <div className="flex justify-center items-center">
-            <Image
-              src={"/images/products/product-2-bg-1.png"}
-              alt={"product image"}
-              width={450}
-              height={450}
-            />
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="flex justify-center items-center">
-            <Image
-              src={"/images/products/product-2-bg-1.png"}
-              alt={"product image"}
-              width={450}
-              height={450}
-            />
-          </div>
-        </SwiperSlide>
+      <Swiper
+        onSwiper={(s) => {
+          swiperRef.current = s;
+          s.slideTo(startIndex, 0);
+        }}
+        initialSlide={startIndex}
+        slidesPerView={1}
+        spaceBetween={20}
+        className="w-full h-full"
+      >
+        {images.map((src, i) => (
+          <SwiperSlide key={src} data-backdrop="true">
+            <div
+              data-backdrop="true"
+              className="relative w-full h-[100dvh] flex items-center justify-center p-4 sm:p-16"
+            >
+              <div className="relative w-full h-full max-w-[1000px]">
+                <Image
+                  src={src}
+                  alt={`${title} – image ${i + 1} of ${images.length}`}
+                  fill
+                  sizes="100vw"
+                  className="object-contain"
+                  priority={i === startIndex}
+                />
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
       </Swiper>
+
+      {images.length > 1 && (
+        <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-custom-sm text-white/80" aria-hidden="true">
+          Swipe or use arrow keys
+        </p>
+      )}
     </div>
   );
 };

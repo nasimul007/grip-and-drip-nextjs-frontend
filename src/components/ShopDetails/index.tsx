@@ -120,7 +120,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
 
   const openZoom = () => {
     dispatch(updateproductDetails({ ...product, imgs: { thumbnails: images, previews: images } }));
-    openPreviewModal();
+    openPreviewModal(previewImg);
   };
 
   const freeShipping = shippingRates.find((r) => r.free_shipping_minimum);
@@ -139,8 +139,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-17.5">
             {/* Gallery */}
-            <div className="lg:max-w-[570px] w-full flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 aspect-square lg:aspect-auto lg:min-h-[512px] rounded-lg border border-brand-border bg-brand-surface p-4 sm:p-7.5 relative flex items-center justify-center">
+            <div className="lg:max-w-[570px] w-full flex flex-col sm:flex-row gap-4 lg:self-start">
+              <div className="flex-1 min-w-0 aspect-square rounded-lg border border-brand-border bg-brand-surface relative">
                 {images.length > 0 && (
                   <button
                     type="button"
@@ -155,17 +155,20 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                   </button>
                 )}
                 {images[previewImg] ? (
-                  <Image
-                    src={images[previewImg]}
-                    alt={matchedVariant ? `${product.title} – ${matchedVariant.name}` : product.title}
-                    width={480}
-                    height={480}
-                    priority
-                    sizes="(max-width: 1024px) 90vw, 480px"
-                    className="object-contain max-h-[480px] w-auto h-auto"
-                  />
+                  <div className="absolute inset-4 sm:inset-6">
+                    <Image
+                      src={images[previewImg]}
+                      alt={matchedVariant ? `${product.title} – ${matchedVariant.name}` : product.title}
+                      fill
+                      priority
+                      sizes="(max-width: 1024px) 90vw, 480px"
+                      className="object-contain"
+                    />
+                  </div>
                 ) : (
-                  <span className="text-brand-muted">No image available</span>
+                  <span className="absolute inset-0 flex items-center justify-center text-brand-muted">
+                    No image available
+                  </span>
                 )}
               </div>
 
