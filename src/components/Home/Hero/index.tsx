@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import HeroCarousel from "./HeroCarousel";
 import HeroFeature from "./HeroFeature";
@@ -14,7 +13,7 @@ const Hero = () => {
             <div className="relative z-1 rounded-[10px] bg-brand-surface overflow-hidden">
               <Image
                 src="/images/hero/hero-bg.png"
-                alt="hero bg shapes"
+                alt=""
                 className="absolute right-0 bottom-0 -z-1 opacity-20"
                 width={534}
                 height={520}
@@ -30,7 +29,7 @@ const Hero = () => {
                 <div className="flex items-center gap-8">
                   <div>
                     <h2 className="max-w-[153px] font-semibold text-white text-xl mb-10">
-                      <Link href="/shop-with-sidebar"> JBL Speakers </Link>
+                      <Link href="/shop?q=JBL">JBL Speakers</Link>
                     </h2>
 
                     <div>
@@ -48,7 +47,7 @@ const Hero = () => {
                   <div className="drop-shadow-[0_4px_12px_rgba(0,212,170,0.25)] hover:scale-105 transition-transform duration-300">
                     <Image
                       src="/images/hero/All_Speakers.png"
-                      alt="speaker image"
+                      alt="JBL speakers"
                       width={160}
                       height={210}
                       className="object-contain"
@@ -60,10 +59,7 @@ const Hero = () => {
                 <div className="flex items-center gap-8">
                   <div>
                     <h2 className="max-w-[153px] font-semibold text-white text-xl mb-10">
-                      <Link href="/shop-with-sidebar">
-                        {" "}
-                        Anker Chargers{" "}
-                      </Link>
+                      <Link href="/shop?q=Anker">Anker Chargers</Link>
                     </h2>
 
                     <div>
@@ -81,7 +77,7 @@ const Hero = () => {
                   <div className="drop-shadow-[0_4px_12px_rgba(0,212,170,0.25)] hover:scale-105 transition-transform duration-300">
                     <Image
                       src="/images/hero/anker-chargers.webp"
-                      alt="charger image"
+                      alt="Anker chargers"
                       width={160}
                       height={210}
                       className="object-contain"

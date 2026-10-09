@@ -8,6 +8,7 @@ import { updateQuickView } from "@/redux/features/quickView-slice";
 import { useCart, resolveAddableItem } from "@/lib/useCart";
 import Image from "next/image";
 import Link from "next/link";
+import { formatPrice } from "@/lib/format";
 import { api } from "@/lib/api";
 import WishlistButton from "@/components/Common/WishlistButton";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
@@ -38,61 +39,26 @@ const SingleItem = ({ item }: { item: Product }) => {
       <div className="relative overflow-hidden rounded-lg bg-brand-card min-h-[403px]">
         <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
         <div className="text-center px-4 py-7.5">
-          <div className="flex items-center justify-center gap-2.5 mb-2">
-            <div className="flex items-center gap-1">
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={14}
-                height={14}
-              />
-            </div>
-
-            <p className="text-custom-sm text-brand-muted">({item.reviews})</p>
-          </div>
+          
 
           <h3 className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5 line-clamp-1" title={item.title}>
-            <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
+            <Link href={item.slug ? `/shop/${item.slug}` : "/shop"}>
               {" "}
               {item.title}{" "}
             </Link>
           </h3>
 
           <span className="flex items-center justify-center gap-2 font-medium text-lg">
-            <span className="text-white">৳{item.discountedPrice}</span>
+            <span className="text-white">{formatPrice(item.discountedPrice)}</span>
             {item.price !== item.discountedPrice && (
-              <span className="text-brand-muted line-through">৳{item.price}</span>
+              <span className="text-brand-muted line-through">{formatPrice(item.price)}</span>
             )}
           </span>
         </div>
 
         <div className="flex justify-center items-center overflow-hidden">
           {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-            <Image src={item.imgs.previews[0]} alt="" width={280} height={280} className="max-w-full h-auto object-cover transition-transform duration-300 hover:scale-105" />
+            <Image src={item.imgs.previews[0]} alt={item.title} width={280} height={280} className="max-w-full h-auto object-cover transition-transform duration-300 hover:scale-105" />
           ) : (
             <div className="w-[280px] h-[280px] flex items-center justify-center text-brand-muted text-sm">
               No Image

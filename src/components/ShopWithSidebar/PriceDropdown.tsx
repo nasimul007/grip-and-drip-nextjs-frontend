@@ -2,17 +2,25 @@ import { useState } from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-const PriceDropdown = ({ onPriceChange }: { onPriceChange?: (min: number, max: number) => void }) => {
-  const [toggleDropdown, setToggleDropdown] = useState(true);
-  const MAX_PRICE = 100000;
+export const MAX_PRICE = 100000;
 
+const PriceDropdown = ({
+  onPriceChange,
+  initialMin = 0,
+  initialMax = MAX_PRICE,
+}: {
+  onPriceChange?: (min: number, max: number) => void;
+  initialMin?: number;
+  initialMax?: number;
+}) => {
+  const [toggleDropdown, setToggleDropdown] = useState(true);
   const [selectedPrice, setSelectedPrice] = useState({
-    from: 0,
-    to: MAX_PRICE,
+    from: initialMin,
+    to: initialMax,
   });
 
-  const [minStr, setMinStr] = useState("0");
-  const [maxStr, setMaxStr] = useState(String(MAX_PRICE));
+  const [minStr, setMinStr] = useState(String(initialMin));
+  const [maxStr, setMaxStr] = useState(String(initialMax));
 
   const commitMin = (raw: string) => {
     const val = Math.max(0, Math.min(Number(raw) || 0, selectedPrice.to));
@@ -87,6 +95,7 @@ const PriceDropdown = ({ onPriceChange }: { onPriceChange?: (min: number, max: n
                 <input
                   type="text"
                   inputMode="numeric"
+                  aria-label="Minimum price"
                   value={minStr}
                   onChange={(e) => setMinStr(e.target.value)}
                   onBlur={(e) => commitMin(e.target.value)}
@@ -100,6 +109,7 @@ const PriceDropdown = ({ onPriceChange }: { onPriceChange?: (min: number, max: n
                 <input
                   type="text"
                   inputMode="numeric"
+                  aria-label="Maximum price"
                   value={maxStr}
                   onChange={(e) => setMaxStr(e.target.value)}
                   onBlur={(e) => commitMax(e.target.value)}

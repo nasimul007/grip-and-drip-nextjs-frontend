@@ -1,18 +1,13 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useCallback, useRef, useEffect, useState } from "react";
-import { api } from "@/lib/api";
-import { mapCategoryForDisplay } from "@/lib/mappers";
-import type { PaginatedResponse } from "@/lib/types";
+import { useCallback, useRef } from "react";
+import type { Category } from "@/types/category";
 
 import "swiper/css";
 import SingleItem from "./SingleItem";
 
-const Categories = () => {
+const Categories = ({ categories }: { categories: Category[] }) => {
   const sliderRef = useRef(null);
-  const [categories, setCategories] = useState<
-    { title: string; id: number; img: string }[]
-  >([]);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -24,16 +19,7 @@ const Categories = () => {
     sliderRef.current.swiper.slideNext();
   }, []);
 
-  useEffect(() => {
-    api
-      .get<
-        PaginatedResponse<{ id: number; name: string; slug: string }>
-      >("/api/categories/")
-      .then((data) =>
-        setCategories(data.results.map(mapCategoryForDisplay))
-      )
-      .catch(() => {});
-  }, []);
+
 
 
 

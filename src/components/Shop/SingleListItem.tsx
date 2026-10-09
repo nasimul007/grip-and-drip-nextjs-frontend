@@ -9,6 +9,7 @@ import { useCart, resolveAddableItem } from "@/lib/useCart";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
+import { formatPrice } from "@/lib/format";
 import Image from "next/image";
 import { api } from "@/lib/api";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
@@ -41,9 +42,9 @@ const SingleListItem = ({ item }: { item: Product }) => {
       <div className="flex">
         <div className="shadow-list relative overflow-hidden flex items-center justify-center w-full sm:w-[270px] h-[270px] shrink-0">
           <div className="absolute inset-4 bg-white/[0.04] blur-2xl rounded-full pointer-events-none" />
-          <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"} className="relative block w-full h-full">
+          <Link href={item.slug ? `/shop/${item.slug}` : "/shop"} className="relative block w-full h-full">
             {typeof item.imgs?.previews[0] === 'string' && item.imgs.previews[0].trim() ? (
-              <Image src={item.imgs.previews[0]} alt="" fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="270px" />
+              <Image src={item.imgs.previews[0]} alt={item.title} fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="270px" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-brand-muted text-sm">
                 No Image
@@ -97,56 +98,21 @@ const SingleListItem = ({ item }: { item: Product }) => {
         <div className="w-full flex flex-col gap-5 sm:flex-row sm:items-center justify-center sm:justify-between py-5 px-4 sm:px-7.5 lg:pl-11 lg:pr-12">
           <div>
             <h3 className="font-medium text-white ease-out duration-200 hover:text-brand-accent mb-1.5 line-clamp-1" title={item.title}>
-              <Link href={item.slug ? `/shop/${item.slug}` : "/shop-details"}>
+              <Link href={item.slug ? `/shop/${item.slug}` : "/shop"}>
                 {" "}
                 {item.title}{" "}
               </Link>
             </h3>
 
             <span className="flex items-center gap-2 font-medium text-lg">
-              <span className="text-white">৳{item.discountedPrice}</span>
+              <span className="text-white">{formatPrice(item.discountedPrice)}</span>
               {item.price !== item.discountedPrice && (
-                <span className="text-brand-muted line-through">৳{item.price}</span>
+                <span className="text-brand-muted line-through">{formatPrice(item.price)}</span>
               )}
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 mb-2">
-            <div className="flex items-center gap-1">
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-            </div>
-
-            <p className="text-custom-sm">({item.reviews})</p>
-          </div>
+          
         </div>
       </div>
     </div>

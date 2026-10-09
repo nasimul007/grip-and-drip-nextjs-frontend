@@ -139,7 +139,7 @@ const SearchSuggestions = ({ query, isOpen, onClose }: SearchSuggestionsProps) =
           </div>
 
           <Link
-            href={`/shop-with-sidebar?q=${encodeURIComponent(query)}`}
+            href={`/shop?q=${encodeURIComponent(query)}`}
             onClick={onClose}
             className="block text-center text-sm text-brand-accent py-3 border-t border-brand-border hover:bg-brand-hover ease-out duration-150"
           >

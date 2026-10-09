@@ -11,6 +11,7 @@ type WishListItem = {
   discountedPrice: number;
   quantity: number;
   status?: string;
+  slug?: string;
   imgs?: {
     thumbnails: string[];
     previews: string[];
@@ -19,7 +20,7 @@ type WishListItem = {
 
 const LOCAL_KEY = "guest_wishlist";
 
-function loadLocalWishlist(): WishListItem[] {
+export function loadLocalWishlist(): WishListItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(LOCAL_KEY);
@@ -42,15 +43,18 @@ function saveLocalWishlist(items: WishListItem[]) {
 }
 
 const initialState: InitialState = {
-  items: typeof window !== "undefined" ? loadLocalWishlist() : [],
+  items: [], // loaded from localStorage after mount (see StoreHydrator)
 };
 
 export const wishlist = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
+    setWishlistItems: (state, action: PayloadAction<WishListItem[]>) => {
+      state.items = action.payload;
+    },
     addItemToWishlist: (state, action: PayloadAction<WishListItem>) => {
-      const { id, title, price, quantity, imgs, discountedPrice, status } =
+      const { id, title, price, quantity, imgs, discountedPrice, status, slug } =
         action.payload;
       const existingItem = state.items.find((item) => item.id === id);
 
@@ -65,6 +69,7 @@ export const wishlist = createSlice({
           imgs,
           discountedPrice: Number(discountedPrice),
           status,
+          slug,
         });
       }
       saveLocalWishlist(state.items);
@@ -83,6 +88,7 @@ export const wishlist = createSlice({
 });
 
 export const {
+  setWishlistItems,
   addItemToWishlist,
   removeItemFromWishlist,
   removeAllItemsFromWishlist,

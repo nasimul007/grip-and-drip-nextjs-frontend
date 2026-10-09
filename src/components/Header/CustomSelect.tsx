@@ -91,10 +91,10 @@ const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
 
   const handleOptionClick = (option: CategoryOption) => {
     setIsOpen(false);
-    if (option.value !== "0") {
-      router.push(`/shop-with-sidebar?category=${option.value}`);
+    if (option.value !== "0" && option.slug) {
+      router.push(`/category/${option.slug}`);
     } else {
-      router.push("/shop-with-sidebar");
+      router.push("/shop");
     }
   };
 
@@ -115,9 +115,9 @@ const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
       <div className={`select-items ${isOpen ? "" : "select-hide"}`}>
         <div
           className="select-item relative"
-          onClick={() => { router.push("/shop-with-sidebar"); setIsOpen(false); }}
+          onClick={() => { router.push("/shop"); setIsOpen(false); }}
         >
-          All Product
+          All Products
         </div>
         {options.slice(1).map((option) => (
           <CategoryItem

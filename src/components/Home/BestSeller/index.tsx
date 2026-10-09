@@ -1,24 +1,8 @@
-"use client";
-import React, { useEffect, useState } from "react";
 import SingleItem from "./SingleItem";
 import Link from "next/link";
-import { api } from "@/lib/api";
-import { mapProductForDisplay } from "@/lib/mappers";
-import type { ProductListItem, PaginatedResponse } from "@/lib/types";
 import type { Product } from "@/types/product";
 
-const BestSeller = () => {
-  const [items, setItems] = useState<Product[]>([]);
-
-  useEffect(() => {
-    api
-      .get<PaginatedResponse<ProductListItem>>(
-        "/api/products/?is_featured=true&page_size=6"
-      )
-      .then((data) => setItems(data.results.map(mapProductForDisplay)))
-      .catch(() => {});
-  }, []);
-
+const BestSeller = ({ items }: { items: Product[] }) => {
   if (items.length === 0) return null;
 
   return (
@@ -39,14 +23,14 @@ const BestSeller = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-7.5">
-          {items.slice(1, 7).map((item, key) => (
+          {items.slice(0, 6).map((item, key) => (
             <SingleItem item={item} key={key} />
           ))}
         </div>
 
         <div className="text-center mt-12.5">
           <Link
-            href="/shop-without-sidebar"
+            href="/shop"
             className="inline-flex font-medium text-custom-sm py-3 px-7 sm:px-12.5 rounded-md border border-brand-border bg-brand-card text-white ease-out duration-200 hover:bg-brand-accent hover:text-white hover:border-brand-accent"
           >
             View All

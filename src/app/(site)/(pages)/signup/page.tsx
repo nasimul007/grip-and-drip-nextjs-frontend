@@ -3,9 +3,10 @@ import React from "react";
 
 import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Signup Page | NextCommerce Nextjs E-commerce template",
-  description: "This is Signup Page for NextCommerce Template",
-  // other metadata
+  title: "Create an account",
+  description: "Create a Gadget & Widget account to track orders and save addresses.",
+  alternates: { canonical: "/signup" },
+  robots: { index: false, follow: true },
 };
 
 const SignupPage = () => {

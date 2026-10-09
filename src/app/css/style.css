@@ -26,6 +26,42 @@
   .dropdown a:hover {
     @apply text-brand-accent;
   }
+
+  /* Rich text coming from the CMS (product / category descriptions). */
+  .product-description {
+    @apply text-brand-muted leading-relaxed;
+  }
+  .product-description p,
+  .product-description ul,
+  .product-description ol,
+  .product-description table {
+    @apply mb-4;
+  }
+  .product-description ul {
+    @apply list-disc pl-5;
+  }
+  .product-description ol {
+    @apply list-decimal pl-5;
+  }
+  .product-description li {
+    @apply mb-1;
+  }
+  .product-description h2,
+  .product-description h3,
+  .product-description h4 {
+    @apply text-white font-medium text-lg mt-6 mb-3;
+  }
+  .product-description strong,
+  .product-description b {
+    @apply text-white;
+  }
+  .product-description td,
+  .product-description th {
+    @apply border border-brand-border px-3 py-2 text-left;
+  }
+  .product-description img {
+    @apply max-w-full h-auto rounded-md;
+  }
 }
 
 @layer utilities {

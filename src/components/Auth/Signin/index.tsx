@@ -100,12 +100,12 @@ const Signin = () => {
                     {loading ? "Signing in..." : "Sign in"}
                   </button>
 
-                  <a
-                    href="#"
+                  <Link
+                    href="/contact"
                     className="text-brand-muted ease-out duration-200 hover:text-brand-accent whitespace-nowrap"
                   >
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
 
                 <span className="relative z-1 block font-medium text-center mt-4">

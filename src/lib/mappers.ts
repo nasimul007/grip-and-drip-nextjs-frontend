@@ -19,7 +19,8 @@ export function mapCategoryForDisplay(apiCategory: {
   return {
     title: apiCategory.name,
     id: apiCategory.id,
-    img: categoryImages[key] || "/images/categories/accessory.webp",
+    slug: apiCategory.slug,
+    img: categoryImages[key] || "/images/categories/accessory.png",
   };
 }
 

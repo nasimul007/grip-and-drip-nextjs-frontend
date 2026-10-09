@@ -19,6 +19,15 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      { source: "/shop-with-sidebar", destination: "/shop", permanent: true },
+      { source: "/shop-without-sidebar", destination: "/shop", permanent: true },
+      { source: "/shop-details", destination: "/shop", permanent: true },
+      { source: "/blogs/:path*", destination: "/", permanent: true },
+      { source: "/error", destination: "/", permanent: true },
+    ];
+  },
   async rewrites() {
     return [
       {

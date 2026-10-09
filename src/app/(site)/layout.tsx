@@ -1,72 +1,108 @@
-"use client";
-import { useState, useEffect } from "react";
+import type { Metadata, Viewport } from "next";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
-import { ModalProvider } from "../context/QuickViewModalContext";
-import { CartModalProvider } from "../context/CartSidebarModalContext";
-import { ReduxProvider } from "@/redux/provider";
-import QuickViewModal from "@/components/Common/QuickViewModal";
-import CartSidebarModal from "@/components/Common/CartSidebarModal";
-import { PreviewSliderProvider } from "../context/PreviewSliderContext";
-import PreviewSliderModal from "@/components/Common/PreviewSlider";
-
 import ScrollToTop from "@/components/Common/ScrollToTop";
-import PreLoader from "@/components/Common/PreLoader";
-import CartInit from "@/components/Providers/CartInit";
-import AuthInit from "@/components/Providers/AuthInit";
-import { Toaster } from "react-hot-toast";
+import JsonLd from "@/components/Common/JsonLd";
+import Providers from "./providers";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_URL,
+  absoluteUrl,
+} from "@/lib/site";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [loading, setLoading] = useState<boolean>(true);
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "gadgets Bangladesh",
+    "mobile accessories",
+    "earbuds",
+    "headphones",
+    "smartwatch",
+    "charger",
+    "power bank",
+    "cables",
+    "bluetooth speaker",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_BD",
+    url: "/",
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+    images: [{ url: DEFAULT_OG_IMAGE, alt: SITE_NAME }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  formatDetection: { telephone: false },
+};
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+export const viewport: Viewport = {
+  themeColor: "#0A0A0F",
+  width: "device-width",
+  initialScale: 1,
+};
 
+const siteSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: absoluteUrl(DEFAULT_OG_IMAGE),
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE_URL}/shop?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning={true}>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body>
-        {loading ? (
-          <PreLoader />
-        ) : (
-          <>
-            <ReduxProvider>
-              <CartModalProvider>
-                <ModalProvider>
-                  <PreviewSliderProvider>
-                    <Header />
-                    {children}
-
-                    <QuickViewModal />
-                    <CartSidebarModal />
-                    <PreviewSliderModal />
-                    <CartInit />
-                    <AuthInit />
-                    <Toaster
-                      toastOptions={{
-                        style: {
-                          background: "#242428",
-                          color: "#FFFFFF",
-                          border: "1px solid #2A2A30",
-                        },
-                      }}
-                    />
-                  </PreviewSliderProvider>
-                </ModalProvider>
-              </CartModalProvider>
-            </ReduxProvider>
-            <ScrollToTop />
-            <Footer />
-          </>
-        )}
+        <JsonLd data={siteSchema} />
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
+        <ScrollToTop />
+        <Footer />
       </body>
     </html>
   );
