@@ -5,7 +5,7 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useCart } from "@/lib/useCart";
 import { useDispatch } from "react-redux";
-import Image from "next/image";
+import FallbackImage from "@/components/Common/FallbackImage";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { resetQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
@@ -159,22 +159,23 @@ const QuickViewModal = () => {
 
           <div className="flex flex-wrap items-center gap-12.5">
             <div className="max-w-[526px] w-full">
-              <div className="flex gap-5">
-                <div className="flex flex-col gap-5">
+              <div className="flex gap-3 sm:gap-5 items-start">
+                <div className="flex flex-col gap-3 shrink-0 max-h-[400px] overflow-y-auto no-scrollbar">
                   {product.imgs.thumbnails?.map((img, key) => (
                     <button
                       onClick={() => setActivePreview(key)}
                       key={key}
-                      className={`flex items-center justify-center w-20 h-20 overflow-hidden rounded-lg bg-brand-surface ease-out duration-200 hover:border-2 hover:border-brand-accent ${activePreview === key && "border-2 border-brand-accent"
+                      className={`flex shrink-0 items-center justify-center w-20 h-20 overflow-hidden rounded-lg bg-brand-surface ease-out duration-200 hover:border-2 hover:border-brand-accent ${activePreview === key && "border-2 border-brand-accent"
                         }`}
                     >
                       {img ? (
-                        <Image
+                        <FallbackImage
                           src={img}
-                          alt="thumbnail"
+                          alt=""
+                          fallbackLabel=""
                           width={61}
                           height={61}
-                          className="aspect-square"
+                          className="aspect-square object-contain"
                         />
                       ) : (
                         <div className="text-brand-muted text-xs">No Img</div>
@@ -183,7 +184,7 @@ const QuickViewModal = () => {
                   ))}
                 </div>
 
-                <div className="relative z-1 overflow-hidden w-full aspect-square bg-brand-surface rounded-lg border border-brand-border">
+                <div className="relative z-1 overflow-hidden flex-1 min-w-0 max-w-[400px] aspect-square sm:flex-none sm:w-[400px] sm:h-[400px] bg-brand-surface rounded-lg border border-brand-border">
                   <>
                     <button
                       onClick={handlePreviewSlider}
@@ -209,11 +210,11 @@ const QuickViewModal = () => {
 
                     {product?.imgs?.previews?.[activePreview] && (
                       <div className="absolute inset-4 sm:inset-6">
-                        <Image
+                        <FallbackImage
                           src={product.imgs.previews[activePreview]}
                           alt={product.title}
                           fill
-                          sizes="(max-width: 640px) 80vw, 400px"
+                          sizes="(max-width: 640px) 70vw, 400px"
                           className="object-contain"
                         />
                       </div>
