@@ -1,13 +1,23 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import type { SwiperRef } from "swiper/react";
 import type { Category } from "@/types/category";
 
 import "swiper/css";
 import SingleItem from "./SingleItem";
 
 const Categories = ({ categories }: { categories: Category[] }) => {
-  const sliderRef = useRef(null);
+  const sliderRef = useRef<SwiperRef>(null);
+
+  // Swiper's loop mode breaks (next does nothing, order jumps) when there are
+  // fewer slides than it needs to clone, so repeat short lists to fill it.
+  const slides = useMemo(() => {
+    if (categories.length === 0) return categories;
+    const out: Category[] = [];
+    while (out.length < 12) out.push(...categories);
+    return out;
+  }, [categories]);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -113,7 +123,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
           <Swiper
             ref={sliderRef}
             loop={true}
-            loopPreventsSliding={false}
+            speed={400}
             slidesPerView={6}
             spaceBetween={20}
             breakpoints={{
@@ -128,7 +138,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
               },
             }}
           >
-            {categories.map((item, key) => (
+            {slides.map((item, key) => (
               <SwiperSlide key={key}>
                 <SingleItem item={item} />
               </SwiperSlide>
