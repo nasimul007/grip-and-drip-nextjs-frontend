@@ -1,6 +1,6 @@
 import { getFilterFacets, getRecentProducts } from "./server-api";
 
-export type BrandCount = { name: string; count: number };
+export type BrandCount = { name: string; count: number; logo?: string | null };
 
 /** Most common brands in the whole catalogue. */
 export async function getTopBrands(limit = 8): Promise<BrandCount[]> {
