@@ -32,7 +32,7 @@ export function mapProductForDisplay(item: ProductListItem) {
     discountedPrice: Number(item.effective_price),
     id: item.id,
     slug: item.slug,
-    stock: item.stock,
+    stock: item.total_stock ?? item.stock,
     imgs: {
       thumbnails: item.primary_image ? [item.primary_image.image] : [],
       previews: item.primary_image ? [item.primary_image.image] : [],

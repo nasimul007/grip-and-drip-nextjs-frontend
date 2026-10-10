@@ -20,7 +20,7 @@ export async function getDeals(limit: number): Promise<ProductListItem[]> {
   // Fallback: derive from the newest ~300 products.
   const products = await getRecentProducts();
   return products
-    .filter((p) => p.is_active && p.stock > 0 && discountOf(p) > 0)
+    .filter((p) => p.is_active && (p.total_stock ?? p.stock) > 0 && discountOf(p) > 0)
     .sort((a, b) => discountOf(b) - discountOf(a))
     .slice(0, limit);
 }
