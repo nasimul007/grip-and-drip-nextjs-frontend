@@ -38,6 +38,7 @@ export type RelatedProduct = Pick<
   | "compare_price"
   | "effective_price"
   | "stock"
+  | "total_stock"
   | "brand"
 >;
 

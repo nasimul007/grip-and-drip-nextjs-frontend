@@ -72,6 +72,8 @@ export type ProductListItem = {
   compare_price: number | null;
   effective_price: number;
   stock: number;
+  /** Own stock plus active variant stock (absent on older backends). */
+  total_stock?: number;
   is_active: boolean;
   is_featured: boolean;
   brand: string;
@@ -90,6 +92,8 @@ export type ProductDetail = {
   effective_price: number;
   sku: string;
   stock: number;
+  /** Own stock plus active variant stock (absent on older backends). */
+  total_stock?: number;
   is_active: boolean;
   is_featured: boolean;
   brand: string;
