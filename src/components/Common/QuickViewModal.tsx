@@ -384,7 +384,7 @@ const QuickViewModal = () => {
               {product.description && (
                 <p
                   className="text-brand-muted text-sm leading-relaxed line-clamp-3"
-                  dangerouslySetInnerHTML={{ __html: product.description }}
+                  dangerouslySetInnerHTML={{ __html: product.description.replace(/<img[^>]*>/g, "") }}
                 />
               )}
 
