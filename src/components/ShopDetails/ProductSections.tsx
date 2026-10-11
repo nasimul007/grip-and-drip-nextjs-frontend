@@ -31,7 +31,7 @@ function DescriptionBlock({ html }: { html: string }) {
       <div
         ref={ref}
         id="description-content"
-        className="product-description text-sm relative overflow-hidden"
+        className="product-description text-sm relative overflow-hidden [&_img]:my-3 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-md"
         style={collapsed ? { maxHeight: COLLAPSED_PX } : undefined}
         dangerouslySetInnerHTML={{ __html: html }}
       />
