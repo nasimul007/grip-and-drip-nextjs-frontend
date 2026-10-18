@@ -19,6 +19,7 @@ export type Product = {
   slug?: string;
   description?: string;
   stock?: number;
+  warrantyMonths?: number | null;
   sku?: string;
   brand?: string;
   attributes?: Record<string, string>;

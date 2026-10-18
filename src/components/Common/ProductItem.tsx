@@ -11,9 +11,9 @@ import { updateproductDetails } from "@/redux/features/product-details";
 import { api } from "@/lib/api";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
 import { useCart } from "@/lib/useCart";
-import { discountPercent, formatPrice } from "@/lib/format";
+import { discountBadge, formatPrice, formatWarranty } from "@/lib/format";
 import WishlistButton from "@/components/Common/WishlistButton";
-import { CartIcon, SearchIcon } from "@/components/Common/icons";
+import { CartIcon, SearchIcon, ShieldIcon } from "@/components/Common/icons";
 import type { ProductDetail } from "@/lib/types";
 
 const ProductItem = ({ item, priority = false }: { item: Product; priority?: boolean }) => {
@@ -25,7 +25,8 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
   const href = item.slug ? `/shop/${item.slug}` : "/shop";
   const image = item.imgs?.previews?.[0]?.trim();
   const outOfStock = item.stock !== undefined && item.stock <= 0;
-  const off = discountPercent(Number(item.price), Number(item.discountedPrice));
+  const badge = discountBadge(Number(item.price), Number(item.discountedPrice));
+  const warranty = formatWarranty(item.warrantyMonths);
 
   const handleQuickView = async () => {
     openModal();
@@ -72,9 +73,15 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
           )}
         </Link>
 
-        {off > 0 && !outOfStock && (
+        {badge && !outOfStock && (
           <span className="absolute left-2 top-2 rounded bg-brand-accent px-1.5 py-0.5 text-2xs sm:text-custom-xs font-semibold text-brand-dark">
-            -{off}%
+            {badge}
+          </span>
+        )}
+        {warranty && (
+          <span className="absolute left-2 bottom-2 inline-flex items-center gap-1 rounded bg-brand-dark/85 px-1.5 py-0.5 text-2xs sm:text-custom-xs font-medium text-white backdrop-blur-sm">
+            <ShieldIcon className="text-brand-accent" size={12} />
+            {warranty} warranty
           </span>
         )}
         {outOfStock && (

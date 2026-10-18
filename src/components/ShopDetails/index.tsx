@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { updateproductDetails } from "@/redux/features/product-details";
 import { useCart } from "@/lib/useCart";
-import { discountPercent, formatPrice } from "@/lib/format";
+import { discountSaveText, formatPrice, formatWarranty } from "@/lib/format";
 import { getKeyDetails, prettyKey } from "@/lib/product-display";
 import {
   CONTACT,
@@ -77,7 +77,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   const salePrice = Number(matchedVariant?.price_override ?? product.discountedPrice);
   const listPrice = Number(product.price);
   const showListPrice = listPrice > salePrice;
-  const savePct = discountPercent(listPrice, salePrice);
+  const saveText = discountSaveText(listPrice, salePrice);
   const stock = Number(matchedVariant?.stock ?? product.stock ?? 0);
   const inStock = stock > 0;
 
@@ -129,9 +129,12 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   const warrantyEntry = Object.entries(product.attributes || {}).find(([k]) =>
     k.toLowerCase().includes("warranty")
   );
-  const warranty = warrantyEntry
-    ? `${warrantyEntry[1]} warranty`.replace(/warranty warranty$/i, "warranty")
-    : DEFAULT_WARRANTY;
+  const warrantyPeriod = formatWarranty(product.warrantyMonths);
+  const warranty = warrantyPeriod
+    ? `${warrantyPeriod} warranty`
+    : warrantyEntry
+      ? `${warrantyEntry[1]} warranty`.replace(/warranty warranty$/i, "warranty")
+      : DEFAULT_WARRANTY;
   const orderMessage = `Hi, I want to order: ${product.title}${
     matchedVariant ? ` (${matchedVariant.name})` : ""
   } x${quantity} – ${formatPrice(salePrice)}\n${absoluteUrl(`/shop/${product.slug}`)}`;
@@ -191,11 +194,18 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                       {formatPrice(listPrice)}
                     </span>
                     <span className="text-xs font-semibold text-brand-dark bg-brand-accent rounded px-1.5 py-0.5">
-                      Save {savePct}%
+                      {saveText}
                     </span>
                   </>
                 )}
               </div>
+
+              {warrantyPeriod && (
+                <p className="mb-3 inline-flex items-center gap-2 rounded-md border border-brand-accent/40 bg-brand-accent/10 px-3 py-1.5 text-sm font-medium text-white">
+                  <ShieldIcon className="text-brand-accent" size={16} />
+                  {warrantyPeriod} warranty
+                </p>
+              )}
 
               {/* Key details */}
               {(keyDetails.items.length > 0 || keyDetails.fallback) && (

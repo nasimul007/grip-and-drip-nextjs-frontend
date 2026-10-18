@@ -1,4 +1,5 @@
 "use client";
+import { formatWarranty } from "@/lib/format";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, variantMatches } from "@/lib/variants";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -227,7 +228,7 @@ const QuickViewModal = () => {
             <div className="max-w-[445px] w-full">
               {product.price > displayPrice && (
                 <span className="inline-block text-custom-xs font-medium text-white py-1 px-3 bg-green mb-6.5">
-                  SALE {Math.round(((product.price - displayPrice) / product.price) * 100)}% OFF
+                  SALE {Math.round(((product.price - displayPrice) / product.price) * 100)}% OFF{product.warrantyMonths ? ` · ${formatWarranty(product.warrantyMonths)} warranty` : ""}
                 </span>
               )}
 

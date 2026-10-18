@@ -33,6 +33,7 @@ export function mapProductForDisplay(item: ProductListItem) {
     id: item.id,
     slug: item.slug,
     stock: item.total_stock ?? item.stock,
+    warrantyMonths: item.warranty_months ?? null,
     imgs: {
       thumbnails: item.primary_image ? [item.primary_image.image] : [],
       previews: item.primary_image ? [item.primary_image.image] : [],
@@ -76,6 +77,7 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
     slug: item.slug,
     description: item.description,
     stock: item.stock,
+    warrantyMonths: item.warranty_months ?? null,
     sku: item.sku,
     brand: item.brand,
     attributes: item.attributes,

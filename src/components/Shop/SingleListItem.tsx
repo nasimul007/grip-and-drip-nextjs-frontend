@@ -9,7 +9,8 @@ import { useCart } from "@/lib/useCart";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import Link from "next/link";
-import { discountPercent, formatPrice } from "@/lib/format";
+import { discountBadge, formatPrice, formatWarranty } from "@/lib/format";
+import { ShieldIcon } from "@/components/Common/icons";
 import { SearchIcon } from "@/components/Common/icons";
 import Image from "next/image";
 import { api } from "@/lib/api";
@@ -40,7 +41,8 @@ const SingleListItem = ({ item }: { item: Product }) => {
   const href = item.slug ? `/shop/${item.slug}` : "/shop";
   const image = item.imgs?.previews?.[0]?.trim();
   const outOfStock = item.stock !== undefined && item.stock <= 0;
-  const off = discountPercent(Number(item.price), Number(item.discountedPrice));
+  const badge = discountBadge(Number(item.price), Number(item.discountedPrice));
+  const warranty = formatWarranty(item.warrantyMonths);
 
   return (
     <article className="group flex rounded-lg bg-brand-card border border-brand-border overflow-hidden">
@@ -50,8 +52,8 @@ const SingleListItem = ({ item }: { item: Product }) => {
         ) : (
           <span className="w-full h-full flex items-center justify-center text-brand-muted text-sm">No image</span>
         )}
-        {off > 0 && !outOfStock && (
-          <span className="absolute left-2 top-2 rounded bg-brand-accent px-1.5 py-0.5 text-custom-xs font-semibold text-brand-dark">-{off}%</span>
+        {badge && !outOfStock && (
+          <span className="absolute left-2 top-2 rounded bg-brand-accent px-1.5 py-0.5 text-custom-xs font-semibold text-brand-dark">{badge}</span>
         )}
       </Link>
 
@@ -69,6 +71,12 @@ const SingleListItem = ({ item }: { item: Product }) => {
               </span>
             )}
           </p>
+          {warranty && (
+            <p className="mt-1.5 inline-flex items-center gap-1 text-custom-xs font-medium text-white">
+              <ShieldIcon className="text-brand-accent" size={13} />
+              {warranty} warranty
+            </p>
+          )}
           {outOfStock && <p className="text-red text-custom-sm mt-1">Out of stock</p>}
         </div>
 
