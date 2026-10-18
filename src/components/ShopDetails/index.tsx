@@ -1,4 +1,5 @@
 "use client";
+import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, slugifyAttr, variantMatches } from "@/lib/variants";
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -29,7 +30,7 @@ type Props = {
   shippingRates?: ShippingRate[];
 };
 
-const slugify = (v: string) => v.toLowerCase().replace(/\s+/g, "-");
+const slugify = slugifyAttr;
 
 const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   const dispatch = useDispatch();
@@ -61,19 +62,17 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
 
   const [selectedAttrs, setSelectedAttrs] = useState<Record<string, string>>(() => {
     // Default to the first in-stock variant, otherwise the first variant.
-    const first = variants.find((v) => v.stock > 0) || variants[0];
-    const initial: Record<string, string> = {};
-    Object.entries(first?.attributes || {}).forEach(([k, v]) => {
-      if (v) initial[k] = slugify(String(v));
-    });
-    return initial;
+    return attrsOf(defaultVariant(variants));
   });
 
-  const matchedVariant = variants.find((v) =>
-    Object.entries(selectedAttrs).every(
-      ([key, val]) => slugify(String(v.attributes?.[key] ?? "")) === val
-    )
-  );
+  const matchedVariant = variants.find((v) => variantMatches(v, selectedAttrs));
+
+  // Picking an option keeps the other choices when that combination exists,
+  // otherwise jumps to the closest existing variant.
+  const selectOption = (key: string, value: string) => {
+    const next = pickVariantFor(variants, selectedAttrs, key, value);
+    setSelectedAttrs(next ? attrsOf(next) : { ...selectedAttrs, [key]: value });
+  };
 
   const salePrice = Number(matchedVariant?.price_override ?? product.discountedPrice);
   const listPrice = Number(product.price);
@@ -110,7 +109,9 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
     slug: product.slug,
     variantName: matchedVariant?.name,
     variantId: matchedVariant?.id,
-    imgs: product.imgs,
+    imgs: matchedVariant?.image
+      ? { thumbnails: [matchedVariant.image], previews: [matchedVariant.image] }
+      : product.imgs,
   });
 
   const handleAddToCart = () => addItem(cartPayload());
@@ -240,16 +241,21 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                         <div className="flex items-center gap-2 flex-wrap">
                           {options.map((opt) => {
                             const checked = selectedAttrs[attrKey] === opt.id;
+                            const available = isOptionAvailable(variants, selectedAttrs, attrKey, opt.id);
                             const isColor = attrKey.toLowerCase() === "color";
                             return (
-                              <label key={opt.id} className="cursor-pointer select-none" title={opt.title}>
+                              <label
+                                key={opt.id}
+                                className={`cursor-pointer select-none ${available ? "" : "opacity-50"}`}
+                                title={available ? opt.title : `${opt.title} (not available with your current selection)`}
+                              >
                                 <input
                                   type="radio"
                                   name={attrKey}
                                   value={opt.id}
                                   checked={checked}
                                   className="sr-only peer"
-                                  onChange={() => setSelectedAttrs((p) => ({ ...p, [attrKey]: opt.id }))}
+                                  onChange={() => selectOption(attrKey, opt.id)}
                                 />
                                 {isColor ? (
                                   <span

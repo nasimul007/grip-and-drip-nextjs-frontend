@@ -1,4 +1,5 @@
 "use client";
+import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, variantMatches } from "@/lib/variants";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { useModalContext } from "@/app/context/QuickViewModalContext";
@@ -51,28 +52,27 @@ const QuickViewModal = () => {
     );
   }, [allAttrKeys, product?.variants]);
 
+  const activeVariants = useMemo(
+    () => (product?.variants || []).filter((v: any) => v.is_active !== false),
+    [product?.variants]
+  );
+
   useEffect(() => {
     if (allAttrKeys.length > 0 && Object.keys(selectedAttrs).length === 0) {
-      const initial: Record<string, string> = {};
-      allAttrKeys.forEach((key) => {
-        const options = variantAttrOptions[key];
-        if (options?.length) {
-          initial[key] = options[0].id;
-        }
-      });
-      setSelectedAttrs(initial);
+      setSelectedAttrs(attrsOf(defaultVariant(activeVariants)));
     }
-  }, [allAttrKeys, variantAttrOptions]);
+  }, [allAttrKeys, activeVariants]);
 
   const matchedVariant = useMemo(() => {
     if (Object.keys(selectedAttrs).length === 0) return null;
-    return product?.variants?.find((v: any) =>
-      Object.entries(selectedAttrs).every(
-        ([key, val]) =>
-          v.attributes?.[key]?.toLowerCase().replace(/\s+/g, "-") === val
-      )
-    );
-  }, [product?.variants, selectedAttrs]);
+    return activeVariants.find((v: any) => variantMatches(v, selectedAttrs));
+  }, [activeVariants, selectedAttrs]);
+
+  // Keep the other choices when that combination exists, else jump to the closest variant.
+  const selectOption = (key: string, value: string) => {
+    const next = pickVariantFor(activeVariants, selectedAttrs, key, value);
+    setSelectedAttrs(next ? attrsOf(next) : { ...selectedAttrs, [key]: value });
+  };
 
   const displayPrice = matchedVariant?.price_override ?? product?.discountedPrice;
   const displayStock = matchedVariant?.stock ?? product?.stock;
@@ -397,16 +397,18 @@ const QuickViewModal = () => {
                       </div>
                       <div className="flex items-center gap-2.5 flex-wrap">
                         {options.map((opt: any) => (
-                          <label key={opt.id} className="cursor-pointer select-none flex items-center">
-                            {attrKey === "color" ? (
+                          <label
+                            key={opt.id}
+                            className={`cursor-pointer select-none flex items-center ${isOptionAvailable(activeVariants, selectedAttrs, attrKey, opt.id) ? "" : "opacity-50"}`}
+                          >
+                            {attrKey.toLowerCase() === "color" ? (
                               <div className="relative">
                                 <input
                                   type="radio"
                                   name={attrKey}
                                   className="sr-only"
-                                  onChange={() =>
-                                    setSelectedAttrs((prev) => ({ ...prev, [attrKey]: opt.id }))
-                                  }
+                                  checked={selectedAttrs[attrKey] === opt.id}
+                                  onChange={() => selectOption(attrKey, opt.id)}
                                 />
                                 <div
                                   className={`flex items-center justify-center w-5.5 h-5.5 rounded-full ${selectedAttrs[attrKey] === opt.id ? "border" : ""}`}
@@ -421,9 +423,8 @@ const QuickViewModal = () => {
                                   type="radio"
                                   name={attrKey}
                                   className="sr-only"
-                                  onChange={() =>
-                                    setSelectedAttrs((prev) => ({ ...prev, [attrKey]: opt.id }))
-                                  }
+                                  checked={selectedAttrs[attrKey] === opt.id}
+                                  onChange={() => selectOption(attrKey, opt.id)}
                                 />
                                 <div
                                   className={`px-4 py-2 rounded-md border text-sm font-medium transition ${selectedAttrs[attrKey] === opt.id

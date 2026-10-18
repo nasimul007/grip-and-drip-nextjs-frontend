@@ -15,7 +15,15 @@ function productImages(product: ProductDetail): string[] {
   const sorted = [...product.images].sort(
     (a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order
   );
-  return sorted.map((img) => mediaUrl(img.image)).filter(Boolean) as string[];
+  const own = sorted.map((img) => mediaUrl(img.image)).filter(Boolean) as string[];
+  if (own.length) return own;
+  // No product images: use the variants' images (in-stock first).
+  const fromVariants = [...(product.variants || [])]
+    .filter((v) => v.is_active !== false && v.image)
+    .sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0) || a.sort_order - b.sort_order)
+    .map((v) => mediaUrl(v.image))
+    .filter(Boolean) as string[];
+  return Array.from(new Set(fromVariants));
 }
 
 function describe(product: ProductDetail): string {

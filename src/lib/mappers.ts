@@ -55,6 +55,18 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
       }
     })
     .filter((url): url is string => url !== null);
+  // Products with no product-level images fall back to their variants' images.
+  const variantImages = [...(item.variants || [])]
+    .filter((v) => v.is_active !== false && v.image)
+    .sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0) || a.sort_order - b.sort_order)
+    .map((v) => {
+      try {
+        return new URL(v.image as string).pathname;
+      } catch {
+        return v.image as string;
+      }
+    });
+  const gallery = images.length ? images : Array.from(new Set(variantImages));
   return {
     title: item.name,
     reviews: 0,
@@ -80,8 +92,8 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
         : null,
     })),
     imgs: {
-      thumbnails: images.length ? images : [],
-      previews: images.length ? images : [],
+      thumbnails: gallery,
+      previews: gallery,
     },
   };
 }
