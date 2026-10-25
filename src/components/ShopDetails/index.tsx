@@ -1,7 +1,7 @@
 "use client";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, slugifyAttr, variantMatches } from "@/lib/variants";
 import { cartImgs } from "@/lib/media";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -39,6 +39,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   const { openPreviewModal } = usePreviewSlider();
   const { addItem } = useCart();
   const [previewImg, setPreviewImg] = useState(0);
+  // The page opens on the primary image; only a shopper's own option pick jumps to a variant image.
+  const userPickedOption = useRef(false);
   const [quantity, setQuantity] = useState(1);
 
   const variants: VariantItem[] = useMemo(
@@ -71,6 +73,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   // Picking an option keeps the other choices when that combination exists,
   // otherwise jumps to the closest existing variant.
   const selectOption = (key: string, value: string) => {
+    userPickedOption.current = true;
     const next = pickVariantFor(variants, selectedAttrs, key, value);
     setSelectedAttrs(next ? attrsOf(next) : { ...selectedAttrs, [key]: value });
   };
@@ -91,7 +94,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
 
   useEffect(() => {
     const vImg = matchedVariant?.image;
-    setPreviewImg(vImg ? Math.max(0, images.indexOf(vImg)) : 0);
+    setPreviewImg(userPickedOption.current && vImg ? Math.max(0, images.indexOf(vImg)) : 0);
     setQuantity(1);
   }, [matchedVariant?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
