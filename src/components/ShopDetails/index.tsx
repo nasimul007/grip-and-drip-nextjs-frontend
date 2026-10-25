@@ -85,7 +85,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   const images = useMemo(() => {
     const list = [...(product.imgs?.previews || [])];
     const vImg = matchedVariant?.image;
-    if (vImg && !list.includes(vImg)) list.unshift(vImg);
+    if (vImg && !list.includes(vImg)) list.push(vImg);
     return list;
   }, [product.imgs, matchedVariant]);
 

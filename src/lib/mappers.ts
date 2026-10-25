@@ -56,7 +56,7 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
       }
     })
     .filter((url): url is string => url !== null);
-  // Products with no product-level images fall back to their variants' images.
+  // Product images come first, then the variants' images.
   const variantImages = [...(item.variants || [])]
     .filter((v) => v.is_active !== false && v.image)
     .sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0) || a.sort_order - b.sort_order)
@@ -67,7 +67,7 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
         return v.image as string;
       }
     });
-  const gallery = images.length ? images : Array.from(new Set(variantImages));
+  const gallery = Array.from(new Set([...images, ...variantImages]));
   return {
     title: item.name,
     reviews: 0,
