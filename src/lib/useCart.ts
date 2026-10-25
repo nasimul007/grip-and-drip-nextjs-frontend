@@ -1,4 +1,5 @@
 "use client";
+import { mediaPath } from "@/lib/media";
 import { useCallback, useMemo } from "react";
 import { useDispatch, useStore } from "react-redux";
 import type { RootState } from "@/redux/store";
@@ -95,7 +96,7 @@ export async function resolveAddableItem(
 
 function toCartImage(path: string | null | undefined): string | null {
   if (!path || typeof path !== "string") return null;
-  if (path.startsWith("http")) return path;
+  if (path.startsWith("http")) return mediaPath(path);
   return path.startsWith("/") ? path : `/media/${path}`;
 }
 

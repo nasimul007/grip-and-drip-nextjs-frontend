@@ -1,5 +1,6 @@
 "use client";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, slugifyAttr, variantMatches } from "@/lib/variants";
+import { cartImgs } from "@/lib/media";
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -109,9 +110,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
     slug: product.slug,
     variantName: matchedVariant?.name,
     variantId: matchedVariant?.id,
-    imgs: matchedVariant?.image
-      ? { thumbnails: [matchedVariant.image], previews: [matchedVariant.image] }
-      : product.imgs,
+    imgs: cartImgs(product.imgs, matchedVariant?.image),
   });
 
   const handleAddToCart = () => addItem(cartPayload());

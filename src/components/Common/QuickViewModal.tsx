@@ -1,6 +1,7 @@
 "use client";
 import { formatWarranty } from "@/lib/format";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, variantMatches } from "@/lib/variants";
+import { cartImgs } from "@/lib/media";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { useModalContext } from "@/app/context/QuickViewModalContext";
@@ -99,7 +100,7 @@ const QuickViewModal = () => {
       slug: product.slug,
       variantName: matchedVariant?.name,
       variantId: matchedVariant?.id,
-      imgs: product.imgs,
+      imgs: cartImgs(product.imgs, matchedVariant?.image),
     });
 
     closeModal();

@@ -1,5 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { mediaPath } from "@/lib/media";
 
 export type ReduxCartItem = {
   id: number;
@@ -52,6 +53,10 @@ function normalize(item: ReduxCartItem): ReduxCartItem {
     price: Number(item.price),
     discountedPrice: Number(item.discountedPrice),
     stock,
+    imgs: item.imgs && {
+      thumbnails: (item.imgs.thumbnails || []).map(mediaPath),
+      previews: (item.imgs.previews || []).map(mediaPath),
+    },
     quantity: clampQuantity(item.quantity, stock),
     lineKey: item.lineKey || makeLineKey(item),
   };
