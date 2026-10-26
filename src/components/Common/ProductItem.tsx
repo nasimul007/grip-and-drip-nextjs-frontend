@@ -91,13 +91,13 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
           </span>
         )}
 
-        <div className="absolute right-2 top-2 flex flex-col gap-2 lg:opacity-0 lg:translate-x-2 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 lg:group-focus-within:opacity-100 lg:group-focus-within:translate-x-0 transition">
+        <div className="absolute right-2 top-2 flex flex-col gap-2 [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:translate-x-2 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover:translate-x-0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:translate-x-0 transition">
           <WishlistButton item={item} className="!w-8 !h-8" />
           <button
             type="button"
             onClick={handleQuickView}
             aria-label={`Quick view ${item.title}`}
-            className="hidden lg:flex items-center justify-center w-8 h-8 rounded-[5px] border border-brand-border bg-brand-card text-white hover:text-brand-accent hover:border-brand-accent"
+            className="flex items-center justify-center w-8 h-8 rounded-[5px] border border-brand-border bg-brand-card text-white hover:text-brand-accent hover:border-brand-accent"
           >
             <SearchIcon size={16} />
           </button>

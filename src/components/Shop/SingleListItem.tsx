@@ -97,7 +97,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
               handleQuickViewUpdate();
             }}
             aria-label={`Quick view ${item.title}`}
-            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-[5px] border border-brand-border text-white bg-brand-card hover:text-brand-accent"
+            className="flex items-center justify-center w-9 h-9 rounded-[5px] border border-brand-border text-white bg-brand-card hover:text-brand-accent"
           >
             <SearchIcon size={16} />
           </button>
