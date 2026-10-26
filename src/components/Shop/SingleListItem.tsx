@@ -3,7 +3,7 @@ import React from "react";
 
 import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
-import { updateQuickView } from "@/redux/features/quickView-slice";
+import { resetQuickView, updateQuickView } from "@/redux/features/quickView-slice";
 import WishlistButton from "@/components/Common/WishlistButton";
 import { useCart } from "@/lib/useCart";
 import { useDispatch } from "react-redux";
@@ -92,6 +92,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
           <button
             type="button"
             onClick={() => {
+              dispatch(resetQuickView());
               openModal();
               handleQuickViewUpdate();
             }}

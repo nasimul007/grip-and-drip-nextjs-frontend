@@ -1,561 +1,310 @@
 "use client";
-import { formatWarranty } from "@/lib/format";
-import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, variantMatches } from "@/lib/variants";
-import { cartImgs } from "@/lib/media";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
 
 import { useModalContext } from "@/app/context/QuickViewModalContext";
-import { AppDispatch, useAppSelector } from "@/redux/store";
-import { useCart } from "@/lib/useCart";
-import { useDispatch } from "react-redux";
-import FallbackImage from "@/components/Common/FallbackImage";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
-import { resetQuickView } from "@/redux/features/quickView-slice";
+import { AppDispatch, useAppSelector } from "@/redux/store";
 import { updateproductDetails } from "@/redux/features/product-details";
+import { useCart } from "@/lib/useCart";
+import { cartImgs } from "@/lib/media";
+import { discountBadge, formatPrice, formatWarranty } from "@/lib/format";
+import { getKeyDetails } from "@/lib/product-display";
+import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, variantMatches } from "@/lib/variants";
+import ProductGallery from "@/components/ShopDetails/ProductGallery";
+import QtyStepper from "@/components/Common/QtyStepper";
+import WishlistButton from "@/components/Common/WishlistButton";
+
+const slugifyOption = (val: string) => val.toLowerCase().replace(/\s+/g, "-");
 
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
   const { openPreviewModal } = usePreviewSlider();
-  const [quantity, setQuantity] = useState(1);
-
   const dispatch = useDispatch<AppDispatch>();
   const { addItem } = useCart();
 
-  // get the product data
   const product = useAppSelector((state) => state.quickViewReducer.value);
+  const loading = !product?.id;
 
+  const [quantity, setQuantity] = useState(1);
+  const [activePreview, setActivePreview] = useState(0);
   const [selectedAttrs, setSelectedAttrs] = useState<Record<string, string>>({});
-
-  const allAttrKeys = useMemo(() => {
-    return Array.from(
-      new Set(
-        (product?.variants || []).flatMap(
-          (v: any) => Object.keys(v.attributes || {})
-        )
-      )
-    ) as string[];
-  }, [product?.variants]);
-
-  const variantAttrOptions = useMemo(() => {
-    return Object.fromEntries(
-      allAttrKeys.map((key: string) => [
-        key,
-        Array.from(
-          new Set(
-            (product?.variants || [])
-              .map((v: any) => v.attributes?.[key])
-              .filter(Boolean)
-          )
-        ).map((val: string) => ({
-          id: val.toLowerCase().replace(/\s+/g, "-"),
-          title: val,
-        })),
-      ])
-    );
-  }, [allAttrKeys, product?.variants]);
+  // Opens on the primary image; only the shopper's own option pick jumps to a variant image.
+  const userPickedOption = useRef(false);
 
   const activeVariants = useMemo(
     () => (product?.variants || []).filter((v: any) => v.is_active !== false),
     [product?.variants]
   );
 
+  // { attribute: [{ id, title }] } discovered from the variants.
+  const variantAttrOptions = useMemo(() => {
+    const map: Record<string, { id: string; title: string }[]> = {};
+    activeVariants.forEach((v: any) =>
+      Object.entries(v.attributes || {}).forEach(([key, val]) => {
+        if (!val) return;
+        map[key] ||= [];
+        const id = slugifyOption(String(val));
+        if (!map[key].some((o) => o.id === id)) map[key].push({ id, title: String(val) });
+      })
+    );
+    return map;
+  }, [activeVariants]);
+
+  // A different product starts from its default variant and its primary image.
   useEffect(() => {
-    if (allAttrKeys.length > 0 && Object.keys(selectedAttrs).length === 0) {
-      setSelectedAttrs(attrsOf(defaultVariant(activeVariants)));
-    }
-  }, [allAttrKeys, activeVariants]);
+    userPickedOption.current = false;
+    setActivePreview(0);
+    setQuantity(1);
+    setSelectedAttrs(attrsOf(defaultVariant(activeVariants)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product?.id]);
 
   const matchedVariant = useMemo(() => {
     if (Object.keys(selectedAttrs).length === 0) return null;
-    return activeVariants.find((v: any) => variantMatches(v, selectedAttrs));
+    return activeVariants.find((v: any) => variantMatches(v, selectedAttrs)) || null;
   }, [activeVariants, selectedAttrs]);
 
   // Keep the other choices when that combination exists, else jump to the closest variant.
   const selectOption = (key: string, value: string) => {
+    userPickedOption.current = true;
     const next = pickVariantFor(activeVariants, selectedAttrs, key, value);
     setSelectedAttrs(next ? attrsOf(next) : { ...selectedAttrs, [key]: value });
   };
 
-  const displayPrice = matchedVariant?.price_override ?? product?.discountedPrice;
-  const displayStock = matchedVariant?.stock ?? product?.stock;
+  const images = useMemo(() => {
+    const list: string[] = [...(product?.imgs?.previews || [])].filter(Boolean);
+    const vImg = matchedVariant?.image;
+    if (vImg && !list.includes(vImg)) list.push(vImg);
+    return list;
+  }, [product?.imgs, matchedVariant]);
 
-  const [activePreview, setActivePreview] = useState(0);
+  useEffect(() => {
+    const vImg = matchedVariant?.image;
+    if (userPickedOption.current && vImg) setActivePreview(Math.max(0, images.indexOf(vImg)));
+    setQuantity(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchedVariant?.id]);
 
-  // preview modal
-  const handlePreviewSlider = () => {
-    dispatch(updateproductDetails(product));
+  const salePrice = Number(matchedVariant?.price_override ?? product?.discountedPrice ?? 0);
+  const listPrice = Number(product?.price ?? 0);
+  const stock = Number(matchedVariant?.stock ?? product?.stock ?? 0);
+  const inStock = stock > 0;
+  const badge = discountBadge(listPrice, salePrice);
+  const warranty = formatWarranty(product?.warrantyMonths);
+  const href = product?.slug ? `/shop/${product.slug}` : "/shop";
 
+  const keyDetails = useMemo(
+    () => getKeyDetails(product?.attributes, product?.description, 4),
+    [product?.attributes, product?.description]
+  );
+  // A description sentence that just repeats the title would show the name twice.
+  const fallbackText =
+    keyDetails.fallback && !keyDetails.fallback.toLowerCase().startsWith((product?.title || "").toLowerCase().slice(0, 30))
+      ? keyDetails.fallback
+      : "";
+
+  const handleZoom = () => {
+    dispatch(updateproductDetails({ ...product, imgs: { thumbnails: images, previews: images } }));
     openPreviewModal(activePreview);
   };
 
-  // add to cart
   const handleAddToCart = () => {
     addItem({
       id: product.id,
       title: product.title,
-      price: product.price,
-      discountedPrice: Number(displayPrice || product.discountedPrice),
+      price: listPrice,
+      discountedPrice: salePrice,
       quantity,
-      stock: displayStock,
+      stock,
       slug: product.slug,
       variantName: matchedVariant?.name,
       variantId: matchedVariant?.id,
       imgs: cartImgs(product.imgs, matchedVariant?.image),
     });
-
     closeModal();
   };
 
   useEffect(() => {
-    // closing modal while clicking outside
-    function handleClickOutside(event) {
-      if (!event.target.closest(".modal-content")) {
-        closeModal();
-      }
-    }
-
-    if (isModalOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (!isModalOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeModal();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [isModalOpen, closeModal]);
 
-  useEffect(() => {
-    // reset quantity whenever the modal closes
-    if (!isModalOpen) {
-      setQuantity(1);
-    }
-  }, [isModalOpen]);
+  if (!isModalOpen) return null;
 
   return (
     <div
-      className={`${isModalOpen ? "z-99999" : "hidden"
-        } fixed top-0 left-0 overflow-y-auto no-scrollbar w-full h-screen sm:py-20 xl:py-25 2xl:py-[230px] bg-[#000000CC] sm:px-8 px-4 py-5`}
+      className="fixed inset-0 z-99999 overflow-y-auto no-scrollbar bg-[#000000CC] px-3 py-4 sm:px-8 sm:py-10"
+      onMouseDown={(e) => e.target === e.currentTarget && closeModal()}
     >
-      <div className="flex items-center justify-center ">
-        <div className="w-full max-w-[1100px] rounded-xl shadow-3 bg-brand-card p-7.5 relative modal-content">
-          <button
-            onClick={() => closeModal()}
-            aria-label="button for close modal"
-            className="absolute top-0 right-0 sm:top-6 sm:right-6 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-brand-surface text-brand-muted hover:text-white"
-          >
-            <svg
-              className="fill-current"
-              width="26"
-              height="26"
-              viewBox="0 0 26 26"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M14.3108 13L19.2291 8.08167C19.5866 7.72417 19.5866 7.12833 19.2291 6.77083C19.0543 6.59895 18.8189 6.50262 18.5737 6.50262C18.3285 6.50262 18.0932 6.59895 17.9183 6.77083L13 11.6892L8.08164 6.77083C7.90679 6.59895 7.67142 6.50262 7.42623 6.50262C7.18104 6.50262 6.94566 6.59895 6.77081 6.77083C6.41331 7.12833 6.41331 7.72417 6.77081 8.08167L11.6891 13L6.77081 17.9183C6.41331 18.2758 6.41331 18.8717 6.77081 19.2292C7.12831 19.5867 7.72414 19.5867 8.08164 19.2292L13 14.3108L17.9183 19.2292C18.2758 19.5867 18.8716 19.5867 19.2291 19.2292C19.5866 18.8717 19.5866 18.2758 19.2291 17.9183L14.3108 13Z"
-                fill=""
-              />
-            </svg>
-          </button>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={loading ? "Quick view" : `${product.title} quick view`}
+        className="relative mx-auto w-full max-w-[1000px] rounded-xl border border-brand-border bg-brand-card p-4 sm:p-6"
+      >
+        <button
+          onClick={closeModal}
+          aria-label="Close quick view"
+          className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-brand-surface text-xl leading-none text-brand-muted hover:text-white"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
 
-          <div className="flex flex-wrap items-center gap-12.5">
-            <div className="max-w-[526px] w-full">
-              <div className="flex gap-3 sm:gap-5 items-start">
-                <div className="flex flex-col gap-3 shrink-0 max-h-[400px] overflow-y-auto no-scrollbar">
-                  {product.imgs.thumbnails?.map((img, key) => (
-                    <button
-                      onClick={() => setActivePreview(key)}
-                      key={key}
-                      className={`flex shrink-0 items-center justify-center w-20 h-20 overflow-hidden rounded-lg bg-brand-surface ease-out duration-200 hover:border-2 hover:border-brand-accent ${activePreview === key && "border-2 border-brand-accent"
-                        }`}
-                    >
-                      {img ? (
-                        <FallbackImage
-                          src={img}
-                          alt=""
-                          fallbackLabel=""
-                          width={61}
-                          height={61}
-                          className="aspect-square object-contain"
-                        />
-                      ) : (
-                        <div className="text-brand-muted text-xs">No Img</div>
-                      )}
-                    </button>
-                  ))}
-                </div>
+        {loading ? (
+          <div className="grid gap-6 md:grid-cols-[minmax(0,480px)_1fr] animate-pulse" aria-busy="true">
+            <div className="aspect-square rounded-lg bg-brand-surface" />
+            <div className="flex flex-col gap-3">
+              <div className="h-6 w-3/4 rounded bg-brand-surface" />
+              <div className="h-4 w-1/3 rounded bg-brand-surface" />
+              <div className="h-24 rounded bg-brand-surface" />
+              <div className="h-10 w-1/2 rounded bg-brand-surface" />
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-5 md:grid-cols-[minmax(0,480px)_1fr] md:gap-8">
+            <ProductGallery
+              images={images}
+              alt={product.title}
+              selected={activePreview}
+              onSelect={setActivePreview}
+              onZoom={handleZoom}
+            />
 
-                <div className="relative z-1 overflow-hidden flex-1 min-w-0 max-w-[400px] aspect-square sm:flex-none sm:w-[400px] sm:h-[400px] bg-brand-surface rounded-lg border border-brand-border">
+            <div className="min-w-0 text-sm">
+              <h2 className="pr-9 text-lg font-semibold leading-snug text-white sm:text-xl">
+                <Link href={href} onClick={closeModal} className="hover:text-brand-accent">
+                  {product.title}
+                </Link>
+              </h2>
+
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className={`font-medium ${inStock ? "text-green" : "text-red"}`}>
+                  {inStock ? "In stock" : "Out of stock"}
+                </span>
+                {product.brand && <span className="text-brand-muted">Brand: {product.brand}</span>}
+                {warranty && <span className="text-brand-muted">{warranty} warranty</span>}
+                {product.reviews > 0 && (
+                  <span className="text-brand-muted">{product.reviews} review{product.reviews > 1 ? "s" : ""}</span>
+                )}
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-baseline gap-2">
+                <span className="text-2xl font-semibold text-white">{formatPrice(salePrice)}</span>
+                {listPrice > salePrice && (
                   <>
-                    <button
-                      onClick={handlePreviewSlider}
-                      aria-label="button for zoom"
-                      className="gallery__Image w-10 h-10 rounded-[5px] bg-brand-card shadow-1 flex items-center justify-center ease-out duration-200 text-white hover:text-brand-accent absolute top-4 lg:top-8 right-4 lg:right-8 z-50"
-                    >
-                      <svg
-                        className="fill-current"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M9.11493 1.14581L9.16665 1.14581C9.54634 1.14581 9.85415 1.45362 9.85415 1.83331C9.85415 2.21301 9.54634 2.52081 9.16665 2.52081C7.41873 2.52081 6.17695 2.52227 5.23492 2.64893C4.31268 2.77292 3.78133 3.00545 3.39339 3.39339C3.00545 3.78133 2.77292 4.31268 2.64893 5.23492C2.52227 6.17695 2.52081 7.41873 2.52081 9.16665C2.52081 9.54634 2.21301 9.85415 1.83331 9.85415C1.45362 9.85415 1.14581 9.54634 1.14581 9.16665L1.14581 9.11493C1.1458 7.43032 1.14579 6.09599 1.28619 5.05171C1.43068 3.97699 1.73512 3.10712 2.42112 2.42112C3.10712 1.73512 3.97699 1.43068 5.05171 1.28619C6.09599 1.14579 7.43032 1.1458 9.11493 1.14581ZM16.765 2.64893C15.823 2.52227 14.5812 2.52081 12.8333 2.52081C12.4536 2.52081 12.1458 2.21301 12.1458 1.83331C12.1458 1.45362 12.4536 1.14581 12.8333 1.14581L12.885 1.14581C14.5696 1.1458 15.904 1.14579 16.9483 1.28619C18.023 1.43068 18.8928 1.73512 19.5788 2.42112C20.2648 3.10712 20.5693 3.97699 20.7138 5.05171C20.8542 6.09599 20.8542 7.43032 20.8541 9.11494V9.16665C20.8541 9.54634 20.5463 9.85415 20.1666 9.85415C19.787 9.85415 19.4791 9.54634 19.4791 9.16665C19.4791 7.41873 19.4777 6.17695 19.351 5.23492C19.227 4.31268 18.9945 3.78133 18.6066 3.39339C18.2186 3.00545 17.6873 2.77292 16.765 2.64893ZM1.83331 12.1458C2.21301 12.1458 2.52081 12.4536 2.52081 12.8333C2.52081 14.5812 2.52227 15.823 2.64893 16.765C2.77292 17.6873 3.00545 18.2186 3.39339 18.6066C3.78133 18.9945 4.31268 19.227 5.23492 19.351C6.17695 19.4777 7.41873 19.4791 9.16665 19.4791C9.54634 19.4791 9.85415 19.787 9.85415 20.1666C9.85415 20.5463 9.54634 20.8541 9.16665 20.8541H9.11494C7.43032 20.8542 6.09599 20.8542 5.05171 20.7138C3.97699 20.5693 3.10712 20.2648 2.42112 19.5788C1.73512 18.8928 1.43068 18.023 1.28619 16.9483C1.14579 15.904 1.1458 14.5696 1.14581 12.885L1.14581 12.8333C1.14581 12.4536 1.45362 12.1458 1.83331 12.1458ZM20.1666 12.1458C20.5463 12.1458 20.8541 12.4536 20.8541 12.8333V12.885C20.8542 14.5696 20.8542 15.904 20.7138 16.9483C20.5693 18.023 20.2648 18.8928 19.5788 19.5788C18.8928 20.2648 18.023 20.5693 16.9483 20.7138C15.904 20.8542 14.5696 20.8542 12.885 20.8541H12.8333C12.4536 20.8541 12.1458 20.5463 12.1458 20.1666C12.1458 19.787 12.4536 19.4791 12.8333 19.4791C14.5812 19.4791 15.823 19.4777 16.765 19.351C17.6873 19.227 18.2186 18.9945 18.6066 18.6066C18.9945 18.2186 19.227 17.6873 19.351 16.765C19.4777 15.823 19.4791 14.5812 19.4791 12.8333C19.4791 12.4536 19.787 12.1458 20.1666 12.1458Z"
-                          fill=""
-                        />
-                      </svg>
-                    </button>
-
-                    {product?.imgs?.previews?.[activePreview] && (
-                      <div className="absolute inset-4 sm:inset-6">
-                        <FallbackImage
-                          src={product.imgs.previews[activePreview]}
-                          alt={product.title}
-                          fill
-                          sizes="(max-width: 640px) 70vw, 400px"
-                          className="object-contain"
-                        />
-                      </div>
+                    <span className="text-brand-muted line-through">{formatPrice(listPrice)}</span>
+                    {badge && (
+                      <span className="rounded bg-green px-2 py-0.5 text-custom-xs font-medium text-white">{badge}</span>
                     )}
                   </>
-                </div>
-              </div>
-            </div>
-
-            <div className="max-w-[445px] w-full">
-              {product.price > displayPrice && (
-                <span className="inline-block text-custom-xs font-medium text-white py-1 px-3 bg-green mb-6.5">
-                  SALE {Math.round(((product.price - displayPrice) / product.price) * 100)}% OFF{product.warrantyMonths ? ` · ${formatWarranty(product.warrantyMonths)} warranty` : ""}
-                </span>
-              )}
-
-              <h3 className="font-semibold text-xl xl:text-heading-5 text-white mb-4">
-                {product.title}
-              </h3>
-
-              <div className="flex flex-wrap items-center gap-5 mb-6">
-                <div className="flex items-center gap-1.5">
-                  {/* <!-- stars --> */}
-                  <div className="flex items-center gap-1">
-                    <svg
-                      className="fill-[#FFA645]"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_375_9172)">
-                        <path
-                          d="M16.7906 6.72187L11.7 5.93438L9.39377 1.09688C9.22502 0.759375 8.77502 0.759375 8.60627 1.09688L6.30002 5.9625L1.23752 6.72187C0.871891 6.77812 0.731266 7.25625 1.01252 7.50938L4.69689 11.3063L3.82502 16.6219C3.76877 16.9875 4.13439 17.2969 4.47189 17.0719L9.05627 14.5687L13.6125 17.0719C13.9219 17.2406 14.3156 16.9594 14.2313 16.6219L13.3594 11.3063L17.0438 7.50938C17.2688 7.25625 17.1563 6.77812 16.7906 6.72187Z"
-                          fill=""
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_375_9172">
-                          <rect width="18" height="18" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-
-                    <svg
-                      className="fill-[#FFA645]"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_375_9172)">
-                        <path
-                          d="M16.7906 6.72187L11.7 5.93438L9.39377 1.09688C9.22502 0.759375 8.77502 0.759375 8.60627 1.09688L6.30002 5.9625L1.23752 6.72187C0.871891 6.77812 0.731266 7.25625 1.01252 7.50938L4.69689 11.3063L3.82502 16.6219C3.76877 16.9875 4.13439 17.2969 4.47189 17.0719L9.05627 14.5687L13.6125 17.0719C13.9219 17.2406 14.3156 16.9594 14.2313 16.6219L13.3594 11.3063L17.0438 7.50938C17.2688 7.25625 17.1563 6.77812 16.7906 6.72187Z"
-                          fill=""
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_375_9172">
-                          <rect width="18" height="18" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-
-                    <svg
-                      className="fill-[#FFA645]"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_375_9172)">
-                        <path
-                          d="M16.7906 6.72187L11.7 5.93438L9.39377 1.09688C9.22502 0.759375 8.77502 0.759375 8.60627 1.09688L6.30002 5.9625L1.23752 6.72187C0.871891 6.77812 0.731266 7.25625 1.01252 7.50938L4.69689 11.3063L3.82502 16.6219C3.76877 16.9875 4.13439 17.2969 4.47189 17.0719L9.05627 14.5687L13.6125 17.0719C13.9219 17.2406 14.3156 16.9594 14.2313 16.6219L13.3594 11.3063L17.0438 7.50938C17.2688 7.25625 17.1563 6.77812 16.7906 6.72187Z"
-                          fill=""
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_375_9172">
-                          <rect width="18" height="18" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-
-                    <svg
-                      className="fill-gray-4"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_375_9172)">
-                        <path
-                          d="M16.7906 6.72187L11.7 5.93438L9.39377 1.09688C9.22502 0.759375 8.77502 0.759375 8.60627 1.09688L6.30002 5.9625L1.23752 6.72187C0.871891 6.77812 0.731266 7.25625 1.01252 7.50938L4.69689 11.3063L3.82502 16.6219C3.76877 16.9875 4.13439 17.2969 4.47189 17.0719L9.05627 14.5687L13.6125 17.0719C13.9219 17.2406 14.3156 16.9594 14.2313 16.6219L13.3594 11.3063L17.0438 7.50938C17.2688 7.25625 17.1563 6.77812 16.7906 6.72187Z"
-                          fill=""
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_375_9172">
-                          <rect width="18" height="18" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-
-                    <svg
-                      className="fill-gray-4"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_375_9172)">
-                        <path
-                          d="M16.7906 6.72187L11.7 5.93438L9.39377 1.09688C9.22502 0.759375 8.77502 0.759375 8.60627 1.09688L6.30002 5.9625L1.23752 6.72187C0.871891 6.77812 0.731266 7.25625 1.01252 7.50938L4.69689 11.3063L3.82502 16.6219C3.76877 16.9875 4.13439 17.2969 4.47189 17.0719L9.05627 14.5687L13.6125 17.0719C13.9219 17.2406 14.3156 16.9594 14.2313 16.6219L13.3594 11.3063L17.0438 7.50938C17.2688 7.25625 17.1563 6.77812 16.7906 6.72187Z"
-                          fill=""
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_375_9172">
-                          <rect width="18" height="18" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </div>
-
-                  <span>
-                    <span className="font-medium text-white"> {product.reviews > 0 ? `${product.reviews} Review${product.reviews > 1 ? 's' : ''}` : 'No reviews'} </span>
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g clipPath="url(#clip0_375_9221)">
-                      <path
-                        d="M10 0.5625C4.78125 0.5625 0.5625 4.78125 0.5625 10C0.5625 15.2188 4.78125 19.4688 10 19.4688C15.2188 19.4688 19.4688 15.2188 19.4688 10C19.4688 4.78125 15.2188 0.5625 10 0.5625ZM10 18.0625C5.5625 18.0625 1.96875 14.4375 1.96875 10C1.96875 5.5625 5.5625 1.96875 10 1.96875C14.4375 1.96875 18.0625 5.59375 18.0625 10.0312C18.0625 14.4375 14.4375 18.0625 10 18.0625Z"
-                        fill="#22AD5C"
-                      />
-                      <path
-                        d="M12.6875 7.09374L8.9688 10.7187L7.2813 9.06249C7.00005 8.78124 6.56255 8.81249 6.2813 9.06249C6.00005 9.34374 6.0313 9.78124 6.2813 10.0625L8.2813 12C8.4688 12.1875 8.7188 12.2812 8.9688 12.2812C9.2188 12.2812 9.4688 12.1875 9.6563 12L13.6875 8.12499C13.9688 7.84374 13.9688 7.40624 13.6875 7.12499C13.4063 6.84374 12.9688 6.84374 12.6875 7.09374Z"
-                        fill="#22AD5C"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_375_9221">
-                        <rect width="20" height="20" fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-
-                  <span className={`font-medium ${displayStock > 0 ? 'text-green' : 'text-red'}`}>
-                    {displayStock > 0 ? 'In Stock' : 'Out of Stock'}
-                  </span>
-                </div>
+                )}
               </div>
 
-              {product.description && (
-                <p
-                  className="text-brand-muted text-sm leading-relaxed line-clamp-3"
-                  dangerouslySetInnerHTML={{ __html: product.description.replace(/<img[^>]*>/g, "") }}
-                />
+              {(keyDetails.items.length > 0 || fallbackText) && (
+                <div className="mt-4">
+                  {keyDetails.items.length > 0 ? (
+                    <ul className="flex flex-col gap-1">
+                      {keyDetails.items.map((d) => (
+                        <li key={d.label} className="flex gap-2">
+                          <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand-accent" aria-hidden="true" />
+                          <span>
+                            <span className="capitalize text-brand-muted">{d.label}:</span>{" "}
+                            <span className="text-white">{d.value}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-brand-muted">{fallbackText}</p>
+                  )}
+                </div>
               )}
 
-              {allAttrKeys.length > 0 && (
-                <div className="flex flex-col gap-4.5 border-y border-brand-border mt-5 mb-5 py-5">
+              {Object.keys(variantAttrOptions).length > 0 && (
+                <div className="mt-4 flex flex-col gap-3 border-y border-brand-border py-4">
                   {Object.entries(variantAttrOptions).map(([attrKey, options]) => (
-                    <div key={attrKey} className="flex items-center gap-4">
-                      <div className="min-w-[65px]">
-                        <h4 className="font-medium text-white capitalize text-sm">{attrKey}:</h4>
-                      </div>
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        {options.map((opt: any) => (
-                          <label
-                            key={opt.id}
-                            className={`cursor-pointer select-none flex items-center ${isOptionAvailable(activeVariants, selectedAttrs, attrKey, opt.id) ? "" : "opacity-50"}`}
-                          >
-                            {attrKey.toLowerCase() === "color" ? (
-                              <div className="relative">
-                                <input
-                                  type="radio"
-                                  name={attrKey}
-                                  className="sr-only"
-                                  checked={selectedAttrs[attrKey] === opt.id}
-                                  onChange={() => selectOption(attrKey, opt.id)}
-                                />
-                                <div
-                                  className={`flex items-center justify-center w-5.5 h-5.5 rounded-full ${selectedAttrs[attrKey] === opt.id ? "border" : ""}`}
+                    <div key={attrKey} className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                      <h3 className="min-w-[60px] font-medium capitalize text-white">{attrKey}:</h3>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {options.map((opt) => {
+                          const selected = selectedAttrs[attrKey] === opt.id;
+                          const available = isOptionAvailable(activeVariants, selectedAttrs, attrKey, opt.id);
+                          return (
+                            <label key={opt.id} className={`cursor-pointer select-none ${available ? "" : "opacity-50"}`}>
+                              <input
+                                type="radio"
+                                name={`qv-${attrKey}`}
+                                className="sr-only"
+                                checked={selected}
+                                onChange={() => selectOption(attrKey, opt.id)}
+                              />
+                              {attrKey.toLowerCase() === "color" ? (
+                                <span
+                                  className={`flex h-6 w-6 items-center justify-center rounded-full ${selected ? "border" : ""}`}
                                   style={{ borderColor: opt.title }}
+                                  title={opt.title}
                                 >
-                                  <span className="block w-3 h-3 rounded-full" style={{ backgroundColor: opt.title }} />
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="relative">
-                                <input
-                                  type="radio"
-                                  name={attrKey}
-                                  className="sr-only"
-                                  checked={selectedAttrs[attrKey] === opt.id}
-                                  onChange={() => selectOption(attrKey, opt.id)}
-                                />
-                                <div
-                                  className={`px-4 py-2 rounded-md border text-sm font-medium transition ${selectedAttrs[attrKey] === opt.id
-                                    ? "border-brand-accent bg-brand-accent text-brand-dark"
-                                    : "border-brand-border bg-brand-card text-white hover:border-brand-accent"
+                                  <span className="block h-3.5 w-3.5 rounded-full" style={{ backgroundColor: opt.title }} />
+                                </span>
+                              ) : (
+                                <span
+                                  className={`block rounded-md border px-3 py-1.5 font-medium transition ${
+                                    selected
+                                      ? "border-brand-accent bg-brand-accent text-brand-dark"
+                                      : "border-brand-border bg-brand-card text-white hover:border-brand-accent"
                                   }`}
                                 >
                                   {opt.title}
-                                </div>
-                              </div>
-                            )}
-                          </label>
-                        ))}
+                                </span>
+                              )}
+                            </label>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
 
-              <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
-                <div>
-                  <h4 className="font-semibold text-lg text-white mb-3.5">
-                    Price
-                  </h4>
-
-                  <span className="flex items-center gap-2">
-                    <span className="font-semibold text-white text-xl xl:text-heading-4">
-                      ৳{displayPrice}
-                    </span>
-                    {product.price !== displayPrice && (
-                      <span className="font-medium text-brand-muted text-lg xl:text-2xl line-through">
-                        ৳{product.price}
-                      </span>
-                    )}
-                  </span>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-lg text-white mb-3.5">
-                    Quantity
-                  </h4>
-
-                  <div className="flex items-center rounded-md border border-brand-border">
-                    <button
-                      onClick={() => quantity > 1 && setQuantity(quantity - 1)}
-                      aria-label="button for remove product"
-                      className="flex items-center justify-center w-12 h-12 ease-out duration-200 hover:text-brand-accent"
-                    >
-                      <svg
-                        className="fill-current"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M3.33301 10.0001C3.33301 9.53984 3.7061 9.16675 4.16634 9.16675H15.833C16.2932 9.16675 16.6663 9.53984 16.6663 10.0001C16.6663 10.4603 16.2932 10.8334 15.833 10.8334H4.16634C3.7061 10.8334 3.33301 10.4603 3.33301 10.0001Z"
-                          fill=""
-                        />
-                      </svg>
-                    </button>
-
-                    <span
-                      className="flex items-center justify-center w-16 h-12 border-x border-brand-border font-medium text-white"
-                    >
-                      {quantity}
-                    </span>
-
-                    <button
-                      onClick={() => quantity < displayStock && setQuantity(quantity + 1)}
-                      aria-label="button for add product"
-                      className={`flex items-center justify-center w-12 h-12 ease-out duration-200 ${quantity >= displayStock ? "opacity-40 cursor-not-allowed" : "hover:text-brand-accent"}`}
-                    >
-                      <svg
-                        className="fill-current"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M3.33301 10C3.33301 9.5398 3.7061 9.16671 4.16634 9.16671H15.833C16.2932 9.16671 16.6663 9.5398 16.6663 10C16.6663 10.4603 16.2932 10.8334 15.833 10.8334H4.16634C3.7061 10.8334 3.33301 10.4603 3.33301 10Z"
-                          fill=""
-                        />
-                        <path
-                          d="M9.99967 16.6667C9.53944 16.6667 9.16634 16.2936 9.16634 15.8334L9.16634 4.16671C9.16634 3.70647 9.53944 3.33337 9.99967 3.33337C10.4599 3.33337 10.833 3.70647 10.833 4.16671L10.833 15.8334C10.833 16.2936 10.4599 16.6667 9.99967 16.6667Z"
-                          fill=""
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <QtyStepper quantity={quantity} max={stock} onChange={(q) => setQuantity(Math.max(1, Math.min(q, stock || 1)))} label={product.title} />
+                <button
+                  type="button"
+                  disabled={!inStock}
+                  onClick={handleAddToCart}
+                  className={`inline-flex min-w-[140px] flex-1 items-center justify-center rounded-md bg-brand-accent px-6 py-2.5 font-medium text-brand-dark duration-200 hover:bg-brand-accent-dark sm:flex-none ${
+                    inStock ? "" : "cursor-not-allowed opacity-40"
+                  }`}
+                >
+                  {inStock ? "Add to cart" : "Out of stock"}
+                </button>
+                <WishlistButton
+                  item={{
+                    id: product.id,
+                    title: product.title,
+                    price: listPrice,
+                    discountedPrice: salePrice,
+                    slug: product.slug,
+                    imgs: cartImgs(product.imgs, matchedVariant?.image),
+                  }}
+                  className="!h-10 !w-10"
+                />
               </div>
 
-              <div className="flex flex-wrap items-center gap-4">
-                <button
-                  disabled={displayStock === 0}
-                  onClick={() => handleAddToCart()}
-                  className={`inline-flex font-medium text-brand-dark bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-accent-dark ${displayStock === 0 ? "opacity-40 cursor-not-allowed" : ""}`}
-                >
-                  {displayStock > 0 ? "Add to Cart" : "Out of Stock"}
-                </button>
-
-                <button
-                  className={`inline-flex items-center gap-2 font-medium text-white bg-dark py-3 px-6 rounded-md ease-out duration-200 hover:bg-opacity-95 `}
-                >
-                  <svg
-                    className="fill-current"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M4.68698 3.68688C3.30449 4.31882 2.29169 5.82191 2.29169 7.6143C2.29169 9.44546 3.04103 10.8569 4.11526 12.0665C5.00062 13.0635 6.07238 13.8897 7.11763 14.6956C7.36588 14.8869 7.61265 15.0772 7.85506 15.2683C8.29342 15.6139 8.68445 15.9172 9.06136 16.1374C9.43847 16.3578 9.74202 16.4584 10 16.4584C10.258 16.4584 10.5616 16.3578 10.9387 16.1374C11.3156 15.9172 11.7066 15.6139 12.145 15.2683C12.3874 15.0772 12.6342 14.8869 12.8824 14.6956C13.9277 13.8897 14.9994 13.0635 15.8848 12.0665C16.959 10.8569 17.7084 9.44546 17.7084 7.6143C17.7084 5.82191 16.6955 4.31882 15.3131 3.68688C13.97 3.07295 12.1653 3.23553 10.4503 5.01733C10.3325 5.13974 10.1699 5.20891 10 5.20891C9.83012 5.20891 9.66754 5.13974 9.54972 5.01733C7.83474 3.23553 6.03008 3.07295 4.68698 3.68688ZM10 3.71573C8.07331 1.99192 5.91582 1.75077 4.16732 2.55002C2.32061 3.39415 1.04169 5.35424 1.04169 7.6143C1.04169 9.83557 1.9671 11.5301 3.18062 12.8966C4.15241 13.9908 5.34187 14.9067 6.39237 15.7155C6.63051 15.8989 6.8615 16.0767 7.0812 16.2499C7.50807 16.5864 7.96631 16.9453 8.43071 17.2166C8.8949 17.4879 9.42469 17.7084 10 17.7084C10.5754 17.7084 11.1051 17.4879 11.5693 17.2166C12.0337 16.9453 12.492 16.5864 12.9188 16.2499C13.1385 16.0767 13.3695 15.8989 13.6077 15.7155C14.6582 14.9067 15.8476 13.9908 16.8194 12.8966C18.0329 11.5301 18.9584 9.83557 18.9584 7.6143C18.9584 5.35424 17.6794 3.39415 15.8327 2.55002C14.0842 1.75077 11.9267 1.99192 10 3.71573Z"
-                      fill=""
-                    />
-                  </svg>
-                  Add to Wishlist
-                </button>
-              </div>
+              <Link
+                href={href}
+                onClick={closeModal}
+                className="mt-4 inline-block font-medium text-brand-accent hover:underline"
+              >
+                View full product details →
+              </Link>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { Product } from "@/types/product";
 import { AppDispatch } from "@/redux/store";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
-import { updateQuickView } from "@/redux/features/quickView-slice";
+import { resetQuickView, updateQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
 import { api } from "@/lib/api";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
@@ -29,6 +29,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
   const warranty = formatWarranty(item.warrantyMonths);
 
   const handleQuickView = async () => {
+    dispatch(resetQuickView());
     openModal();
     try {
       const detail = await api.get<ProductDetail>(`/api/products/${item.slug}/`);
