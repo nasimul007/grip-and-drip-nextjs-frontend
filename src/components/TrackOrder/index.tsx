@@ -3,108 +3,35 @@ import React, { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Breadcrumb from "@/components/Common/Breadcrumb";
-import FallbackImage from "@/components/Common/FallbackImage";
+import OrderView from "@/components/Orders/OrderView";
+import { StatusBadge } from "@/components/Orders/OrderProgress";
 import { api } from "@/lib/api";
 import { useAppSelector } from "@/redux/store";
-import { formatPrice } from "@/lib/format";
 import { CONTACT, whatsappHref } from "@/lib/site";
-import {
-  ORDER_STEPS,
-  PAYMENT_LABEL,
-  deliveryEstimate,
-  formatOrderDate,
-  type TrackedOrder,
-} from "@/lib/orders";
+import { formatOrderDate, fromOrderDetail, type TrackedOrder } from "@/lib/orders";
 import type { OrderListItem, PaginatedResponse } from "@/lib/types";
 
 const inputClass =
   "w-full rounded-md border border-brand-border bg-brand-surface px-3.5 py-2.5 text-white placeholder:text-brand-muted outline-none focus:border-brand-accent";
 
-function Progress({ status }: { status: string }) {
-  if (status === "cancelled") {
-    return (
-      <p className="rounded-md border border-red bg-red-light-6/10 px-4 py-3 text-sm text-white">
-        This order was cancelled. If you did not ask for this, please contact us.
-      </p>
-    );
-  }
-  const current = Math.max(0, ORDER_STEPS.findIndex((s) => s.key === status));
-  return (
-    <ol className="grid grid-cols-5 gap-1" aria-label="Order progress">
-      {ORDER_STEPS.map((step, i) => {
-        const done = i <= current;
-        return (
-          <li key={step.key} className="flex flex-col items-center text-center" aria-current={i === current ? "step" : undefined}>
-            <span className="flex w-full items-center">
-              <span className={`h-0.5 flex-1 ${i === 0 ? "opacity-0" : i <= current ? "bg-brand-accent" : "bg-brand-border"}`} />
-              <span
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-semibold ${
-                  done ? "border-brand-accent bg-brand-accent text-brand-dark" : "border-brand-border bg-brand-surface text-brand-muted"
-                }`}
-              >
-                {done ? "✓" : i + 1}
-              </span>
-              <span className={`h-0.5 flex-1 ${i === ORDER_STEPS.length - 1 ? "opacity-0" : i < current ? "bg-brand-accent" : "bg-brand-border"}`} />
-            </span>
-            <span className={`mt-1.5 text-[11px] leading-tight sm:text-custom-xs ${done ? "text-white" : "text-brand-muted"}`}>{step.label}</span>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
-
 function OrderResult({ order }: { order: TrackedOrder }) {
   const help = whatsappHref(`Hi, I need help with order ${order.order_number}.`);
   return (
     <div className="rounded-lg border border-brand-border bg-brand-card">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-brand-border px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-brand-border px-4 py-3 sm:px-5">
         <div>
           <p className="text-custom-xs text-brand-muted">Order</p>
           <p className="font-semibold text-white">#{order.order_number}</p>
         </div>
-        <p className="text-custom-sm text-brand-muted">Placed {formatOrderDate(order.created_at)}</p>
+        <div className="text-right">
+          <StatusBadge status={order.status} label={order.status_display} />
+          <p className="mt-0.5 text-custom-xs text-brand-muted">Placed {formatOrderDate(order.created_at)}</p>
+        </div>
       </div>
 
-      <div className="px-4 py-5">
-        <Progress status={order.status} />
-        {order.status !== "cancelled" && order.status !== "delivered" && (
-          <p className="mt-4 text-center text-sm text-brand-muted">
-            Estimated delivery: <span className="text-white">{deliveryEstimate(order.shipping_area)}</span> from confirmation
-          </p>
-        )}
-      </div>
+      <OrderView order={order} />
 
-      <ul className="divide-y divide-brand-border border-t border-brand-border px-4">
-        {order.items.map((item, i) => (
-          <li key={`${item.product_slug}-${i}`} className="flex items-center gap-3 py-3">
-            <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-brand-surface">
-              {item.product_image && (
-                <FallbackImage src={item.product_image.replace(/^https?:\/\/[^/]+(?=\/media\/)/, "")} alt="" fill sizes="48px" fallbackLabel="" className="object-cover" />
-              )}
-            </span>
-            <span className="min-w-0 flex-1 text-sm">
-              <span className="block line-clamp-2 text-white">{item.product_name}</span>
-              <span className="block text-custom-xs text-brand-muted">
-                {item.variant_name ? `${item.variant_name} · ` : ""}Qty {item.quantity}
-              </span>
-            </span>
-            <span className="text-sm text-white">{formatPrice(Number(item.price) * item.quantity)}</span>
-          </li>
-        ))}
-      </ul>
-
-      <dl className="grid gap-1.5 border-t border-brand-border px-4 py-4 text-sm">
-        <div className="flex justify-between"><dt className="text-brand-muted">Subtotal</dt><dd className="text-white">{formatPrice(order.subtotal)}</dd></div>
-        <div className="flex justify-between"><dt className="text-brand-muted">Delivery</dt><dd className="text-white">{Number(order.shipping_cost) > 0 ? formatPrice(order.shipping_cost) : "Free"}</dd></div>
-        <div className="flex justify-between border-t border-brand-border pt-2 font-semibold"><dt className="text-white">Total</dt><dd className="text-white">{formatPrice(order.total)}</dd></div>
-        <div className="flex justify-between pt-1"><dt className="text-brand-muted">Payment</dt><dd className="text-white">{PAYMENT_LABEL[order.payment_method] || order.payment_method}</dd></div>
-        {order.delivery_area && (
-          <div className="flex justify-between gap-4"><dt className="shrink-0 text-brand-muted">Delivering to</dt><dd className="text-right text-white">{order.customer_name ? `${order.customer_name}, ` : ""}{order.delivery_area}</dd></div>
-        )}
-      </dl>
-
-      <div className="flex flex-wrap gap-3 border-t border-brand-border px-4 py-4 text-sm">
+      <div className="flex flex-wrap gap-3 border-t border-brand-border px-4 py-4 text-sm sm:px-5">
         {help && (
           <a href={help} target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#25D366] px-4 py-2 font-medium text-white hover:opacity-90">
             Ask about this order on WhatsApp
@@ -166,12 +93,7 @@ function TrackOrderInner() {
     setLoading(true);
     setError("");
     try {
-      const detail = await api.get<TrackedOrder & { shipping_address?: { full_name: string; city: string } }>(`/api/orders/${id}/`);
-      setOrder({
-        ...detail,
-        customer_name: detail.customer_name ?? detail.shipping_address?.full_name?.split(" ")[0] ?? "",
-        delivery_area: detail.delivery_area ?? detail.shipping_address?.city ?? "",
-      });
+      setOrder(fromOrderDetail(await api.get<TrackedOrder>(`/api/orders/${id}/`)));
     } catch (err) {
       setError((err as Error).message || "Could not load this order.");
     } finally {
@@ -206,7 +128,7 @@ function TrackOrderInner() {
                     >
                       <span className="text-white">#{o.order_number}</span>
                       <span className="text-brand-muted">{formatOrderDate(o.created_at)}</span>
-                      <span className="capitalize text-brand-accent">{o.status}</span>
+                      <StatusBadge status={o.status} label={o.status_display} />
                     </button>
                   </li>
                 ))}

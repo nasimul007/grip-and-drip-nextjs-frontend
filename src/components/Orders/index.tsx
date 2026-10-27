@@ -1,12 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import SingleOrder from "./SingleOrder";
+import OrderModal from "./OrderModal";
 import { api } from "@/lib/api";
 import type { OrderListItem, PaginatedResponse } from "@/lib/types";
 
 const Orders = () => {
   const [orders, setOrders] = useState<OrderListItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openId, setOpenId] = useState<number | null>(null);
 
   useEffect(() => {
     api
@@ -16,52 +19,39 @@ const Orders = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) {
-    return (
-      <p className="py-9.5 px-4 sm:px-7.5 xl:px-10 text-brand-muted">Loading orders...</p>
-    );
-  }
-
   return (
-    <>
-      <div className="w-full overflow-x-auto">
-        <div className="min-w-[770px]">
-          {orders.length > 0 && (
-            <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex border-b border-brand-border">
-              <div className="min-w-[175px]">
-                <p className="text-custom-sm text-brand-muted">Order</p>
-              </div>
-              <div className="min-w-[175px]">
-                <p className="text-custom-sm text-brand-muted">Date</p>
-              </div>
-              <div className="min-w-[128px]">
-                <p className="text-custom-sm text-brand-muted">Status</p>
-              </div>
-              <div className="min-w-[113px]">
-                <p className="text-custom-sm text-brand-muted">Total</p>
-              </div>
-              <div className="min-w-[113px]">
-                <p className="text-custom-sm text-brand-muted">Items</p>
-              </div>
-            </div>
-          )}
-          {orders.length > 0 ? (
-            orders.map((order, key) => (
-              <SingleOrder key={key} order={order} smallView={false} />
-            ))
-          ) : (
-            <p className="py-9.5 px-4 sm:px-7.5 xl:px-10 text-brand-muted">
-              You don&apos;t have any orders!
-            </p>
-          )}
-        </div>
-
-        {orders.length > 0 &&
-          orders.map((order, key) => (
-            <SingleOrder key={key} order={order} smallView={true} />
-          ))}
+    <div>
+      <div className="flex items-center justify-between gap-3 border-b border-brand-border px-4 py-3.5 sm:px-5">
+        <h2 className="text-lg font-semibold text-white">My orders</h2>
+        <Link href="/track-order" className="text-custom-sm text-brand-accent hover:underline">Track an order</Link>
       </div>
-    </>
+
+      {loading ? (
+        <div className="animate-pulse space-y-2 p-4 sm:p-5" aria-busy="true">
+          {[0, 1, 2].map((i) => <div key={i} className="h-14 rounded-md bg-brand-surface" />)}
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="px-4 py-12 text-center">
+          <p className="text-white">You have no orders yet.</p>
+          <Link href="/shop" className="mt-4 inline-block rounded-md bg-brand-accent px-6 py-2.5 font-medium text-brand-dark hover:bg-brand-hover">
+            Start shopping
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="hidden grid-cols-[1.5fr_1fr_1fr_90px_24px] gap-x-3 border-b border-brand-border px-5 py-2.5 text-custom-xs uppercase tracking-wide text-brand-muted sm:grid">
+            <span>Order</span><span>Date</span><span>Status</span><span className="text-right">Total</span><span />
+          </div>
+          <ul className="divide-y divide-brand-border">
+            {orders.map((order) => (
+              <SingleOrder key={order.id} order={order} onOpen={() => setOpenId(order.id)} />
+            ))}
+          </ul>
+        </>
+      )}
+
+      {openId !== null && <OrderModal orderId={openId} onClose={() => setOpenId(null)} />}
+    </div>
   );
 };
 

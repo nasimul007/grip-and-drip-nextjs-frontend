@@ -1,108 +1,35 @@
-"use client";
-import React, { useState } from "react";
-import OrderActions from "./OrderActions";
-import OrderModal from "./OrderModal";
+import React from "react";
+import { StatusBadge } from "./OrderProgress";
+import { formatPrice } from "@/lib/format";
+import { formatOrderDate } from "@/lib/orders";
 import type { OrderListItem } from "@/lib/types";
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
+type Props = { order: OrderListItem; onOpen: () => void };
 
-const SingleOrder = ({ order, smallView }: { order: OrderListItem; smallView: boolean }) => {
-  const [showDetails, setShowDetails] = useState(false);
-  const [showEdit, setShowEdit] = useState(false);
-
-  const toggleDetails = () => setShowDetails(!showDetails);
-  const toggleEdit = () => setShowEdit(!showEdit);
-  const toggleModal = (status: boolean) => {
-    setShowDetails(status);
-    setShowEdit(status);
-  };
-
-  return (
-    <>
-      {!smallView && (
-        <div className="items-center justify-between border-t border-brand-border py-5 px-7.5 hidden md:flex">
-          <div className="min-w-[175px]">
-            <p className="text-custom-sm text-red">#{order.order_number}</p>
-          </div>
-          <div className="min-w-[175px]">
-            <p className="text-custom-sm text-white">{formatDate(order.created_at)}</p>
-          </div>
-          <div className="min-w-[128px]">
-            <span
-              className={`inline-block text-custom-sm py-0.5 px-2.5 rounded-[30px] capitalize ${
-                order.status === "delivered"
-                  ? "text-green bg-green-light-6"
-                  : order.status === "cancelled"
-                  ? "text-red bg-red-light-6"
-                  : "text-yellow bg-yellow-light-4"
-              }`}
-            >
-              {order.status}
-            </span>
-          </div>
-          <div className="min-w-[113px]">
-            <p className="text-custom-sm text-white">৳{Number(order.total).toFixed(2)}</p>
-          </div>
-          <div className="min-w-[113px]">
-            <p className="text-custom-sm text-white">{order.item_count}</p>
-          </div>
-          <div className="flex gap-5 items-center">
-            <OrderActions toggleDetails={toggleDetails} toggleEdit={toggleEdit} />
-          </div>
-        </div>
-      )}
-
-      {smallView && (
-        <div className="block md:hidden">
-          <div className="py-4.5 px-7.5 border-b border-brand-border">
-            <p className="text-custom-sm text-white">
-              <span className="font-bold pr-2">Order:</span> #{order.order_number}
-            </p>
-            <p className="text-custom-sm text-white">
-              <span className="font-bold pr-2">Date:</span> {formatDate(order.created_at)}
-            </p>
-            <p className="text-custom-sm text-white">
-              <span className="font-bold pr-2">Status:</span>{" "}
-              <span
-                className={`inline-block text-custom-sm py-0.5 px-2.5 rounded-[30px] capitalize ${
-                  order.status === "delivered"
-                    ? "text-green bg-green-light-6"
-                    : order.status === "cancelled"
-                    ? "text-red bg-red-light-6"
-                    : "text-yellow bg-yellow-light-4"
-                }`}
-              >
-                {order.status}
-              </span>
-            </p>
-            <p className="text-custom-sm text-white">
-              <span className="font-bold pr-2">Total:</span> ৳{Number(order.total).toFixed(2)}
-            </p>
-            <p className="text-custom-sm text-white">
-              <span className="font-bold pr-2">Items:</span> {order.item_count}
-            </p>
-            <p className="text-custom-sm text-white flex items-center">
-              <span className="font-bold pr-2">Actions:</span>{" "}
-              <OrderActions toggleDetails={toggleDetails} toggleEdit={toggleEdit} />
-            </p>
-          </div>
-        </div>
-      )}
-
-      <OrderModal
-        showDetails={showDetails}
-        showEdit={showEdit}
-        toggleModal={toggleModal}
-        orderId={order.id}
-      />
-    </>
-  );
-};
+/** One order as a row on desktop and a compact card on phones. */
+const SingleOrder = ({ order, onOpen }: Props) => (
+  <li>
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={`View order ${order.order_number}`}
+      className="grid w-full grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 px-4 py-3.5 text-left hover:bg-brand-surface sm:grid-cols-[1.5fr_1fr_1fr_90px_24px] sm:px-5"
+    >
+      <span className="min-w-0">
+        <span className="block truncate font-medium text-white">#{order.order_number}</span>
+        <span className="block text-custom-xs text-brand-muted sm:hidden">
+          {formatOrderDate(order.created_at)} · {order.item_count} {order.item_count === 1 ? "item" : "items"}
+        </span>
+        <span className="hidden text-custom-xs text-brand-muted sm:block">{order.item_count} {order.item_count === 1 ? "item" : "items"}</span>
+      </span>
+      <span className="hidden text-sm text-brand-muted sm:block">{formatOrderDate(order.created_at)}</span>
+      <span className="order-last justify-self-end sm:order-none sm:justify-self-start">
+        <StatusBadge status={order.status} label={order.status_display} />
+      </span>
+      <span className="text-sm font-semibold text-white sm:text-right">{formatPrice(order.total)}</span>
+      <span aria-hidden="true" className="hidden text-brand-muted sm:block">›</span>
+    </button>
+  </li>
+);
 
 export default SingleOrder;

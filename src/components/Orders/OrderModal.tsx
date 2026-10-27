@@ -1,49 +1,73 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import OrderDetails from "./OrderDetails";
-import EditOrder from "./EditOrder";
+import OrderView from "./OrderView";
+import { StatusBadge } from "./OrderProgress";
 import { api } from "@/lib/api";
-import type { Order } from "@/lib/types";
+import { formatOrderDate, fromOrderDetail, type TrackedOrder } from "@/lib/orders";
 
-const OrderModal = ({ showDetails, showEdit, toggleModal, orderId }: any) => {
-  const [order, setOrder] = useState<Order | null>(null);
+type Props = { orderId: number; onClose: () => void };
+
+/** Details of one of the signed-in customer's orders; closes on ×, Escape or a click outside. */
+const OrderModal = ({ orderId, onClose }: Props) => {
+  const [order, setOrder] = useState<TrackedOrder | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    if (showDetails || showEdit) {
-      api.get<Order>(`/api/orders/${orderId}/`).then(setOrder).catch(() => {});
-    }
-  }, [showDetails, showEdit, orderId]);
+    let live = true;
+    api
+      .get<TrackedOrder>(`/api/orders/${orderId}/`)
+      .then((d) => live && setOrder(fromOrderDetail(d)))
+      .catch(() => live && setFailed(true));
+    return () => {
+      live = false;
+    };
+  }, [orderId]);
 
-  if (!showDetails && !showEdit) return null;
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [onClose]);
 
   return (
-    <div className="backdrop-filter-sm visible fixed left-0 top-0 z-[99999] flex min-h-screen w-full justify-center items-center bg-brand-dark/40 px-4 py-8 sm:px-8">
-      <div className="shadow-7 relative w-full max-w-[600px] scale-100 transform rounded-[15px] bg-brand-card border border-brand-border transition-all flex flex-col justify-center items-center">
-        <button
-          onClick={() => toggleModal(false)}
-          className="text-brand-muted absolute -right-6 -top-6 z-[9999] flex h-11.5 w-11.5 items-center justify-center rounded-full border-2 border-brand-border bg-brand-card hover:text-white"
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 25 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.9983 10.586L17.9483 5.63603L19.3623 7.05003L14.4123 12L19.3623 16.95L17.9483 18.364L12.9983 13.414L8.04828 18.364L6.63428 16.95L11.5843 12L6.63428 7.05003L8.04828 5.63603L12.9983 10.586Z"
-              fill="currentColor"
-            />
-          </svg>
-        </button>
+    <div
+      className="fixed inset-0 z-99999 flex items-start justify-center overflow-y-auto bg-[#000000CC] px-3 py-6 sm:py-12"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div role="dialog" aria-modal="true" aria-label="Order details" className="relative w-full max-w-[600px] rounded-xl border border-brand-border bg-brand-card">
+        <div className="flex items-start justify-between gap-3 border-b border-brand-border px-4 py-3 sm:px-5">
+          <div className="min-w-0">
+            <p className="text-custom-xs text-brand-muted">Order</p>
+            <p className="truncate font-semibold text-white">{order ? `#${order.order_number}` : "Loading…"}</p>
+            {order && <p className="mt-0.5 text-custom-xs text-brand-muted">Placed {formatOrderDate(order.created_at)}</p>}
+          </div>
+          <div className="flex items-center gap-3">
+            {order && <StatusBadge status={order.status} label={order.status_display} />}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close order details"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-surface text-xl leading-none text-brand-muted hover:text-white"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+        </div>
 
-        {order && (
-          <>
-            {showDetails && <OrderDetails orderItem={order} />}
-            {showEdit && <EditOrder order={order} toggleModal={toggleModal} />}
-          </>
+        {order && <OrderView order={order} />}
+        {!order && !failed && (
+          <div className="animate-pulse space-y-3 p-5" aria-busy="true">
+            <div className="h-6 rounded bg-brand-surface" />
+            <div className="h-14 rounded bg-brand-surface" />
+            <div className="h-14 rounded bg-brand-surface" />
+          </div>
         )}
-        {!order && <p className="py-10">Loading...</p>}
+        {failed && <p className="p-5 text-sm text-red">We could not load this order. Please try again.</p>}
       </div>
     </div>
   );

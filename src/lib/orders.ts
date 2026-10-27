@@ -1,6 +1,12 @@
+export type StatusStep = { key: string; label: string };
+
 export type TrackedOrder = {
   order_number: string;
   status: string;
+  /** Label for `status` as set in the backend (falls back to the key). */
+  status_display?: string;
+  /** The order's normal path of statuses, from the backend (cancelled excluded). */
+  status_steps?: StatusStep[];
   payment_method: "cash" | "bkash" | "bank";
   subtotal: number | string;
   shipping_cost: number | string;
@@ -20,14 +26,25 @@ export type TrackedOrder = {
   }[];
 };
 
-/** Steps of a normal order; "cancelled" is shown separately. */
-export const ORDER_STEPS = [
-  { key: "pending", label: "Order placed" },
+/** Used only when the API does not send `status_steps`; mirrors the backend Order.STATUS_CHOICES. */
+export const ORDER_STEPS: StatusStep[] = [
+  { key: "pending", label: "Pending" },
   { key: "confirmed", label: "Confirmed" },
-  { key: "processing", label: "Packing" },
-  { key: "shipped", label: "On the way" },
+  { key: "processing", label: "Processing" },
+  { key: "shipped", label: "Shipped" },
   { key: "delivered", label: "Delivered" },
-] as const;
+];
+
+/** Signed-in order detail (`/api/orders/<id>/`) in the shape the order view uses. */
+export function fromOrderDetail(
+  detail: TrackedOrder & { shipping_address?: { full_name?: string; city?: string } }
+): TrackedOrder {
+  return {
+    ...detail,
+    customer_name: detail.customer_name ?? detail.shipping_address?.full_name?.split(" ")[0] ?? "",
+    delivery_area: detail.delivery_area ?? detail.shipping_address?.city ?? "",
+  };
+}
 
 export const PAYMENT_LABEL: Record<string, string> = {
   cash: "Cash on delivery",

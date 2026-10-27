@@ -190,6 +190,7 @@ export type OrderListItem = {
   id: number;
   order_number: string;
   status: string;
+  status_display?: string;
   subtotal: number;
   shipping_cost: number;
   total: number;
