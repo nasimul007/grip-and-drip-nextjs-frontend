@@ -6,4 +6,5 @@ export const menuData: Menu[] = [
   { id: 2, title: "Shop", newTab: false, path: "/shop" },
   { id: 4, title: "Deals", newTab: false, path: "/deals" },
   { id: 3, title: "Contact", newTab: false, path: "/contact" },
+  { id: 5, title: "Track order", newTab: false, path: "/track-order" },
 ];
