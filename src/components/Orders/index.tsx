@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import SingleOrder from "./SingleOrder";
 import { api } from "@/lib/api";
-import type { OrderListItem } from "@/lib/types";
+import type { OrderListItem, PaginatedResponse } from "@/lib/types";
 
 const Orders = () => {
   const [orders, setOrders] = useState<OrderListItem[]>([]);
@@ -10,8 +10,8 @@ const Orders = () => {
 
   useEffect(() => {
     api
-      .get<OrderListItem[]>("/api/orders/list/")
-      .then((data) => setOrders(data))
+      .get<PaginatedResponse<OrderListItem> | OrderListItem[]>("/api/orders/list/")
+      .then((data) => setOrders(Array.isArray(data) ? data : data.results || []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

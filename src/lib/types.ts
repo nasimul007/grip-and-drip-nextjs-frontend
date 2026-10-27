@@ -178,6 +178,7 @@ export type Order = {
   shipping_cost: number;
   total: number;
   shipping_area: string;
+  payment_method?: string;
   notes: string;
   items: OrderItem[];
   shipping_address: ShippingAddress;

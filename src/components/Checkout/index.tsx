@@ -15,6 +15,8 @@ import { useCart } from "@/lib/useCart";
 import { useShippingRates } from "@/lib/useShippingRates";
 import { formatPrice } from "@/lib/format";
 import { api } from "@/lib/api";
+import { saveLastOrder } from "@/lib/orders";
+import type { Order } from "@/lib/types";
 
 // Maps an error key to the id of the field that should receive focus.
 const FIELD_IDS: Record<string, string> = {
@@ -164,7 +166,15 @@ const Checkout = () => {
         }));
       }
 
-      await api.post("/api/orders/", body);
+      const placed = await api.post<Order>("/api/orders/", body);
+      saveLastOrder({
+        order_number: placed.order_number,
+        total: Number(placed.total),
+        payment_method: placed.payment_method || payment,
+        shipping_area: placed.shipping_area || shippingRate.area_type,
+        phone: formData.phone.trim(),
+        item_count: placed.items?.length ?? cartItems.length,
+      });
       await clearCart();
       router.push("/order-success");
     } catch (err) {

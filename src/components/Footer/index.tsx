@@ -73,7 +73,7 @@ const Footer = async () => {
             <p className="mb-7.5 text-custom-1 font-medium text-white">Help</p>
             <ul className="flex flex-col gap-3">
               <li><Link className={linkClass} href="/contact">Contact us</Link></li>
-              <li><Link className={linkClass} href="/my-account">Track your order</Link></li>
+              <li><Link className={linkClass} href="/track-order">Track your order</Link></li>
               {POLICIES.map((p) => (
                 <li key={p.slug}>
                   <Link className={linkClass} href={`/${p.slug}`}>{p.title}</Link>
