@@ -1,6 +1,7 @@
 "use client";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { Suspense, useLayoutEffect, useRef, useState } from "react";
 import SectionNav from "./SectionNav";
+import Reviews from "@/components/Reviews";
 import { attributeRows, type KeyDetail } from "@/lib/product-display";
 
 type Props = {
@@ -10,6 +11,8 @@ type Props = {
   brand?: string;
   sku?: string;
   categoryName?: string;
+  slug?: string;
+  reviewCount?: number;
 };
 
 const COLLAPSED_PX = 320;
@@ -53,7 +56,7 @@ function DescriptionBlock({ html }: { html: string }) {
   );
 }
 
-export default function ProductSections({ title, description, attributes, brand, sku, categoryName }: Props) {
+export default function ProductSections({ title, description, attributes, brand, sku, categoryName, slug, reviewCount = 0 }: Props) {
   const rows: KeyDetail[] = attributeRows(attributes);
   const has = (label: string) => rows.some((r) => r.label.toLowerCase() === label);
   if (brand && !has("brand")) rows.unshift({ label: "Brand", value: brand });
@@ -63,6 +66,7 @@ export default function ProductSections({ title, description, attributes, brand,
   const nav = [
     { id: "specification", label: "Specification" },
     { id: "description", label: "Description" },
+    ...(slug ? [{ id: "reviews", label: reviewCount > 0 ? `Reviews (${reviewCount})` : "Reviews" }] : []),
   ];
 
   return (
@@ -99,6 +103,17 @@ export default function ProductSections({ title, description, attributes, brand,
           </h2>
           {description ? <DescriptionBlock html={description} /> : <p className="text-sm text-brand-muted">No description available.</p>}
         </section>
+
+        {slug && (
+          <section id="reviews" className={SECTION} aria-labelledby="reviews-heading">
+            <h2 id="reviews-heading" className="text-base font-semibold text-white mb-3">
+              Reviews
+            </h2>
+            <Suspense fallback={null}>
+              <Reviews slug={slug} />
+            </Suspense>
+          </section>
+        )}
       </div>
     </div>
   );

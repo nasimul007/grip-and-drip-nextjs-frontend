@@ -74,6 +74,8 @@ export type ProductListItem = {
   stock: number;
   /** Own stock plus active variant stock (absent on older backends). */
   total_stock?: number;
+  rating_average?: number | null;
+  review_count?: number;
   warranty_months?: number | null;
   is_active: boolean;
   is_featured: boolean;
@@ -95,6 +97,8 @@ export type ProductDetail = {
   stock: number;
   /** Own stock plus active variant stock (absent on older backends). */
   total_stock?: number;
+  rating_average?: number | null;
+  review_count?: number;
   warranty_months?: number | null;
   is_active: boolean;
   is_featured: boolean;

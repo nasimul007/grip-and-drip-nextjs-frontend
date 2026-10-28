@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import FallbackImage from "@/components/Common/FallbackImage";
 import { OrderProgress } from "./OrderProgress";
 import { formatPrice } from "@/lib/format";
@@ -32,6 +33,14 @@ export default function OrderView({ order }: { order: TrackedOrder }) {
                 {item.variant_name ? `${item.variant_name} · ` : ""}
                 {formatPrice(item.price)} × {item.quantity}
               </span>
+              {order.status === "delivered" && item.product_slug && (
+                <Link
+                  href={`/shop/${item.product_slug}?review=1&order=${encodeURIComponent(order.order_number)}#reviews`}
+                  className="mt-0.5 inline-block text-custom-xs text-brand-accent hover:underline"
+                >
+                  Rate this item
+                </Link>
+              )}
             </span>
             <span className="shrink-0 text-sm font-medium text-white">{formatPrice(Number(item.price) * item.quantity)}</span>
           </li>

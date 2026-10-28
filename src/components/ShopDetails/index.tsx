@@ -24,6 +24,7 @@ import WishlistButton from "@/components/Common/WishlistButton";
 import ProductGallery from "./ProductGallery";
 import ProductSections from "./ProductSections";
 import NotifyMe from "./NotifyMe";
+import Stars from "@/components/Common/Stars";
 import RecentlyViewed from "@/components/Common/RecentlyViewed";
 import { recordView } from "@/lib/recently-viewed";
 import type { Product, VariantItem } from "@/types/product";
@@ -177,6 +178,13 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
               <h1 className="font-semibold text-lg sm:text-xl leading-snug text-white mb-2">
                 {product.title}
               </h1>
+
+              {product.reviews > 0 && product.ratingAverage != null && (
+                <a href="#reviews" className="mb-2 inline-flex items-center gap-2 text-brand-muted hover:text-white">
+                  <Stars value={product.ratingAverage} size={15} />
+                  <span>{product.ratingAverage.toFixed(1)} ({product.reviews} review{product.reviews > 1 ? "s" : ""})</span>
+                </a>
+              )}
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3 text-[13px]">
                 <span className={`font-medium ${!inStock ? "text-red" : stock <= 5 ? "text-yellow" : "text-green"}`}>
@@ -463,6 +471,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
         brand={product.brand}
         sku={product.sku}
         categoryName={product.categoryName}
+        slug={product.slug}
+        reviewCount={product.reviews}
       />
 
       <RecentlyViewed excludeSlug={product.slug} className="bg-brand-dark pb-24 pt-6 lg:pb-10" />

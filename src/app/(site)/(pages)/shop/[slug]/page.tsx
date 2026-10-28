@@ -106,6 +106,14 @@ export default async function ProductPage({ params }: Props) {
     ...(images.length && { image: images }),
     ...(product.brand && { brand: { "@type": "Brand", name: product.brand } }),
     ...(product.category_name && { category: product.category_name }),
+    ...(product.review_count && product.rating_average != null && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: String(product.rating_average),
+        reviewCount: String(product.review_count),
+        bestRating: "5",
+      },
+    }),
     offers:
       Math.min(...prices) === Math.max(...prices)
         ? { "@type": "Offer", price: prices[0].toFixed(2), ...offerBase }

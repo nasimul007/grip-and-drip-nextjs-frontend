@@ -12,7 +12,9 @@ export type VariantItem = {
 
 export type Product = {
   title: string;
+  /** Number of approved reviews. */
   reviews: number;
+  ratingAverage?: number | null;
   price: number;
   discountedPrice: number;
   id: number;

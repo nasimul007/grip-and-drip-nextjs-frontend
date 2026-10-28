@@ -13,6 +13,7 @@ import { mapProductDetailForDisplay } from "@/lib/mappers";
 import { useCart } from "@/lib/useCart";
 import { discountBadge, formatPrice, formatWarranty } from "@/lib/format";
 import WishlistButton from "@/components/Common/WishlistButton";
+import Stars from "@/components/Common/Stars";
 import { CartIcon, SearchIcon, ShieldIcon } from "@/components/Common/icons";
 import type { ProductDetail } from "@/lib/types";
 
@@ -115,6 +116,13 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
             {item.title}
           </Link>
         </h3>
+
+        {item.reviews > 0 && item.ratingAverage != null && (
+          <p className="mb-1.5 flex items-center gap-1.5 text-custom-xs text-brand-muted">
+            <Stars value={item.ratingAverage} size={13} />
+            <span>({item.reviews})</span>
+          </p>
+        )}
 
         <p className="flex flex-wrap items-baseline gap-x-2 mb-3">
           <span className="text-white font-semibold sm:text-lg">{formatPrice(item.discountedPrice)}</span>

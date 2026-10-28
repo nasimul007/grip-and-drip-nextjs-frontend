@@ -27,7 +27,8 @@ export function mapCategoryForDisplay(apiCategory: {
 export function mapProductForDisplay(item: ProductListItem) {
   return {
     title: item.name,
-    reviews: 0,
+    reviews: item.review_count ?? 0,
+    ratingAverage: item.rating_average ?? null,
     price: Number(item.compare_price) || Number(item.effective_price),
     discountedPrice: Number(item.effective_price),
     id: item.id,
@@ -70,7 +71,8 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
   const gallery = Array.from(new Set([...images, ...variantImages]));
   return {
     title: item.name,
-    reviews: 0,
+    reviews: item.review_count ?? 0,
+    ratingAverage: item.rating_average ?? null,
     price: Number(item.compare_price) || Number(item.effective_price),
     discountedPrice: Number(item.effective_price),
     id: item.id,

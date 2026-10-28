@@ -15,6 +15,7 @@ import { getKeyDetails } from "@/lib/product-display";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, variantMatches } from "@/lib/variants";
 import ProductGallery from "@/components/ShopDetails/ProductGallery";
 import QtyStepper from "@/components/Common/QtyStepper";
+import Stars from "@/components/Common/Stars";
 import WishlistButton from "@/components/Common/WishlistButton";
 
 const slugifyOption = (val: string) => val.toLowerCase().replace(/\s+/g, "-");
@@ -192,8 +193,10 @@ const QuickViewModal = () => {
                 </span>
                 {product.brand && <span className="text-brand-muted">Brand: {product.brand}</span>}
                 {warranty && <span className="text-brand-muted">{warranty} warranty</span>}
-                {product.reviews > 0 && (
-                  <span className="text-brand-muted">{product.reviews} review{product.reviews > 1 ? "s" : ""}</span>
+                {product.reviews > 0 && product.ratingAverage != null && (
+                  <span className="inline-flex items-center gap-1.5 text-brand-muted">
+                    <Stars value={product.ratingAverage} size={14} /> ({product.reviews})
+                  </span>
                 )}
               </div>
 
