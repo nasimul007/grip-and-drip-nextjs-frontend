@@ -5,9 +5,11 @@ import FallbackImage from "@/components/Common/FallbackImage";
 import { formatPrice } from "@/lib/format";
 import { mediaPath } from "@/lib/media";
 import { getRecentlyViewed, type ViewedProduct } from "@/lib/recently-viewed";
+import { useT } from "@/lib/i18n/client";
 
 /** Horizontal strip of products the shopper looked at before; hidden when there are none. */
 export default function RecentlyViewed({ excludeSlug, className = "" }: { excludeSlug?: string; className?: string }) {
+  const { t } = useT();
   const [items, setItems] = useState<ViewedProduct[]>([]);
 
   // localStorage is only available in the browser.
@@ -18,7 +20,7 @@ export default function RecentlyViewed({ excludeSlug, className = "" }: { exclud
   return (
     <section aria-labelledby="recently-viewed-heading" className={className}>
       <div className="mx-auto w-full max-w-[1170px] px-4 sm:px-8 xl:px-0">
-        <h2 id="recently-viewed-heading" className="mb-3 text-lg font-semibold text-white">Recently viewed</h2>
+        <h2 id="recently-viewed-heading" className="mb-3 text-lg font-semibold text-white">{t("Recently viewed")}</h2>
         <ul className="no-scrollbar -mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1">
           {items.map((p) => (
             <li key={p.slug} className="w-36 shrink-0 snap-start sm:w-44">

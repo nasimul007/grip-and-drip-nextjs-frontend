@@ -9,8 +9,10 @@ import CartEmpty from "../Common/CartEmpty";
 import { useAppSelector } from "@/redux/store";
 import { lineKeyOf, selectCartCount, selectTotalPrice } from "@/redux/features/cart-slice";
 import { useCart } from "@/lib/useCart";
+import { useT } from "@/lib/i18n/client";
 
 const Cart = () => {
+  const { t } = useT();
   const cartItems = useAppSelector((state) => state.cartReducer.items);
   const count = useAppSelector(selectCartCount);
   const subtotal = useAppSelector(selectTotalPrice);
@@ -18,23 +20,23 @@ const Cart = () => {
 
   return (
     <>
-      <Breadcrumb items={[{ name: "Cart" }]} />
+      <Breadcrumb items={[{ name: t("Cart") }]} />
       <section className="bg-brand-dark pt-4 pb-6 lg:pb-8">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="mb-4 flex items-center justify-between gap-4">
             <h1 className="text-xl font-semibold text-white">
-              Shopping cart
-              {count > 0 && <span className="ml-2 text-base font-normal text-brand-muted">({count} {count === 1 ? "item" : "items"})</span>}
+              {t("Shopping cart")}
+              {count > 0 && <span className="ml-2 text-base font-normal text-brand-muted">({count} {count === 1 ? t("item") : t("items")})</span>}
             </h1>
             {cartItems.length > 0 && (
               <button
                 type="button"
                 onClick={() => {
-                  if (window.confirm("Remove all items from your cart?")) clearCart();
+                  if (window.confirm(t("Remove all items from your cart?"))) clearCart();
                 }}
                 className="text-sm text-brand-muted hover:text-red"
               >
-                Clear cart
+                {t("Clear cart")}
               </button>
             )}
           </div>
@@ -44,10 +46,10 @@ const Cart = () => {
               <div className="min-w-0 flex-1">
                 <div className="rounded-lg border border-brand-border bg-brand-card">
                   <div className="hidden sm:grid grid-cols-[88px_1fr_96px_112px_88px_32px] gap-x-3 border-b border-brand-border px-4 py-2 text-custom-xs uppercase tracking-wide text-brand-muted">
-                    <span className="col-span-2">Product</span>
-                    <span className="text-right">Price</span>
-                    <span className="text-center">Quantity</span>
-                    <span className="text-right">Total</span>
+                    <span className="col-span-2">{t("Product")}</span>
+                    <span className="text-right">{t("Price")}</span>
+                    <span className="text-center">{t("Quantity")}</span>
+                    <span className="text-right">{t("Total")}</span>
                     <span />
                   </div>
                   <ul>
@@ -57,7 +59,7 @@ const Cart = () => {
                   </ul>
                 </div>
                 <Link href="/shop" className="mt-3 inline-block text-sm text-brand-accent hover:underline">
-                  ← Continue shopping
+                  ← {t("Continue shopping")}
                 </Link>
               </div>
 

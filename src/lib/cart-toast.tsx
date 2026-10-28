@@ -1,6 +1,7 @@
 "use client";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { tt } from "@/lib/i18n/client";
 
 const card =
   "flex items-start gap-3 rounded-lg border border-brand-border bg-brand-card px-3.5 py-2.5 text-sm text-white shadow-lg max-w-[340px]";
@@ -13,7 +14,7 @@ export function notifyAdded(label: string, openCart?: () => void, note?: string)
         <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-brand-accent" aria-hidden="true" />
         <div className="min-w-0">
           <p className="line-clamp-2">
-            <span className="font-medium">Added to cart:</span> {label}
+            <span className="font-medium">{tt("Added to cart")}:</span> {label}
           </p>
           {note && <p className="text-brand-muted text-custom-xs mt-0.5">{note}</p>}
           <div className="mt-1.5 flex gap-4">
@@ -25,10 +26,10 @@ export function notifyAdded(label: string, openCart?: () => void, note?: string)
                 openCart?.();
               }}
             >
-              View cart
+              {tt("View cart")}
             </button>
             <Link href="/checkout" onClick={() => toast.dismiss(t.id)} className="text-white hover:text-brand-accent">
-              Checkout
+              {tt("Checkout")}
             </Link>
           </div>
         </div>
@@ -56,7 +57,7 @@ export function notifyCartInfo(message: string, openCart?: () => void) {
               openCart();
             }}
           >
-            View cart
+            {tt("View cart")}
           </button>
         )}
       </span>

@@ -7,8 +7,10 @@ import { formatPrice } from "@/lib/format";
 import FallbackImage from "@/components/Common/FallbackImage";
 import QtyStepper from "@/components/Common/QtyStepper";
 import { CloseIcon } from "@/components/Common/icons";
+import { useT } from "@/lib/i18n/client";
 
 const SingleItem = ({ item, onNavigate }: { item: ReduxCartItem; onNavigate?: () => void }) => {
+  const { t } = useT();
   const { removeItem, updateQuantity } = useCart();
   const lineKey = lineKeyOf(item);
   const href = item.slug ? `/shop/${item.slug}` : "/shop";
@@ -20,7 +22,7 @@ const SingleItem = ({ item, onNavigate }: { item: ReduxCartItem; onNavigate?: ()
         {thumb ? (
           <FallbackImage src={thumb} alt="" fill sizes="64px" fallbackLabel="" className="object-cover" />
         ) : (
-          <span className="absolute inset-0 flex items-center justify-center text-[10px] text-brand-muted">No image</span>
+          <span className="absolute inset-0 flex items-center justify-center text-[10px] text-brand-muted">{t("No image")}</span>
         )}
       </Link>
 
@@ -34,7 +36,7 @@ const SingleItem = ({ item, onNavigate }: { item: ReduxCartItem; onNavigate?: ()
           <button
             type="button"
             onClick={() => removeItem(lineKey)}
-            aria-label={`Remove ${item.title} from cart`}
+            aria-label={t("Remove {name} from cart", { name: item.title })}
             className="-mr-1 -mt-0.5 p-1 text-brand-muted hover:text-red"
           >
             <CloseIcon size={16} />
@@ -43,7 +45,7 @@ const SingleItem = ({ item, onNavigate }: { item: ReduxCartItem; onNavigate?: ()
         <p className="text-custom-xs text-brand-muted truncate">
           {item.variantName ? `${item.variantName} · ` : ""}
           {formatPrice(item.discountedPrice)}
-          {item.quantity > 1 ? " each" : ""}
+          {item.quantity > 1 ? ` ${t("each")}` : ""}
         </p>
 
         <div className="mt-1.5 flex items-center justify-between gap-2">

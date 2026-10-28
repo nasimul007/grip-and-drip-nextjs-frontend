@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ChevronDownIcon } from "@/components/Common/icons";
+import { useT } from "@/lib/i18n/client";
 
 export type BrandOption = { name: string; count: number };
 
@@ -13,6 +14,7 @@ const BrandDropdown = ({
   selectedBrand: string;
   onSelectBrand: (brand: string) => void;
 }) => {
+  const { t } = useT();
   const [open, setOpen] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const shown = showAll ? brands : brands.slice(0, 8);
@@ -25,7 +27,7 @@ const BrandDropdown = ({
         aria-expanded={open}
         className="flex w-full items-center justify-between px-4 py-3 text-left text-white"
       >
-        Brand
+        {t("Brand")}
         <ChevronDownIcon className={`ease-out duration-200 ${open ? "rotate-180" : ""}`} size={18} />
       </button>
       {open && (
@@ -36,7 +38,7 @@ const BrandDropdown = ({
               onClick={() => onSelectBrand("")}
               className={`w-full text-left py-0.5 hover:text-brand-accent ${selectedBrand === "" ? "text-brand-accent" : "text-brand-muted"}`}
             >
-              All brands
+              {t("All brands")}
             </button>
           </li>
           {shown.map((b) => (
@@ -57,7 +59,7 @@ const BrandDropdown = ({
           {brands.length > 8 && (
             <li>
               <button type="button" onClick={() => setShowAll(!showAll)} className="mt-1 text-custom-xs text-white hover:text-brand-accent">
-                {showAll ? "Show fewer" : `Show all ${brands.length} brands`}
+                {showAll ? t("Show fewer") : t("Show all {n} brands", { n: brands.length })}
               </button>
             </li>
           )}

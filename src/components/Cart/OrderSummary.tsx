@@ -5,6 +5,7 @@ import type { ReduxCartItem } from "@/redux/features/cart-slice";
 import { formatPrice } from "@/lib/format";
 import FreeShippingProgress from "@/components/Common/FreeShippingProgress";
 import FallbackImage from "@/components/Common/FallbackImage";
+import { useT } from "@/lib/i18n/client";
 
 type Props = {
   cartItems: ReduxCartItem[];
@@ -37,13 +38,14 @@ const OrderSummary = ({
   showItems = false,
   children,
 }: Props) => {
+  const { t } = useT();
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const total = subtotal + (shippingCost ?? 0);
 
   return (
     <div className={sticky ? "lg:sticky lg:top-[calc(var(--header-h,60px)+16px)]" : ""}>
       <div className="rounded-lg border border-brand-border bg-brand-card text-sm">
-        <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">Order summary</h2>
+        <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">{t("Order summary")}</h2>
 
         {showItems && (
           <ul className="max-h-[320px] overflow-y-auto divide-y divide-brand-border px-4">
@@ -69,23 +71,23 @@ const OrderSummary = ({
 
         <div className="px-4 py-3 flex flex-col gap-3">
           <div className="border-b border-brand-border pb-2">
-            <Row label={`Subtotal (${itemCount} ${itemCount === 1 ? "item" : "items"})`} value={formatPrice(subtotal)} />
+            <Row label={`${t("Subtotal")} (${itemCount} ${itemCount === 1 ? t("item") : t("items")})`} value={formatPrice(subtotal)} />
             {shippingCost !== undefined ? (
               <Row
                 muted
                 label={
                   <>
-                    Delivery{shippingLabel && <span className="block text-custom-xs">{shippingLabel}</span>}
+                    {t("Delivery")}{shippingLabel && <span className="block text-custom-xs">{shippingLabel}</span>}
                   </>
                 }
-                value={shippingCost === 0 ? <span className="text-brand-accent">Free</span> : formatPrice(shippingCost)}
+                value={shippingCost === 0 ? <span className="text-brand-accent">{t("Free")}</span> : formatPrice(shippingCost)}
               />
             ) : (
-              <Row muted label="Delivery" value={<span className="text-brand-muted">Calculated at checkout</span>} />
+              <Row muted label={t("Delivery")} value={<span className="text-brand-muted">{t("Calculated at checkout")}</span>} />
             )}
           </div>
 
-          <Row label="Total" value={formatPrice(total)} strong />
+          <Row label={t("Total")} value={formatPrice(total)} strong />
           {shippingCost === undefined && <FreeShippingProgress subtotal={subtotal} />}
 
           {showProceedLink && (
@@ -93,7 +95,7 @@ const OrderSummary = ({
               href="/checkout"
               className="flex h-11 items-center justify-center rounded-md bg-brand-accent font-medium text-brand-dark hover:bg-brand-hover"
             >
-              Proceed to checkout
+              {t("Proceed to checkout")}
             </Link>
           )}
           {children}

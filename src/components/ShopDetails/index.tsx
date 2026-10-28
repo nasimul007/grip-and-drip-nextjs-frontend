@@ -29,6 +29,7 @@ import RecentlyViewed from "@/components/Common/RecentlyViewed";
 import { recordView } from "@/lib/recently-viewed";
 import type { Product, VariantItem } from "@/types/product";
 import type { ShippingRate } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 type Props = {
   product: Product & { categoryName?: string; categorySlug?: string };
@@ -38,6 +39,7 @@ type Props = {
 const slugify = slugifyAttr;
 
 const ShopDetails = ({ product, shippingRates = [] }: Props) => {
+  const { t } = useT();
   const dispatch = useDispatch();
   const router = useRouter();
   const { openPreviewModal } = usePreviewSlider();
@@ -147,12 +149,12 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
   const warrantyEntry = Object.entries(product.attributes || {}).find(([k]) =>
     k.toLowerCase().includes("warranty")
   );
-  const warrantyPeriod = formatWarranty(product.warrantyMonths);
+  const warrantyPeriod = formatWarranty(product.warrantyMonths, t);
   const warranty = warrantyPeriod
-    ? `${warrantyPeriod} warranty`
+    ? `${warrantyPeriod} ${t("warranty")}`
     : warrantyEntry
       ? `${warrantyEntry[1]} warranty`.replace(/warranty warranty$/i, "warranty")
-      : DEFAULT_WARRANTY;
+      : t(DEFAULT_WARRANTY);
   const orderMessage = `Hi, I want to order: ${product.title}${
     matchedVariant ? ` (${matchedVariant.name})` : ""
   } x${quantity} – ${formatPrice(salePrice)}\n${absoluteUrl(`/shop/${product.slug}`)}`;
@@ -182,27 +184,27 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
               {product.reviews > 0 && product.ratingAverage != null && (
                 <a href="#reviews" className="mb-2 inline-flex items-center gap-2 text-brand-muted hover:text-white">
                   <Stars value={product.ratingAverage} size={15} />
-                  <span>{product.ratingAverage.toFixed(1)} ({product.reviews} review{product.reviews > 1 ? "s" : ""})</span>
+                  <span>{product.ratingAverage.toFixed(1)} ({product.reviews} {product.reviews > 1 ? t("reviews") : t("review")})</span>
                 </a>
               )}
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3 text-[13px]">
                 <span className={`font-medium ${!inStock ? "text-red" : stock <= 5 ? "text-yellow" : "text-green"}`}>
-                  {inStock ? (stock <= 5 ? `Only ${stock} left, order soon` : "In stock") : "Out of stock"}
+                  {inStock ? (stock <= 5 ? t("Only {n} left, order soon", { n: stock }) : t("In stock")) : t("Out of stock")}
                 </span>
                 {sku && (
                   <span>
-                    SKU: <span className="text-white">{sku}</span>
+                    {t("SKU")}: <span className="text-white">{sku}</span>
                   </span>
                 )}
                 {product.brand && (
                   <span>
-                    Brand: <span className="text-white">{product.brand}</span>
+                    {t("Brand")}: <span className="text-white">{product.brand}</span>
                   </span>
                 )}
                 {product.categoryName && product.categorySlug && (
                   <span>
-                    Category:{" "}
+                    {t("Category")}:{" "}
                     <Link href={`/category/${product.categorySlug}`} className="text-white underline hover:text-brand-accent">
                       {product.categoryName}
                     </Link>
@@ -215,11 +217,11 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 {showListPrice && (
                   <>
                     <span className="text-sm line-through text-brand-muted">
-                      <span className="sr-only">Regular price </span>
+                      <span className="sr-only">{t("Regular price")} </span>
                       {formatPrice(listPrice)}
                     </span>
                     <span className="text-xs font-semibold text-brand-dark bg-brand-accent rounded px-1.5 py-0.5">
-                      {saveText}
+                      {saveText && t("Save {amount}", { amount: saveText.replace(/^Save /, "") })}
                     </span>
                   </>
                 )}
@@ -228,14 +230,14 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
               {warrantyPeriod && (
                 <p className="mb-3 inline-flex items-center gap-2 rounded-md border border-brand-accent/40 bg-brand-accent/10 px-3 py-1.5 text-sm font-medium text-white">
                   <ShieldIcon className="text-brand-accent" size={16} />
-                  {warrantyPeriod} warranty
+                  {warrantyPeriod} {t("warranty")}
                 </p>
               )}
 
               {/* Key details */}
               {(keyDetails.items.length > 0 || keyDetails.fallback) && (
                 <div className="mb-4">
-                  <p className="text-sm font-semibold text-white mb-1.5">Key details</p>
+                  <p className="text-sm font-semibold text-white mb-1.5">{t("Key details")}</p>
                   {keyDetails.items.length > 0 ? (
                     <ul className="flex flex-col gap-1">
                       {keyDetails.items.map((d) => (
@@ -259,7 +261,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                     }}
                     className="mt-1.5 inline-block text-brand-accent hover:underline"
                   >
-                    View full specification
+                    {t("View full specification")}
                   </a>
                 </div>
               )}
@@ -323,7 +325,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                   <div className="flex items-center rounded-md border border-brand-border">
                     <button
                       type="button"
-                      aria-label="Decrease quantity"
+                      aria-label={t("Decrease quantity")}
                       disabled={quantity <= 1}
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                       className="flex items-center justify-center w-9 h-10 text-white hover:text-brand-accent disabled:opacity-40"
@@ -335,7 +337,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                     </span>
                     <button
                       type="button"
-                      aria-label="Increase quantity"
+                      aria-label={t("Increase quantity")}
                       disabled={quantity >= stock}
                       onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
                       className="flex items-center justify-center w-9 h-10 text-white hover:text-brand-accent disabled:opacity-40"
@@ -350,7 +352,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                     disabled={!inStock}
                     className="inline-flex text-sm font-medium text-brand-dark bg-brand-accent h-10 px-5 items-center rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    Buy now
+                    {t("Buy now")}
                   </button>
 
                   <button
@@ -359,7 +361,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                     disabled={!inStock}
                     className="inline-flex text-sm font-medium text-white bg-brand-card border border-brand-border h-10 px-5 items-center rounded-md ease-out duration-200 hover:bg-brand-hover hover:border-brand-accent disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {inStock ? "Add to cart" : "Out of stock"}
+                    {inStock ? t("Add to cart") : t("Out of stock")}
                   </button>
 
                   <WishlistButton
@@ -383,8 +385,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 <p className="mt-3 flex items-center gap-2 text-sm text-brand-muted">
                   <TruckIcon className="shrink-0 text-brand-accent" size={16} />
                   <span>
-                    Delivery in <span className="text-white">{DELIVERY_TIME.insideDhaka}</span> (Dhaka) ·{" "}
-                    <span className="text-white">{DELIVERY_TIME.outsideDhaka}</span> (outside)
+                    {t("Delivery in")} <span className="text-white">{t(DELIVERY_TIME.insideDhaka)}</span> ({t("Dhaka")}) ·{" "}
+                    <span className="text-white">{t(DELIVERY_TIME.outsideDhaka)}</span> ({t("outside")})
                   </span>
                 </p>
               )}
@@ -398,7 +400,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                       rel="noopener noreferrer"
                       className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-md bg-[#0B7A3E] h-10 px-4 text-sm font-medium text-white hover:opacity-90"
                     >
-                      <WhatsAppIcon size={18} /> Order on WhatsApp
+                      <WhatsAppIcon size={18} /> {t("Order on WhatsApp")}
                     </a>
                   )}
                   {CONTACT.phone && (
@@ -406,7 +408,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                       href={telHref(CONTACT.phone)}
                       className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-md border border-brand-border h-10 px-4 text-sm font-medium text-white hover:border-brand-accent"
                     >
-                      <PhoneIcon size={16} /> Call to order
+                      <PhoneIcon size={16} /> {t("Call to order")}
                     </a>
                   )}
                 </div>
@@ -415,7 +417,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
               <ul className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
                 <li className="flex flex-col items-center gap-1 rounded-lg border border-brand-border bg-brand-card p-2.5">
                   <ShieldIcon className="text-brand-accent" size={18} />
-                  <span className="text-white">100% original</span>
+                  <span className="text-white">{t("100% original")}</span>
                 </li>
                 <li className="flex flex-col items-center gap-1 rounded-lg border border-brand-border bg-brand-card p-2.5">
                   <BadgeIcon className="text-brand-accent" size={18} />
@@ -423,40 +425,40 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 </li>
                 <li className="flex flex-col items-center gap-1 rounded-lg border border-brand-border bg-brand-card p-2.5">
                   <TruckIcon className="text-brand-accent" size={18} />
-                  <span className="text-white">Cash on delivery</span>
+                  <span className="text-white">{t("Cash on delivery")}</span>
                 </li>
               </ul>
 
               <ul className="mt-3 rounded-lg border border-brand-border bg-brand-card divide-y divide-brand-border">
                 {shippingRates.length > 0 && (
                   <li className="px-3.5 py-2.5">
-                    <p className="text-white font-medium mb-0.5">Delivery</p>
+                    <p className="text-white font-medium mb-0.5">{t("Delivery")}</p>
                     <ul>
                       {shippingRates.map((r) => (
                         <li key={r.id}>
-                          {r.area_type === "inside_dhaka" ? "Inside Dhaka" : "Outside Dhaka"}:{" "}
+                          {r.area_type === "inside_dhaka" ? t("Inside Dhaka") : t("Outside Dhaka")}:{" "}
                           <span className="text-white">{formatPrice(r.charge)}</span>
                           <span className="text-brand-muted">
-                            {" "}· {r.area_type === "inside_dhaka" ? DELIVERY_TIME.insideDhaka : DELIVERY_TIME.outsideDhaka}
+                            {" "}· {t(r.area_type === "inside_dhaka" ? DELIVERY_TIME.insideDhaka : DELIVERY_TIME.outsideDhaka)}
                           </span>
                         </li>
                       ))}
                     </ul>
                     {freeShipping && (
                       <p className="mt-0.5 text-brand-accent">
-                        Free delivery on orders over {formatPrice(freeShipping.free_shipping_minimum)}
+                        {t("Free delivery on orders over {amount}", { amount: formatPrice(freeShipping.free_shipping_minimum) })}
                       </p>
                     )}
                   </li>
                 )}
                 <li className="px-3.5 py-2.5">
-                  <span className="text-white font-medium">Payment: </span>
-                  {PAYMENT_METHODS.join(" · ")}
+                  <span className="text-white font-medium">{t("Payment")}: </span>
+                  {PAYMENT_METHODS.map((m) => t(m)).join(" · ")}
                 </li>
                 <li className="px-3.5 py-2.5 flex flex-wrap gap-x-4 gap-y-1">
-                  <Link href="/return-policy" className="text-brand-accent hover:underline">Return policy</Link>
-                  <Link href="/warranty-policy" className="text-brand-accent hover:underline">Warranty policy</Link>
-                  <Link href="/shipping-policy" className="text-brand-accent hover:underline">Delivery info</Link>
+                  <Link href="/return-policy" className="text-brand-accent hover:underline">{t("Return policy")}</Link>
+                  <Link href="/warranty-policy" className="text-brand-accent hover:underline">{t("Warranty policy")}</Link>
+                  <Link href="/shipping-policy" className="text-brand-accent hover:underline">{t("Delivery info")}</Link>
                 </li>
               </ul>
             </div>
@@ -481,7 +483,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
       <div className="lg:hidden fixed bottom-0 inset-x-0 z-999 bg-brand-surface border-t border-brand-border px-4 py-3 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-white font-semibold">{formatPrice(salePrice)}</p>
-          <p className={`text-xs ${inStock ? "text-green" : "text-red"}`}>{inStock ? "In stock" : "Out of stock"}</p>
+          <p className={`text-xs ${inStock ? "text-green" : "text-red"}`}>{inStock ? t("In stock") : t("Out of stock")}</p>
         </div>
         <button
           type="button"
@@ -489,7 +491,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
           disabled={!inStock}
           className="text-sm font-medium text-white bg-brand-card border border-brand-border py-2.5 px-4 rounded-md disabled:opacity-40"
         >
-          Add to cart
+          {t("Add to cart")}
         </button>
         <button
           type="button"
@@ -497,7 +499,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
           disabled={!inStock}
           className="text-sm font-medium text-brand-dark bg-brand-accent py-2.5 px-4 rounded-md disabled:opacity-40"
         >
-          Buy now
+          {t("Buy now")}
         </button>
       </div>
       <div className="lg:hidden h-18" aria-hidden="true" />

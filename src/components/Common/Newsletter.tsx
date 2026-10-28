@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
+import { useT } from "@/lib/i18n/client";
 
 const Newsletter = () => {
+  const { t } = useT();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -40,11 +42,10 @@ const Newsletter = () => {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 px-4 sm:px-7.5 xl:pl-12.5 xl:pr-14 py-11">
             <div className="max-w-[491px] w-full">
               <h2 className="max-w-[399px] text-white font-bold text-lg sm:text-xl xl:text-heading-4 mb-3">
-                Don&apos;t Miss Out Latest Trends & Offers
+                {t("Don't Miss Out Latest Trends & Offers")}
               </h2>
               <p className="text-brand-muted">
-                Register to receive news about the latest offers & discount
-                codes
+                {t("Register to receive news about the latest offers & discount codes")}
               </p>
             </div>
 
@@ -55,7 +56,7 @@ const Newsletter = () => {
                     type="email"
                     name="email"
                     id="email"
-                    placeholder="Enter your email"
+                    placeholder={t("Enter your email")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -66,7 +67,7 @@ const Newsletter = () => {
                     disabled={loading}
                     className="inline-flex justify-center py-3 px-7 text-brand-dark bg-brand-accent font-medium rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-50"
                   >
-                    {loading ? "Subscribing..." : "Subscribe"}
+                    {loading ? t("Subscribing...") : t("Subscribe")}
                   </button>
                 </div>
               </form>

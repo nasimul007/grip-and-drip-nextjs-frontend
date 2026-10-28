@@ -1,8 +1,10 @@
 import ProductItem from "@/components/Common/ProductItem";
 import Link from "next/link";
 import type { Product } from "@/types/product";
+import { getT } from "@/lib/i18n";
 
-const BestSeller = ({ items }: { items: Product[] }) => {
+const BestSeller = async ({ items }: { items: Product[] }) => {
+  const { t } = await getT();
   if (items.length === 0) return null;
 
   return (
@@ -14,10 +16,10 @@ const BestSeller = ({ items }: { items: Product[] }) => {
               <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8.5 0.5L10.163 5.837L15.5 7.5L10.163 9.163L8.5 14.5L6.837 9.163L1.5 7.5L6.837 5.837L8.5 0.5Z" fill="#00D4AA"/>
               </svg>
-              This Month
+              {t("This Month")}
             </span>
             <h2 className="font-semibold text-xl xl:text-heading-5 text-white">
-              Best Sellers
+              {t("Best Sellers")}
             </h2>
           </div>
         </div>
@@ -33,7 +35,7 @@ const BestSeller = ({ items }: { items: Product[] }) => {
             href="/shop"
             className="inline-flex font-medium text-custom-sm py-3 px-7 sm:px-12.5 rounded-md border border-brand-border bg-brand-card text-white ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark hover:border-brand-accent"
           >
-            View All
+            {t("View All")}
           </Link>
         </div>
       </div>

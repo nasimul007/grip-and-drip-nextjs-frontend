@@ -25,7 +25,7 @@ const Home = async () => {
   };
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <Hero links={links} />
       {categories.length > 0 && (
         <Categories categories={categories.map(mapCategoryForDisplay)} />

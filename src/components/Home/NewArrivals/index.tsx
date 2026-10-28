@@ -1,8 +1,10 @@
 import Link from "next/link";
 import ProductItem from "@/components/Common/ProductItem";
 import type { Product } from "@/types/product";
+import { getT } from "@/lib/i18n";
 
-const NewArrival = ({ items }: { items: Product[] }) => {
+const NewArrival = async ({ items }: { items: Product[] }) => {
+  const { t } = await getT();
   if (items.length === 0) return null;
 
   return (
@@ -30,10 +32,10 @@ const NewArrival = ({ items }: { items: Product[] }) => {
                   strokeLinecap="round"
                 />
               </svg>
-              This Week&apos;s
+              {t("This Week's")}
             </span>
             <h2 className="font-semibold text-xl xl:text-heading-5 text-white">
-              New Arrivals
+              {t("New Arrivals")}
             </h2>
           </div>
 
@@ -41,7 +43,7 @@ const NewArrival = ({ items }: { items: Product[] }) => {
             href="/shop"
             className="inline-flex font-medium text-custom-sm py-2.5 px-7 rounded-md border border-brand-border bg-brand-card text-white ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark hover:border-brand-accent"
           >
-            View All
+            {t("View All")}
           </Link>
         </div>
 

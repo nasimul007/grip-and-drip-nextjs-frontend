@@ -8,6 +8,7 @@ import { mediaPath } from "@/lib/media";
 import { addRecentSearch, clearRecentSearches, getRecentSearches } from "@/lib/recent-searches";
 import FallbackImage from "@/components/Common/FallbackImage";
 import type { PaginatedResponse, ProductListItem } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 export type PopularLink = { label: string; href: string };
 
@@ -40,6 +41,7 @@ const ClockIcon = () => (
 );
 
 const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
+  const { t } = useT();
   const router = useRouter();
   const rootRef = useRef<HTMLDivElement>(null);
   const [suggestions, setSuggestions] = useState<ProductListItem[]>([]);
@@ -118,7 +120,7 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
 
   const popularChips = popular.length > 0 && (
     <div className="px-4 pb-3">
-      <p className="mb-2 text-custom-xs uppercase tracking-wide text-brand-muted">Popular categories</p>
+      <p className="mb-2 text-custom-xs uppercase tracking-wide text-brand-muted">{t("Popular categories")}</p>
       <div className="flex flex-wrap gap-2">
         {popular.map((p) => (
           <Link key={p.href} href={p.href} onClick={onClose} className="rounded-full border border-brand-border px-3 py-1 text-custom-sm text-white hover:border-brand-accent hover:text-brand-accent">
@@ -133,7 +135,7 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
     <div
       ref={rootRef}
       role="listbox"
-      aria-label="Search suggestions"
+      aria-label={t("Search suggestions")}
       className="absolute top-full left-0 right-0 z-9999 mt-1 overflow-hidden rounded-lg border border-brand-border bg-brand-card shadow-xl shadow-black/30"
     >
       {!q && (
@@ -141,7 +143,7 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
           {recent.length > 0 && (
             <>
               <div className="flex items-center justify-between px-4 pb-1 pt-1">
-                <p className="text-custom-xs uppercase tracking-wide text-brand-muted">Recent searches</p>
+                <p className="text-custom-xs uppercase tracking-wide text-brand-muted">{t("Recent searches")}</p>
                 <button
                   type="button"
                   onClick={() => {
@@ -150,7 +152,7 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
                   }}
                   className="text-custom-xs text-brand-accent hover:underline"
                 >
-                  Clear
+                  {t("Clear")}
                 </button>
               </div>
               {recent.map((r, i) => (
@@ -162,12 +164,12 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
               <div className="h-2" />
             </>
           )}
-          {popularChips || (recent.length === 0 && <p className="px-4 py-4 text-sm text-brand-muted">Type to search products.</p>)}
+          {popularChips || (recent.length === 0 && <p className="px-4 py-4 text-sm text-brand-muted">{t("Type to search products.")}</p>)}
         </div>
       )}
 
       {q && loading && suggestions.length === 0 && (
-        <div className="flex items-center justify-center gap-1 py-5" aria-label="Searching">
+        <div className="flex items-center justify-center gap-1 py-5" aria-label={t("Searching")}>
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-brand-accent [animation-delay:0ms]" />
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-brand-accent [animation-delay:150ms]" />
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-brand-accent [animation-delay:300ms]" />
@@ -176,8 +178,8 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
 
       {q && !loading && suggestions.length === 0 && (
         <div className="py-4">
-          <p className="px-4 text-sm text-white">No products found for &ldquo;{q}&rdquo;</p>
-          <p className="mb-3 mt-1 px-4 text-custom-sm text-brand-muted">Check the spelling, try fewer or more general words, or browse a category.</p>
+          <p className="px-4 text-sm text-white">{t("No products found for “{q}”", { q })}</p>
+          <p className="mb-3 mt-1 px-4 text-custom-sm text-brand-muted">{t("Check the spelling, try fewer or more general words, or browse a category.")}</p>
           {popularChips}
         </div>
       )}
@@ -212,7 +214,7 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
                   </span>
                   <span className="shrink-0 text-right">
                     {soldOut ? (
-                      <span className="rounded border border-brand-border px-1.5 py-0.5 text-[11px] text-brand-muted">Out of stock</span>
+                      <span className="rounded border border-brand-border px-1.5 py-0.5 text-[11px] text-brand-muted">{t("Out of stock")}</span>
                     ) : (
                       <>
                         <span className="block text-sm font-medium text-brand-accent">{formatPrice(item.effective_price ?? item.price)}</span>
@@ -232,7 +234,7 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
             }}
             className="block border-t border-brand-border py-3 text-center text-sm text-brand-accent ease-out duration-150 hover:bg-brand-hover"
           >
-            View all results for &ldquo;{q}&rdquo;
+            {t("View all results for “{q}”", { q })}
           </Link>
         </>
       )}

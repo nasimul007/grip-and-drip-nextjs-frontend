@@ -7,9 +7,11 @@ import { formatPrice } from "@/lib/format";
 import FallbackImage from "@/components/Common/FallbackImage";
 import QtyStepper from "@/components/Common/QtyStepper";
 import { CloseIcon } from "@/components/Common/icons";
+import { useT } from "@/lib/i18n/client";
 
 /** One cart line. Desktop: product | price | quantity | total | remove. Phones: compact card. */
 const SingleItem = ({ item }: { item: ReduxCartItem }) => {
+  const { t } = useT();
   const { removeItem, updateQuantity } = useCart();
   const lineKey = lineKeyOf(item);
   const href = item.slug ? `/shop/${item.slug}` : "/shop";
@@ -24,7 +26,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
         {thumb ? (
           <FallbackImage src={thumb} alt="" fill sizes="88px" fallbackLabel="" className="object-cover" />
         ) : (
-          <span className="absolute inset-0 flex items-center justify-center text-[10px] text-brand-muted">No image</span>
+          <span className="absolute inset-0 flex items-center justify-center text-[10px] text-brand-muted">{t("No image")}</span>
         )}
       </Link>
 
@@ -33,7 +35,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
           <Link href={href} className="hover:text-brand-accent">{item.title}</Link>
         </h3>
         {item.variantName && <p className="text-custom-xs text-brand-muted mt-0.5">{item.variantName}</p>}
-        {atMax && <p className="text-custom-xs text-brand-muted mt-0.5">Maximum available: {item.stock}</p>}
+        {atMax && <p className="text-custom-xs text-brand-muted mt-0.5">{t("Maximum available")}: {item.stock}</p>}
         {/* phones: price under the title */}
         <p className="sm:hidden mt-1 text-sm text-white">
           {formatPrice(item.discountedPrice)}
@@ -57,7 +59,7 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
       <button
         type="button"
         onClick={() => removeItem(lineKey)}
-        aria-label={`Remove ${item.title} from cart`}
+        aria-label={t("Remove {name} from cart", { name: item.title })}
         className="hidden sm:flex items-center justify-center h-8 w-8 rounded-md text-brand-muted hover:text-red hover:bg-brand-surface"
       >
         <CloseIcon size={18} />
@@ -66,10 +68,10 @@ const SingleItem = ({ item }: { item: ReduxCartItem }) => {
       <button
         type="button"
         onClick={() => removeItem(lineKey)}
-        aria-label={`Remove ${item.title} from cart`}
+        aria-label={t("Remove {name} from cart", { name: item.title })}
         className="sm:hidden col-start-2 justify-self-start text-custom-xs text-brand-muted hover:text-red"
       >
-        Remove
+        {t("Remove")}
       </button>
     </li>
   );

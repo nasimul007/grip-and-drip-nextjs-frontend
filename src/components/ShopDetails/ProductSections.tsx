@@ -3,6 +3,7 @@ import React, { Suspense, useLayoutEffect, useRef, useState } from "react";
 import SectionNav from "./SectionNav";
 import Reviews from "@/components/Reviews";
 import { attributeRows, type KeyDetail } from "@/lib/product-display";
+import { useT } from "@/lib/i18n/client";
 
 type Props = {
   title: string;
@@ -19,6 +20,7 @@ const COLLAPSED_PX = 320;
 const SECTION = "scroll-mt-[calc(var(--header-h,60px)+56px)]";
 
 function DescriptionBlock({ html }: { html: string }) {
+  const { t } = useT();
   const ref = useRef<HTMLDivElement>(null);
   const [tall, setTall] = useState(false);
   const [open, setOpen] = useState(false);
@@ -49,7 +51,7 @@ function DescriptionBlock({ html }: { html: string }) {
           aria-controls="description-content"
           className="mt-3 text-sm font-medium text-brand-accent hover:underline"
         >
-          {open ? "Show less" : "Read more"}
+          {open ? t("Show less") : t("Read more")}
         </button>
       )}
     </div>
@@ -57,6 +59,7 @@ function DescriptionBlock({ html }: { html: string }) {
 }
 
 export default function ProductSections({ title, description, attributes, brand, sku, categoryName, slug, reviewCount = 0 }: Props) {
+  const { t } = useT();
   const rows: KeyDetail[] = attributeRows(attributes);
   const has = (label: string) => rows.some((r) => r.label.toLowerCase() === label);
   if (brand && !has("brand")) rows.unshift({ label: "Brand", value: brand });
@@ -64,9 +67,9 @@ export default function ProductSections({ title, description, attributes, brand,
   if (sku && !has("sku")) rows.push({ label: "SKU", value: sku });
 
   const nav = [
-    { id: "specification", label: "Specification" },
-    { id: "description", label: "Description" },
-    ...(slug ? [{ id: "reviews", label: reviewCount > 0 ? `Reviews (${reviewCount})` : "Reviews" }] : []),
+    { id: "specification", label: t("Specification") },
+    { id: "description", label: t("Description") },
+    ...(slug ? [{ id: "reviews", label: reviewCount > 0 ? `${t("Reviews")} (${reviewCount})` : t("Reviews") }] : []),
   ];
 
   return (
@@ -76,11 +79,11 @@ export default function ProductSections({ title, description, attributes, brand,
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 py-6 sm:py-8 flex flex-col gap-10">
         <section id="specification" className={SECTION} aria-labelledby="specification-heading">
           <h2 id="specification-heading" className="text-base font-semibold text-white mb-3">
-            Specification
+            {t("Specification")}
           </h2>
           {rows.length > 0 ? (
             <table className="w-full text-sm border border-brand-border rounded-lg overflow-hidden">
-              <caption className="sr-only">{title} specifications</caption>
+              <caption className="sr-only">{title} {t("specifications")}</caption>
               <tbody>
                 {rows.map((r, i) => (
                   <tr key={`${r.label}-${i}`} className="odd:bg-brand-card even:bg-brand-surface align-top">
@@ -93,21 +96,21 @@ export default function ProductSections({ title, description, attributes, brand,
               </tbody>
             </table>
           ) : (
-            <p className="text-sm text-brand-muted">No specifications listed for this product.</p>
+            <p className="text-sm text-brand-muted">{t("No specifications listed for this product.")}</p>
           )}
         </section>
 
         <section id="description" className={SECTION} aria-labelledby="description-heading">
           <h2 id="description-heading" className="text-base font-semibold text-white mb-3">
-            Description
+            {t("Description")}
           </h2>
-          {description ? <DescriptionBlock html={description} /> : <p className="text-sm text-brand-muted">No description available.</p>}
+          {description ? <DescriptionBlock html={description} /> : <p className="text-sm text-brand-muted">{t("No description available.")}</p>}
         </section>
 
         {slug && (
           <section id="reviews" className={SECTION} aria-labelledby="reviews-heading">
             <h2 id="reviews-heading" className="text-base font-semibold text-white mb-3">
-              Reviews
+              {t("Reviews")}
             </h2>
             <Suspense fallback={null}>
               <Reviews slug={slug} />

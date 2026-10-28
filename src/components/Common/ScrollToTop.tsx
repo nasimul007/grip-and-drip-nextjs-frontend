@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useT } from "@/lib/i18n/client";
 
 export default function ScrollToTop() {
+  const { t } = useT();
   const [isVisible, setIsVisible] = useState(false);
 
   // Top: 0 takes us all the way back to the top of the page
@@ -33,7 +35,7 @@ export default function ScrollToTop() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          aria-label="Scroll to top"
+          aria-label={t("Scroll to top")}
           className={`items-center justify-center w-10 h-10 rounded-full shadow-lg bg-brand-card border border-brand-border ease-out duration-200 hover:border-brand-accent fixed bottom-24 lg:bottom-8 right-4 lg:right-8 z-999 ${
             isVisible ? "flex" : "hidden"
           }`}

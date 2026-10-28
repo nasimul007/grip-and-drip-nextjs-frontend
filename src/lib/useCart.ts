@@ -20,6 +20,7 @@ import { api } from "@/lib/api";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import { notifyAdded, notifyCartError, notifyCartInfo } from "@/lib/cart-toast";
 import type { Cart as APICart, ProductDetail } from "@/lib/types";
+import { tt } from "@/lib/i18n/client";
 
 export type AddItemPayload = {
   id: number;
@@ -187,7 +188,7 @@ export function useCart() {
       const label = item.variantName ? `${item.title} (${item.variantName})` : item.title;
 
       if (item.stock !== undefined && item.stock !== null && item.stock <= 0) {
-        notifyCartError(`${item.title} is out of stock.`);
+        notifyCartError(tt("{name} is out of stock.", { name: item.title }));
         return { ok: false, message: "out of stock" };
       }
 
@@ -197,12 +198,12 @@ export function useCart() {
         dispatch(addItemToCart({ ...item, quantity, lineKey }));
         const after = findLine(lineKey)?.quantity ?? 0;
         if (after <= before) {
-          notifyCartInfo(`You already have the maximum available (${after}) of ${item.title}.`, openCartModal);
+          notifyCartInfo(tt("You already have the maximum available ({n}) of {name}.", { n: after, name: item.title }), openCartModal);
           return { ok: false, clamped: true, message: "max in cart" };
         }
         const clamped = after - before < quantity;
-        notifyAdded(label, openCartModal, clamped ? `Only ${after} available` : undefined);
-        announce(`Added ${label} to cart`);
+        notifyAdded(label, openCartModal, clamped ? tt("Only {n} available", { n: after }) : undefined);
+        announce(tt("Added {name} to cart", { name: label }));
         return { ok: true, clamped };
       }
 
@@ -214,12 +215,12 @@ export function useCart() {
         })
       );
       if (error) {
-        notifyCartError(error.message || "Could not add this item to your cart.");
+        notifyCartError(error.message || tt("Could not add this item to your cart."));
         return { ok: false, message: error.message };
       }
       const warning = (cart as APICart | undefined)?.warning;
       notifyAdded(label, openCartModal, warning);
-      announce(`Added ${label} to cart`);
+      announce(tt("Added {name} to cart", { name: label }));
       return { ok: true, clamped: !!warning, message: warning };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -231,7 +232,7 @@ export function useCart() {
     async (item: Parameters<typeof resolveAddableItem>[0]): Promise<AddResult> => {
       const payload = await resolveAddableItem(item);
       if (!payload) {
-        notifyCartError(`${item.title} is out of stock.`);
+        notifyCartError(tt("{name} is out of stock.", { name: item.title }));
         return { ok: false, message: "out of stock" };
       }
       return addItem(payload);
@@ -244,13 +245,13 @@ export function useCart() {
       const line = findLine(lineKey);
       if (!line) return;
       dispatch(updateCartItemQuantity({ lineKey, quantity }));
-      announce(`${line.title} quantity ${findLine(lineKey)?.quantity ?? quantity}`);
+      announce(tt("{name} quantity {n}", { name: line.title, n: findLine(lineKey)?.quantity ?? quantity }));
       if (!isAuthed() || !line.cartItemId) return;
       const wanted = findLine(lineKey)?.quantity ?? quantity;
       const { cart, error } = await runOnServer(() =>
         api.patch<APICart>(`/api/cart/items/${line.cartItemId}/`, { quantity: wanted })
       );
-      if (error) notifyCartError(error.message || "Could not update the quantity.");
+      if (error) notifyCartError(error.message || tt("Could not update the quantity."));
       else if ((cart as APICart | undefined)?.warning) notifyCartInfo((cart as APICart).warning!);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -261,12 +262,12 @@ export function useCart() {
     async (lineKey: string) => {
       const line = findLine(lineKey);
       dispatch(removeItemFromCart(lineKey));
-      if (line) announce(`Removed ${line.title} from cart`);
+      if (line) announce(tt("Removed {name} from cart", { name: line.title }));
       if (!isAuthed() || !line?.cartItemId) return;
       const { error } = await runOnServer(() =>
         api.delete<APICart>(`/api/cart/items/${line.cartItemId}/remove/`)
       );
-      if (error) notifyCartError(error.message || "Could not remove the item.");
+      if (error) notifyCartError(error.message || tt("Could not remove the item."));
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [dispatch, runOnServer]
@@ -277,7 +278,7 @@ export function useCart() {
     clearLocalCart();
     if (isAuthed()) {
       const { error } = await runOnServer(() => api.post<APICart>("/api/cart/clear/"));
-      if (error) notifyCartError(error.message || "Could not clear the cart.");
+      if (error) notifyCartError(error.message || tt("Could not clear the cart."));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, runOnServer]);

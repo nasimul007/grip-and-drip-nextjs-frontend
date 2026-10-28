@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
+import "@fontsource/noto-sans-bengali/bengali-400.css";
+import "@fontsource/noto-sans-bengali/bengali-500.css";
+import "@fontsource/noto-sans-bengali/bengali-600.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ScrollToTop from "@/components/Common/ScrollToTop";
@@ -9,6 +12,8 @@ import WhatsAppFloat from "@/components/Common/WhatsAppFloat";
 import JsonLd from "@/components/Common/JsonLd";
 import Announcer from "@/components/Common/Announcer";
 import Providers from "./providers";
+import { LocaleProvider } from "@/lib/i18n/client";
+import { getLang } from "@/lib/i18n";
 import {
   DEFAULT_OG_IMAGE,
   SITE_DESCRIPTION,
@@ -95,26 +100,29 @@ const siteSchema = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const lang = await getLang();
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang={lang} className="dark" suppressHydrationWarning>
       <body>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100000] focus:rounded-md focus:bg-brand-accent focus:px-4 focus:py-2 focus:font-medium focus:text-brand-dark"
         >
-          Skip to main content
+          {lang === "bn" ? "মূল বিষয়বস্তুতে যান" : "Skip to main content"}
         </a>
         <JsonLd data={siteSchema} />
         <Announcer />
-        <Providers>
-          <Header />
-          {children}
-          <Footer />
-          <MobileBottomNav />
-          <WhatsAppFloat />
-        </Providers>
-        <ScrollToTop />
+        <LocaleProvider lang={lang}>
+          <Providers>
+            <Header />
+            {children}
+            <Footer />
+            <MobileBottomNav />
+            <WhatsAppFloat />
+            <ScrollToTop />
+          </Providers>
+        </LocaleProvider>
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ import {
   addItemToWishlist,
   removeItemFromWishlist,
 } from "@/redux/features/wishlist-slice";
+import { useT } from "@/lib/i18n/client";
 
 type WishlistButtonProps = {
   item: {
@@ -24,6 +25,7 @@ type WishlistButtonProps = {
 };
 
 const WishlistButton = ({ item, className = "" }: WishlistButtonProps) => {
+  const { t } = useT();
   const dispatch = useDispatch<AppDispatch>();
   const wishlistItems = useAppSelector((state) => state.wishlistReducer.items);
   const isInWishlist = wishlistItems.some((w) => w.id === item.id);
@@ -56,7 +58,7 @@ const WishlistButton = ({ item, className = "" }: WishlistButtonProps) => {
   return (
     <button
       onClick={handleToggle}
-      aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+      aria-label={isInWishlist ? t("Remove from wishlist") : t("Add to wishlist")}
       aria-pressed={isInWishlist}
       className={`${buttonClass} ${className}`}
     >

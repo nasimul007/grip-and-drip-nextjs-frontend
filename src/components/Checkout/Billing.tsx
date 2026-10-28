@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 
 import SearchableSelect from "./SearchableSelect";
 import { getDivisions, getCities, getAreas } from "@/lib/location-data";
+import { useT } from "@/lib/i18n/client";
 
 const inputClass =
   "rounded-md bg-brand-surface placeholder:text-brand-muted text-white w-full h-10 px-3.5 text-sm outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 disabled:opacity-60";
@@ -18,6 +19,7 @@ const FieldError = ({ message }: { message?: string }) =>
   ) : null;
 
 const Billing = ({ formData, onChange, errors = {} }: any) => {
+  const { t } = useT();
   const divisions = getDivisions();
 
   const cities = useMemo(
@@ -92,21 +94,21 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
 
   return (
     <section className="rounded-lg border border-brand-border bg-brand-card">
-      <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">Delivery details</h2>
+      <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">{t("Delivery details")}</h2>
       <div className="grid gap-x-3 gap-y-3 p-4 sm:grid-cols-6">
-        {field("fullName", "Full name", { required: true, placeholder: "Your name", autoComplete: "name", span: "sm:col-span-3", error: errors.fullName })}
-        {field("phone", "Phone", { required: true, placeholder: "01XXXXXXXXX", autoComplete: "tel", span: "sm:col-span-3", error: errors.phone })}
-        {field("email", "Email (optional)", { type: "email", placeholder: "you@example.com", autoComplete: "email", span: "sm:col-span-6" })}
+        {field("fullName", t("Full name"), { required: true, placeholder: t("Your name"), autoComplete: "name", span: "sm:col-span-3", error: errors.fullName })}
+        {field("phone", t("Phone"), { required: true, placeholder: "01XXXXXXXXX", autoComplete: "tel", span: "sm:col-span-3", error: errors.phone })}
+        {field("email", t("Email (optional)"), { type: "email", placeholder: "you@example.com", autoComplete: "email", span: "sm:col-span-6" })}
 
         <div className="sm:col-span-2">
           <SearchableSelect
             name="division_id"
             id="division"
-            label="Division"
+            label={t("Division")}
             required
             value={formData.division_id}
             options={divisions}
-            placeholder="Select division"
+            placeholder={t("Select division")}
             error={errors.division}
             wrapperClassName="mb-0"
             valueKey="id"
@@ -118,12 +120,12 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           <SearchableSelect
             name="city_id"
             id="city"
-            label="City"
+            label={t("City")}
             required
             value={formData.city_id}
             options={cities}
             disabled={!formData.division_id}
-            placeholder={formData.division_id ? "Select city" : "Select division first"}
+            placeholder={formData.division_id ? t("Select city") : t("Select division first")}
             error={errors.city}
             wrapperClassName="mb-0"
             valueKey="id"
@@ -135,12 +137,12 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           <SearchableSelect
             name="area_id"
             id="area"
-            label="Area"
+            label={t("Area")}
             required
             value={formData.area_id}
             options={areas}
             disabled={!formData.city_id}
-            placeholder={formData.city_id ? "Select area" : "Select city first"}
+            placeholder={formData.city_id ? t("Select area") : t("Select city first")}
             error={errors.area}
             wrapperClassName="mb-0"
             valueKey="id"
@@ -149,17 +151,17 @@ const Billing = ({ formData, onChange, errors = {} }: any) => {
           />
         </div>
 
-        {field("address", "Full address", { required: true, placeholder: "House, road, landmark", autoComplete: "street-address", span: "sm:col-span-6", error: errors.address })}
+        {field("address", t("Full address"), { required: true, placeholder: t("House, road, landmark"), autoComplete: "street-address", span: "sm:col-span-6", error: errors.address })}
 
         <div className="sm:col-span-6">
-          <label htmlFor="notes" className="block mb-1.5 text-custom-sm text-white">Order note (optional)</label>
+          <label htmlFor="notes" className="block mb-1.5 text-custom-sm text-white">{t("Order note (optional)")}</label>
           <textarea
             name="notes"
             id="notes"
             rows={2}
             value={formData.notes}
             onChange={onChange}
-            placeholder="Delivery instructions, preferred time…"
+            placeholder={t("Delivery instructions, preferred time…")}
             className={`${fieldClass(undefined)} h-auto py-2 resize-none`}
           />
         </div>

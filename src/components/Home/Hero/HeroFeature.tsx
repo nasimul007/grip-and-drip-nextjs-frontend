@@ -4,8 +4,10 @@ import { serverGet } from "@/lib/server-api";
 import { freeShippingThreshold } from "@/lib/shipping";
 import { formatPrice } from "@/lib/format";
 import type { PaginatedResponse, ShippingRate } from "@/lib/types";
+import { getT } from "@/lib/i18n";
 
 const HeroFeature = async () => {
+  const { t } = await getT();
   const data = await serverGet<PaginatedResponse<ShippingRate> | ShippingRate[]>("/api/shipping-rates/", 600);
   const rates = data ? (Array.isArray(data) ? data : data.results) : [];
   const threshold = freeShippingThreshold(rates);
@@ -13,12 +15,12 @@ const HeroFeature = async () => {
   const features = [
     {
       img: "/images/icons/icon-01.svg",
-      title: threshold ? "Free Delivery" : "Fast Delivery",
-      description: threshold ? `On orders over ${formatPrice(threshold)}` : "Inside & outside Dhaka",
+      title: threshold ? t("Free Delivery") : t("Fast Delivery"),
+      description: threshold ? t("On orders over {amount}", { amount: formatPrice(threshold) }) : t("Inside & outside Dhaka"),
     },
-    { img: "/images/icons/icon-02.svg", title: "Easy Returns", description: "7-day return policy" },
-    { img: "/images/icons/icon-03.svg", title: "100% Authentic", description: "Genuine products guaranteed" },
-    { img: "/images/icons/icon-04.svg", title: "Cash on Delivery", description: "Pay when you receive" },
+    { img: "/images/icons/icon-02.svg", title: t("Easy Returns"), description: t("7-day return policy") },
+    { img: "/images/icons/icon-03.svg", title: t("100% Authentic"), description: t("Genuine products guaranteed") },
+    { img: "/images/icons/icon-04.svg", title: t("Cash on Delivery"), description: t("Pay when you receive") },
   ];
 
   return (

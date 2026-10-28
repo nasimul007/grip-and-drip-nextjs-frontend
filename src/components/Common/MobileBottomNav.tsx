@@ -4,11 +4,13 @@ import { usePathname } from "next/navigation";
 import { useAppSelector } from "@/redux/store";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import { CartIcon, GridIcon, HomeIcon, SearchIcon, UserIcon } from "./icons";
+import { useT } from "@/lib/i18n/client";
 
 // Pages with their own sticky action bar.
 const HIDDEN_ON = [/^\/shop\/[^/]+$/, /^\/checkout/];
 
 export default function MobileBottomNav() {
+  const { t } = useT();
   const pathname = usePathname();
   const { openCartModal } = useCartModalContext();
   const cartCount = useAppSelector((s) =>
@@ -25,25 +27,25 @@ export default function MobileBottomNav() {
     <>
       <div className="lg:hidden h-16" aria-hidden="true" />
       <nav
-        aria-label="Quick navigation"
+        aria-label={t("Quick navigation")}
         className="lg:hidden fixed bottom-0 inset-x-0 z-999 h-16 bg-brand-surface border-t border-brand-border flex pb-[env(safe-area-inset-bottom)]"
       >
         <Link href="/" className={`${item} ${active(pathname === "/")}`} aria-current={pathname === "/" ? "page" : undefined}>
           <HomeIcon size={22} />
-          Home
+          {t("Home")}
         </Link>
         <Link
           href="/categories"
           className={`${item} ${active(pathname.startsWith("/categor"))}`}
         >
           <GridIcon size={22} />
-          Categories
+          {t("Categories")}
         </Link>
         <Link href="/shop" className={`${item} ${active(pathname === "/shop")}`}>
           <SearchIcon size={22} />
-          Shop
+          {t("Shop")}
         </Link>
-        <button type="button" onClick={openCartModal} className={`${item} text-brand-muted`} aria-label={`Cart, ${cartCount} items`}>
+        <button type="button" onClick={openCartModal} className={`${item} text-brand-muted`} aria-label={t("Cart, {n} items", { n: cartCount })}>
           <span className="relative">
             <CartIcon size={22} />
             {cartCount > 0 && (
@@ -52,14 +54,14 @@ export default function MobileBottomNav() {
               </span>
             )}
           </span>
-          Cart
+          {t("Cart")}
         </button>
         <Link
           href={isAuthenticated ? "/my-account" : "/signin"}
           className={`${item} ${active(pathname.startsWith("/my-account") || pathname === "/signin")}`}
         >
           <UserIcon size={22} />
-          Account
+          {t("Account")}
         </Link>
       </nav>
     </>

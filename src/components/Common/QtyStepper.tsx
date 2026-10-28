@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useT } from "@/lib/i18n/client";
 
 type Props = {
   quantity: number;
@@ -13,6 +14,7 @@ type Props = {
 
 /** − 2 + stepper used in the cart drawer and the cart page. */
 export default function QtyStepper({ quantity, max, onChange, disabled, label = "item", size = "md" }: Props) {
+  const { t } = useT();
   const box = size === "sm" ? "h-8 w-8" : "h-9 w-9";
   const btn = `flex items-center justify-center ${box} text-white hover:text-brand-accent disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-white`;
   const atMax = max !== undefined && max > 0 && quantity >= max;
@@ -23,7 +25,7 @@ export default function QtyStepper({ quantity, max, onChange, disabled, label = 
         className={btn}
         onClick={() => onChange(quantity - 1)}
         disabled={disabled || quantity <= 1}
-        aria-label={`Decrease quantity of ${label}`}
+        aria-label={t("Decrease quantity of {name}", { name: label })}
       >
         −
       </button>
@@ -35,7 +37,7 @@ export default function QtyStepper({ quantity, max, onChange, disabled, label = 
         className={btn}
         onClick={() => onChange(quantity + 1)}
         disabled={disabled || atMax}
-        aria-label={atMax ? `Maximum quantity of ${label} reached` : `Increase quantity of ${label}`}
+        aria-label={atMax ? t("Maximum quantity of {name} reached", { name: label }) : t("Increase quantity of {name}", { name: label })}
       >
         +
       </button>

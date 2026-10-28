@@ -10,22 +10,24 @@ import { useAppSelector } from "@/redux/store";
 import { CONTACT, whatsappHref } from "@/lib/site";
 import { formatOrderDate, fromOrderDetail, type TrackedOrder } from "@/lib/orders";
 import type { OrderListItem, PaginatedResponse } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 const inputClass =
   "w-full rounded-md border border-brand-border bg-brand-surface px-3.5 py-2.5 text-white placeholder:text-brand-muted outline-none focus:border-brand-accent";
 
 function OrderResult({ order }: { order: TrackedOrder }) {
+  const { t } = useT();
   const help = whatsappHref(`Hi, I need help with order ${order.order_number}.`);
   return (
     <div className="rounded-lg border border-brand-border bg-brand-card">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-brand-border px-4 py-3 sm:px-5">
         <div>
-          <p className="text-custom-xs text-brand-muted">Order</p>
+          <p className="text-custom-xs text-brand-muted">{t("Order")}</p>
           <p className="font-semibold text-white">#{order.order_number}</p>
         </div>
         <div className="text-right">
           <StatusBadge status={order.status} label={order.status_display} />
-          <p className="mt-0.5 text-custom-xs text-brand-muted">Placed {formatOrderDate(order.created_at)}</p>
+          <p className="mt-0.5 text-custom-xs text-brand-muted">{t("Placed")} {formatOrderDate(order.created_at)}</p>
         </div>
       </div>
 
@@ -34,21 +36,22 @@ function OrderResult({ order }: { order: TrackedOrder }) {
       <div className="flex flex-wrap gap-3 border-t border-brand-border px-4 py-4 text-sm sm:px-5">
         {help && (
           <a href={help} target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#0B7A3E] px-4 py-2 font-medium text-white hover:opacity-90">
-            Ask about this order on WhatsApp
+            {t("Ask about this order on WhatsApp")}
           </a>
         )}
         {CONTACT.phone && (
           <a href={`tel:${CONTACT.phone}`} className="rounded-md border border-brand-border px-4 py-2 text-white hover:border-brand-accent">
-            Call {CONTACT.phone}
+            {t("Call")} {CONTACT.phone}
           </a>
         )}
-        <Link href="/shop" className="rounded-md border border-brand-border px-4 py-2 text-white hover:border-brand-accent">Continue shopping</Link>
+        <Link href="/shop" className="rounded-md border border-brand-border px-4 py-2 text-white hover:border-brand-accent">{t("Continue shopping")}</Link>
       </div>
     </div>
   );
 }
 
 function TrackOrderInner() {
+  const { t } = useT();
   const params = useSearchParams();
   const isAuthenticated = useAppSelector((state) => state.authReducer.isAuthenticated);
 
@@ -66,7 +69,7 @@ function TrackOrderInner() {
     try {
       setOrder(await api.post<TrackedOrder>("/api/orders/track/", { order_number: orderNumber.trim(), phone: phoneNumber.trim() }));
     } catch (err) {
-      setError((err as Error).message || "Could not look up this order. Please try again.");
+      setError((err as Error).message || t("Could not look up this order. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -95,7 +98,7 @@ function TrackOrderInner() {
     try {
       setOrder(fromOrderDetail(await api.get<TrackedOrder>(`/api/orders/${id}/`)));
     } catch (err) {
-      setError((err as Error).message || "Could not load this order.");
+      setError((err as Error).message || t("Could not load this order."));
     } finally {
       setLoading(false);
     }
@@ -104,7 +107,7 @@ function TrackOrderInner() {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!number.trim() || !phone.trim()) {
-      setError("Enter your order number and the phone number used at checkout.");
+      setError(t("Enter your order number and the phone number used at checkout."));
       return;
     }
     lookup(number, phone);
@@ -112,12 +115,12 @@ function TrackOrderInner() {
 
   return (
     <>
-      <Breadcrumb title="Track your order" items={[{ name: "Track order" }]} />
+      <Breadcrumb title={t("Track your order")} items={[{ name: t("Track order") }]} />
       <section className="bg-brand-dark pb-16 pt-4">
         <div className="mx-auto w-full max-w-[760px] px-4 sm:px-8 xl:px-0">
           {isAuthenticated && mine.length > 0 && (
             <div className="mb-5 rounded-lg border border-brand-border bg-brand-card p-4">
-              <p className="mb-2 text-sm font-semibold text-white">Your recent orders</p>
+              <p className="mb-2 text-sm font-semibold text-white">{t("Your recent orders")}</p>
               <ul className="flex flex-col gap-1.5">
                 {mine.slice(0, 5).map((o) => (
                   <li key={o.id}>
@@ -134,28 +137,28 @@ function TrackOrderInner() {
                 ))}
               </ul>
               <p className="mt-2 text-custom-xs text-brand-muted">
-                All orders are in <Link href="/my-account" className="text-brand-accent hover:underline">My account</Link>.
+                {t("All orders are in")} <Link href="/my-account" className="text-brand-accent hover:underline">{t("My account")}</Link>.
               </p>
             </div>
           )}
 
           <form onSubmit={onSubmit} className="rounded-lg border border-brand-border bg-brand-card p-4 sm:p-5" noValidate>
             <p className="mb-3 text-sm text-brand-muted">
-              {isAuthenticated ? "Placed an order as a guest? Look it up with its number and phone." : "Enter the order number from your confirmation and the phone number you used at checkout."}
+              {isAuthenticated ? t("Placed an order as a guest? Look it up with its number and phone.") : t("Enter the order number from your confirmation and the phone number you used at checkout.")}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block text-sm text-white">
-                Order number
+                {t("Order number")}
                 <input value={number} onChange={(e) => setNumber(e.target.value)} placeholder="ORD-20260101-0001" autoComplete="off" autoCapitalize="characters" className={`${inputClass} mt-1.5`} />
               </label>
               <label className="block text-sm text-white">
-                Phone number
+                {t("Phone number")}
                 <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="01XXXXXXXXX" inputMode="tel" autoComplete="tel" className={`${inputClass} mt-1.5`} />
               </label>
             </div>
             {error && <p role="alert" className="mt-3 text-sm text-red">{error}</p>}
             <button type="submit" disabled={loading} className="mt-4 rounded-md bg-brand-accent px-6 py-2.5 font-medium text-brand-dark hover:bg-brand-hover disabled:opacity-60">
-              {loading ? "Checking…" : "Track order"}
+              {loading ? t("Checking…") : t("Track order")}
             </button>
           </form>
 

@@ -6,6 +6,7 @@ import ProductGrid from "@/components/Common/ProductGrid";
 import { getDeals } from "@/lib/deals";
 import { mapProductForDisplay } from "@/lib/mappers";
 import { absoluteUrl } from "@/lib/site";
+import { getT } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Hot deals on gadgets & accessories",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DealsPage() {
+  const { t } = await getT();
   const deals = await getDeals(48);
 
   const schema = {
@@ -42,9 +44,9 @@ export default async function DealsPage() {
         <ProductGrid title="Biggest discounts first" products={deals.map(mapProductForDisplay)} />
       ) : (
         <section className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 py-16 text-center">
-          <p className="text-white mb-3">There are no deals right now.</p>
+          <p className="text-white mb-3">{t("There are no deals right now.")}</p>
           <Link href="/shop" className="text-brand-accent hover:underline">
-            Browse all products
+            {t("Browse all products")}
           </Link>
         </section>
       )}

@@ -3,10 +3,12 @@ import HeroCarousel from "./HeroCarousel";
 import HeroFeature from "./HeroFeature";
 import Image from "next/image";
 import Link from "next/link";
+import { getT } from "@/lib/i18n";
 
 type Props = { links: { charger: string; audio: string } };
 
-const Hero = ({ links }: Props) => {
+const Hero = async ({ links }: Props) => {
+  const { t } = await getT();
   return (
     <section className="overflow-hidden pb-5 lg:pb-7.5 pt-4 lg:pt-7.5 bg-brand-dark">
       <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
@@ -31,16 +33,16 @@ const Hero = ({ links }: Props) => {
                 <div className="flex items-center gap-8">
                   <div>
                     <h2 className="max-w-[153px] font-semibold text-white text-xl mb-10">
-                      <Link href={links.audio}>JBL Speakers</Link>
+                      <Link href={links.audio}>{t("JBL Speakers")}</Link>
                     </h2>
 
                     <div>
                       <p className="font-medium text-brand-muted text-custom-sm mb-1.5">
-                        premium sound
+                        {t("premium sound")}
                       </p>
                       <span className="flex items-center gap-3">
                         <span className="font-medium text-heading-5 text-brand-accent">
-                          From ৳4,000
+                          {t("From")} ৳4,000
                         </span>
                       </span>
                     </div>
@@ -49,7 +51,7 @@ const Hero = ({ links }: Props) => {
                   <div className="drop-shadow-[0_4px_12px_rgba(0,212,170,0.25)] hover:scale-105 transition-transform duration-300">
                     <Image
                       src="/images/hero/All_Speakers.png"
-                      alt="JBL speakers"
+                      alt={t("JBL speakers")}
                       width={160}
                       height={210}
                       className="object-contain"
@@ -61,16 +63,16 @@ const Hero = ({ links }: Props) => {
                 <div className="flex items-center gap-8">
                   <div>
                     <h2 className="max-w-[153px] font-semibold text-white text-xl mb-10">
-                      <Link href={links.charger}>Anker Chargers</Link>
+                      <Link href={links.charger}>{t("Anker Chargers")}</Link>
                     </h2>
 
                     <div>
                       <p className="font-medium text-brand-muted text-custom-sm mb-1.5">
-                        fast charging
+                        {t("fast charging")}
                       </p>
                       <span className="flex items-center gap-3">
                         <span className="font-medium text-heading-5 text-brand-accent">
-                          Up to 45W
+                          {t("Up to 45W")}
                         </span>
                       </span>
                     </div>
@@ -79,7 +81,7 @@ const Hero = ({ links }: Props) => {
                   <div className="drop-shadow-[0_4px_12px_rgba(0,212,170,0.25)] hover:scale-105 transition-transform duration-300">
                     <Image
                       src="/images/hero/anker-chargers.webp"
-                      alt="Anker chargers"
+                      alt={t("Anker chargers")}
                       width={160}
                       height={210}
                       className="object-contain"

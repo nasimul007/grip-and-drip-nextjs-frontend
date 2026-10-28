@@ -9,10 +9,12 @@ import "swiper/css";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useT } from "@/lib/i18n/client";
 
 type Links = { charger: string; audio: string };
 
 const HeroCarousal = ({ links }: { links: Links }) => {
+  const { t } = useT();
   const swiperRef = useRef<SwiperType | null>(null);
   const [playing, setPlaying] = useState(true);
 
@@ -55,32 +57,31 @@ const HeroCarousal = ({ links }: { links: Links }) => {
         <div className="flex items-center justify-between gap-2">
             <div className="max-w-[394px] py-6 sm:py-10 lg:py-16 pl-4 sm:pl-7.5 lg:pl-12.5 pb-9">
             <p className="text-custom-sm font-medium text-brand-accent mb-2 sm:mb-4">
-              Genuine gadgets · Cash on delivery
+              {t("Genuine gadgets · Cash on delivery")}
             </p>
 
             <h1 className="font-semibold text-white text-lg sm:text-3xl mb-2 sm:mb-3">
               <Link href="/shop">
-                Original gadgets & accessories, delivered across Bangladesh
+                {t("Original gadgets & accessories, delivered across Bangladesh")}
               </Link>
             </h1>
 
             <p className="hidden sm:block text-[#A0A0A8]">
-              Bangladesh&apos;s premier destination for authentic tech accessories.
-              Chargers, earbuds, smartwatches and more — genuine products, warranty and cash on delivery.
+              {t("Bangladesh's premier destination for authentic tech accessories. Chargers, earbuds, smartwatches and more — genuine products, warranty and cash on delivery.")}
             </p>
 
             <Link
               href="/shop"
               className="inline-flex font-medium text-brand-dark text-custom-sm rounded-md bg-brand-accent py-2 px-5 sm:py-3 sm:px-9 ease-out duration-200 hover:bg-brand-hover mt-3 sm:mt-6"
             >
-              Explore Now
+              {t("Explore Now")}
             </Link>
           </div>
 
           <div>
             <Image
               src="/images/hero/hero-05.png"
-              alt="Gadgets and accessories from Gadget & Widget"
+              alt={t("Gadgets and accessories from Gadget & Widget")}
               priority
               width={351}
               height={358}
@@ -94,38 +95,37 @@ const HeroCarousal = ({ links }: { links: Links }) => {
           <div className="max-w-[394px] py-6 sm:py-10 lg:py-16 pl-4 sm:pl-7.5 lg:pl-12.5 pb-9">
             <div className="flex items-center gap-3 mb-5 sm:mb-7.5">
               <span className="block font-semibold text-2xl sm:text-heading-1 text-brand-accent">
-                New
+                {t("New")}
               </span>
               <span className="block text-white text-sm sm:text-custom-1 sm:leading-[24px]">
-                Tech
+                {t("Tech")}
                 <br />
-                Arrivals
+                {t("Arrivals")}
               </span>
             </div>
 
             <h2 className="font-semibold text-white text-lg sm:text-3xl mb-2 sm:mb-3">
               <Link href={links.charger}>
-                Premium Chargers & Cables
+                {t("Premium Chargers & Cables")}
               </Link>
             </h2>
 
             <p className="hidden sm:block text-[#A0A0A8]">
-              Fast charging solutions for all your devices. From Apple to Samsung,
-              Anker to Soundcore — we&apos;ve got you covered.
+              {t("Fast charging solutions for all your devices. From Apple to Samsung, Anker to Soundcore — we've got you covered.")}
             </p>
 
             <Link
               href={links.charger}
               className="inline-flex font-medium text-brand-dark text-custom-sm rounded-md bg-brand-accent py-2 px-5 sm:py-3 sm:px-9 ease-out duration-200 hover:bg-brand-hover mt-3 sm:mt-6"
             >
-              Shop Now
+              {t("Shop Now")}
             </Link>
           </div>
 
           <div>
             <Image
               src="/images/hero/apple-charger.png"
-              alt="Premium accessories"
+              alt={t("Premium accessories")}
               width={351}
               height={358}
               className="w-28 sm:w-auto h-auto pr-3 sm:pr-0"
@@ -138,10 +138,10 @@ const HeroCarousal = ({ links }: { links: Links }) => {
           <div className="max-w-[394px] py-6 sm:py-10 lg:py-16 pl-4 sm:pl-7.5 lg:pl-12.5 pb-9">
             <div className="flex items-center gap-3 mb-5 sm:mb-7.5">
               <span className="block font-semibold text-2xl sm:text-heading-1 text-brand-accent">
-                Audio
+                {t("Audio")}
               </span>
               <span className="block text-white text-sm sm:text-custom-1 sm:leading-[24px]">
-                Zone
+                {t("Zone")}
                 <br />
                 &nbsp;
               </span>
@@ -149,27 +149,26 @@ const HeroCarousal = ({ links }: { links: Links }) => {
 
             <h2 className="font-semibold text-white text-lg sm:text-3xl mb-2 sm:mb-3">
               <Link href={links.audio}>
-                Wireless Audio Collection
+                {t("Wireless Audio Collection")}
               </Link>
             </h2>
 
             <p className="hidden sm:block text-[#A0A0A8]">
-              Discover premium sound with JBL, Sony, Soundcore, and CMF
-              earphones & headphones. Experience music like never before.
+              {t("Discover premium sound with JBL, Sony, Soundcore, and CMF earphones & headphones. Experience music like never before.")}
             </p>
 
             <Link
               href={links.audio}
               className="inline-flex font-medium text-brand-dark text-custom-sm rounded-md bg-brand-accent py-2 px-5 sm:py-3 sm:px-9 ease-out duration-200 hover:bg-brand-hover mt-3 sm:mt-6"
             >
-              Browse Audio
+              {t("Browse Audio")}
             </Link>
           </div>
 
           <div>
             <Image
               src="/images/hero/hero-09.png"
-              alt="Audio collection"
+              alt={t("Audio collection")}
               width={351}
               height={358}
               className="w-28 sm:w-auto h-auto pr-3 sm:pr-0"
@@ -182,7 +181,7 @@ const HeroCarousal = ({ links }: { links: Links }) => {
       type="button"
       onClick={toggle}
       aria-pressed={!playing}
-      aria-label={playing ? "Pause slideshow" : "Play slideshow"}
+      aria-label={playing ? t("Pause slideshow") : t("Play slideshow")}
       className="absolute bottom-3 right-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-brand-border bg-brand-card/90 text-white hover:text-brand-accent"
     >
       {playing ? (

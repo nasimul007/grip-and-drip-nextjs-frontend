@@ -1,4 +1,6 @@
-export default function Loading() {
+import { getT } from "@/lib/i18n";
+export default async function Loading() {
+  const { t } = await getT();
   return (
     <div className="bg-brand-dark py-8" aria-busy="true">
       <div className="mx-auto grid w-full max-w-[1170px] animate-pulse gap-6 px-4 sm:px-8 md:grid-cols-[minmax(0,480px)_1fr] xl:px-0">
@@ -11,7 +13,7 @@ export default function Loading() {
           <div className="h-11 w-1/2 rounded bg-brand-surface" />
         </div>
       </div>
-      <span className="sr-only">Loading…</span>
+      <span className="sr-only">{t("Loading…")}</span>
     </div>
   );
 }

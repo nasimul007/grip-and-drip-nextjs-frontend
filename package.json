@@ -10,6 +10,7 @@
     "fetch-locations": "node scripts/fetch-location-data.js"
   },
   "dependencies": {
+    "@fontsource/noto-sans-bengali": "^5.3.0",
     "@reduxjs/toolkit": "^2.6.1",
     "autoprefixer": "10.4.15",
     "next": "^16.1.6",

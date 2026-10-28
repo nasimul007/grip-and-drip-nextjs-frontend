@@ -16,8 +16,10 @@ import WishlistButton from "@/components/Common/WishlistButton";
 import Stars from "@/components/Common/Stars";
 import { CartIcon, SearchIcon, ShieldIcon } from "@/components/Common/icons";
 import type { ProductDetail } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 const ProductItem = ({ item, priority = false }: { item: Product; priority?: boolean }) => {
+  const { t } = useT();
   const { openModal } = useModalContext();
   const { addResolved } = useCart();
   const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +29,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
   const image = item.imgs?.previews?.[0]?.trim();
   const outOfStock = item.stock !== undefined && item.stock <= 0;
   const badge = discountBadge(Number(item.price), Number(item.discountedPrice));
-  const warranty = formatWarranty(item.warrantyMonths);
+  const warranty = formatWarranty(item.warrantyMonths, t);
 
   const handleQuickView = async () => {
     dispatch(resetQuickView());
@@ -70,7 +72,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
             />
           ) : (
             <span className="w-full h-full flex items-center justify-center text-brand-muted text-sm">
-              No image
+              {t("No image")}
             </span>
           )}
         </Link>
@@ -83,12 +85,12 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
         {warranty && (
           <span className="absolute left-2 bottom-2 inline-flex items-center gap-1 rounded bg-brand-dark/85 px-1.5 py-0.5 text-2xs sm:text-custom-xs font-medium text-white backdrop-blur-sm">
             <ShieldIcon className="text-brand-accent" size={12} />
-            {warranty} warranty
+            {warranty} {t("warranty")}
           </span>
         )}
         {outOfStock && (
           <span className="absolute left-2 top-2 rounded bg-brand-dark/90 border border-brand-border px-1.5 py-0.5 text-2xs sm:text-custom-xs font-medium text-white">
-            Out of stock
+            {t("Out of stock")}
           </span>
         )}
 
@@ -97,7 +99,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
           <button
             type="button"
             onClick={handleQuickView}
-            aria-label={`Quick view ${item.title}`}
+            aria-label={`${t("Quick view")} ${item.title}`}
             className="flex items-center justify-center w-8 h-8 rounded-[5px] border border-brand-border bg-brand-card text-white hover:text-brand-accent hover:border-brand-accent"
           >
             <SearchIcon size={16} />
@@ -128,7 +130,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
           <span className="text-white font-semibold sm:text-lg">{formatPrice(item.discountedPrice)}</span>
           {Number(item.price) > Number(item.discountedPrice) && (
             <span className="text-custom-xs sm:text-custom-sm text-brand-muted line-through">
-              <span className="sr-only">Regular price </span>
+              <span className="sr-only">{t("Regular price")} </span>
               {formatPrice(item.price)}
             </span>
           )}
@@ -141,7 +143,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
           className="mt-auto flex items-center justify-center gap-2 w-full rounded-md border border-brand-accent/60 py-2 text-custom-sm font-medium text-brand-accent hover:bg-brand-accent hover:text-brand-dark disabled:border-brand-border disabled:text-brand-muted disabled:hover:bg-transparent disabled:cursor-not-allowed transition"
         >
           <CartIcon size={16} />
-          {outOfStock ? "Out of stock" : adding ? "Adding…" : "Add to cart"}
+          {outOfStock ? t("Out of stock") : adding ? t("Adding…") : t("Add to cart")}
         </button>
       </div>
     </article>

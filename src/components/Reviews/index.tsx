@@ -4,12 +4,14 @@ import { useSearchParams } from "next/navigation";
 import Stars from "@/components/Common/Stars";
 import ReviewForm from "./ReviewForm";
 import { api } from "@/lib/api";
+import { useT } from "@/lib/i18n/client";
 
 type Review = { id: number; reviewer_name: string; rating: number; title: string; body: string; created_at: string };
 type Data = { average: number | null; count: number; results: Review[] };
 
 /** Approved reviews of a product plus the "write a review" form. */
 export default function Reviews({ slug }: { slug: string }) {
+  const { t } = useT();
   const params = useSearchParams();
   const [data, setData] = useState<Data | null>(null);
   const [open, setOpen] = useState(params.get("review") === "1");
@@ -27,13 +29,13 @@ export default function Reviews({ slug }: { slug: string }) {
           <span className="text-3xl font-semibold text-white">{data.average.toFixed(1)}</span>
           <div>
             <Stars value={data.average} size={18} />
-            <p className="text-custom-sm text-brand-muted">{count} review{count > 1 ? "s" : ""} from verified buyers</p>
+            <p className="text-custom-sm text-brand-muted">{count} {count > 1 ? t("reviews") : t("review")} {t("from verified buyers")}</p>
           </div>
         </div>
       )}
 
       {count === 0 && data && (
-        <p className="mb-4 text-sm text-brand-muted">No reviews yet. Bought this product? Be the first to share what you think.</p>
+        <p className="mb-4 text-sm text-brand-muted">{t("No reviews yet. Bought this product? Be the first to share what you think.")}</p>
       )}
 
       {count > 0 && (
@@ -46,7 +48,7 @@ export default function Reviews({ slug }: { slug: string }) {
               </div>
               {r.body && <p className="mt-1.5 whitespace-pre-line text-sm text-brand-muted">{r.body}</p>}
               <p className="mt-1.5 text-custom-xs text-brand-muted">
-                {r.reviewer_name} · Verified purchase · {new Date(r.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                {r.reviewer_name} · {t("Verified purchase")} · {new Date(r.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
               </p>
             </li>
           ))}
@@ -57,7 +59,7 @@ export default function Reviews({ slug }: { slug: string }) {
         <ReviewForm slug={slug} defaultOrder={params.get("order") || ""} onDone={load} />
       ) : (
         <button type="button" onClick={() => setOpen(true)} className="rounded-md border border-brand-border px-5 py-2.5 text-sm font-medium text-white hover:border-brand-accent">
-          Write a review
+          {t("Write a review")}
         </button>
       )}
     </div>

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import CustomSelect from "./CustomSelect";
 import SearchSuggestions from "./SearchSuggestions";
+import LanguageToggle from "@/components/Common/LanguageToggle";
 import { addRecentSearch } from "@/lib/recent-searches";
 import Dropdown from "./Dropdown";
 import { menuData } from "./menuData";
@@ -28,6 +29,7 @@ import {
   UserIcon,
   WhatsAppIcon,
 } from "@/components/Common/icons";
+import { useT } from "@/lib/i18n/client";
 
 type CategoryOption = {
   label: string;
@@ -50,6 +52,7 @@ function mapToTree(items: ApiCategory[]): CategoryOption[] {
 const LOGO = "/images/logo/g_w_dark_side_by_side01-removebg-preview.png";
 
 const Header = () => {
+  const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
@@ -140,7 +143,7 @@ const Header = () => {
       ? [
           {
             id: 99,
-            title: "Categories",
+            title: t("Categories"),
             newTab: false,
             submenu: categoryOptions.slice(1).map((c) => ({
               id: Number(c.value),
@@ -157,7 +160,7 @@ const Header = () => {
   const searchInput = (id: string, ref?: React.Ref<HTMLInputElement>) => (
     <div className="relative w-full">
       <label htmlFor={id} className="sr-only">
-        Search products
+        {t("Search products")}
       </label>
       <input
         ref={ref}
@@ -170,13 +173,13 @@ const Header = () => {
           setShowSuggestions(true);
         }}
         onFocus={() => setShowSuggestions(true)}
-        placeholder="Search earbuds, chargers, cables…"
+        placeholder={t("Search earbuds, chargers, cables…")}
         autoComplete="off"
         className="custom-search w-full rounded-md lg:rounded-l-none bg-brand-card border border-brand-border py-2.5 pl-4 pr-10 outline-none text-white placeholder:text-brand-muted focus:border-brand-accent"
       />
       <button
         type="submit"
-        aria-label="Search"
+        aria-label={t("Search")}
         className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-brand-accent"
       >
         <SearchIcon size={18} />
@@ -201,11 +204,11 @@ const Header = () => {
       {(CONTACT.phone || whatsapp) && (
         <div className="hidden lg:block bg-brand-dark border-b border-brand-border text-custom-xs">
           <div className="max-w-[1170px] mx-auto px-4 sm:px-7.5 xl:px-0 flex items-center justify-between py-1.5">
-            <p className="text-brand-muted">100% original products · Cash on delivery all over Bangladesh</p>
+            <p className="text-brand-muted">{t("100% original products · Cash on delivery all over Bangladesh")}</p>
             <div className="flex items-center gap-5">
               {CONTACT.phone && (
                 <a href={telHref(CONTACT.phone)} className="flex items-center gap-1.5 text-white hover:text-brand-accent">
-                  <PhoneIcon size={14} /> Hotline: {CONTACT.phone}
+                  <PhoneIcon size={14} /> {t("Hotline")}: {CONTACT.phone}
                 </a>
               )}
               {whatsapp && (
@@ -224,7 +227,7 @@ const Header = () => {
           <button
             type="button"
             className="lg:hidden -ml-1 p-1 text-white"
-            aria-label={navigationOpen ? "Close menu" : "Open menu"}
+            aria-label={navigationOpen ? t("Close menu") : t("Open menu")}
             aria-expanded={navigationOpen}
             aria-controls="mobile-menu"
             onClick={() => setNavigationOpen((v) => !v)}
@@ -232,7 +235,7 @@ const Header = () => {
             {navigationOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
 
-          <Link className="flex-shrink-0" href="/" aria-label={`${SITE_NAME} home`}>
+          <Link className="flex-shrink-0" href="/" aria-label={`${SITE_NAME} ${t("home")}`}>
             <Image
               src={LOGO}
               alt={SITE_NAME}
@@ -246,7 +249,7 @@ const Header = () => {
           {/* Desktop search */}
           <div className="hidden lg:block flex-1 max-w-[520px]" ref={searchRef}>
             <form onSubmit={handleSearch} role="search" className="flex items-center">
-              <CustomSelect options={categoryOptions} />
+              <CustomSelect options={categoryOptions.map((c) => (c.value === "0" ? { ...c, label: t("All Categories") } : c))} />
               {searchInput("search-desktop")}
             </form>
           </div>
@@ -255,7 +258,7 @@ const Header = () => {
             <button
               type="button"
               className="lg:hidden p-2 text-white"
-              aria-label={mobileSearchOpen ? "Close search" : "Open search"}
+              aria-label={mobileSearchOpen ? t("Close search") : t("Open search")}
               aria-expanded={mobileSearchOpen}
               onClick={() => setMobileSearchOpen((v) => !v)}
             >
@@ -268,9 +271,9 @@ const Header = () => {
             >
               <UserIcon />
               <span>
-                <span className="block text-2xs text-brand-muted uppercase">Account</span>
+                <span className="block text-2xs text-brand-muted uppercase">{t("Account")}</span>
                 <span className="block font-medium text-custom-sm max-w-[110px] truncate">
-                  {isAuthenticated && user ? user.full_name || user.username : "Sign in"}
+                  {isAuthenticated && user ? user.full_name || user.username : t("Sign in")}
                 </span>
               </span>
             </Link>
@@ -278,7 +281,7 @@ const Header = () => {
             <button
               type="button"
               onClick={openCartModal}
-              aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+              aria-label={t("Open cart, {n} items", { n: cartCount })}
               className="flex items-center gap-2.5 p-2 lg:p-0 text-white hover:text-brand-accent"
             >
               <span className="relative inline-block">
@@ -288,7 +291,7 @@ const Header = () => {
                 </span>
               </span>
               <span className="hidden lg:block text-left">
-                <span className="block text-2xs text-brand-muted uppercase">Cart</span>
+                <span className="block text-2xs text-brand-muted uppercase">{t("Cart")}</span>
                 <span className="block font-medium text-custom-sm">{formatPrice(totalPrice)}</span>
               </span>
             </button>
@@ -308,7 +311,7 @@ const Header = () => {
       {/* Desktop nav */}
       <div className="hidden lg:block border-t border-brand-border">
         <div className="max-w-[1170px] mx-auto px-4 sm:px-7.5 xl:px-0 flex items-center justify-between">
-          <nav aria-label="Main">
+          <nav aria-label={t("Main")}>
             <ul className="flex items-center gap-6">
               {navItems.map((item) =>
                 item.submenu ? (
@@ -322,7 +325,7 @@ const Header = () => {
                         pathname === item.path ? "text-brand-accent" : "text-white"
                       }`}
                     >
-                      {item.title}
+                      {t(item.title)}
                     </Link>
                   </li>
                 )
@@ -331,14 +334,17 @@ const Header = () => {
           </nav>
           <ul className="flex items-center gap-5.5 text-custom-sm font-medium">
             <li>
+              <LanguageToggle />
+            </li>
+            <li>
               <Link href="/wishlist" className="flex items-center gap-1.5 text-white hover:text-brand-accent">
-                <HeartIcon size={16} /> Wishlist
+                <HeartIcon size={16} /> {t("Wishlist")}
               </Link>
             </li>
             {isAuthenticated && (
               <li>
                 <button type="button" onClick={handleLogout} className="text-white hover:text-brand-accent">
-                  Logout
+                  {t("Logout")}
                 </button>
               </li>
             )}
@@ -349,29 +355,33 @@ const Header = () => {
       {/* Mobile drawer */}
       {navigationOpen && (
         <div id="mobile-menu" className="lg:hidden fixed inset-x-0 top-15 bottom-0 z-9999 bg-brand-dark overflow-y-auto">
-          <nav aria-label="Mobile" className="px-4 py-5">
+          <nav aria-label={t("Mobile")} className="px-4 py-5">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-custom-sm text-brand-muted">{t("Language")}</span>
+              <LanguageToggle />
+            </div>
             <ul className="flex flex-col divide-y divide-brand-border border-y border-brand-border">
               {menuData.map((item) => (
                 <li key={item.id}>
                   <Link href={item.path || "/"} className="block py-3.5 text-white font-medium">
-                    {item.title}
+                    {t(item.title)}
                   </Link>
                 </li>
               ))}
               <li>
                 <Link href={isAuthenticated ? "/my-account" : "/signin"} className="block py-3.5 text-white font-medium">
-                  {isAuthenticated ? "My account" : "Sign in / Register"}
+                  {isAuthenticated ? t("My account") : t("Sign in / Register")}
                 </Link>
               </li>
               <li>
                 <Link href="/wishlist" className="block py-3.5 text-white font-medium">
-                  Wishlist
+                  {t("Wishlist")}
                 </Link>
               </li>
               {isAuthenticated && (
                 <li>
                   <button type="button" onClick={handleLogout} className="block w-full text-left py-3.5 text-white font-medium">
-                    Logout
+                    {t("Logout")}
                   </button>
                 </li>
               )}
@@ -379,7 +389,7 @@ const Header = () => {
 
             {categoryOptions.length > 1 && (
               <>
-                <p className="mt-6 mb-3 text-custom-sm uppercase tracking-wide text-brand-muted">Categories</p>
+                <p className="mt-6 mb-3 text-custom-sm uppercase tracking-wide text-brand-muted">{t("Categories")}</p>
                 <ul className="grid grid-cols-2 gap-2">
                   {categoryOptions.slice(1).map((c) => (
                     <li key={c.value}>
@@ -404,7 +414,7 @@ const Header = () => {
                 )}
                 {whatsapp && (
                   <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white">
-                    <WhatsAppIcon size={18} /> Chat on WhatsApp
+                    <WhatsAppIcon size={18} /> {t("Chat on WhatsApp")}
                   </a>
                 )}
               </div>

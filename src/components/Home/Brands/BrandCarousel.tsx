@@ -7,11 +7,13 @@ import type { SwiperRef } from "swiper/react";
 import type { BrandCount } from "@/lib/brands";
 
 import "swiper/css";
+import { useT } from "@/lib/i18n/client";
 
 const arrowClass =
   "flex h-9 w-9 items-center justify-center rounded-full border border-brand-border bg-brand-card text-brand-muted ease-out duration-200 hover:border-brand-accent hover:text-brand-accent";
 
 const BrandCarousel = ({ brands }: { brands: BrandCount[] }) => {
+  const { t } = useT();
   const sliderRef = useRef<SwiperRef>(null);
 
   // Loop mode needs more slides than are visible; repeat short lists to fill it.
@@ -25,15 +27,15 @@ const BrandCarousel = ({ brands }: { brands: BrandCount[] }) => {
     <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
       <div className="mb-5 flex items-center justify-between">
         <h2 id="brands-heading" className="font-semibold text-xl xl:text-heading-5 text-white">
-          Shop by brand
+          {t("Shop by brand")}
         </h2>
         <div className="flex items-center gap-3">
-          <button type="button" aria-label="Previous brands" className={arrowClass} onClick={() => sliderRef.current?.swiper.slidePrev()}>
+          <button type="button" aria-label={t("Previous brands")} className={arrowClass} onClick={() => sliderRef.current?.swiper.slidePrev()}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 5l-7 7 7 7" />
             </svg>
           </button>
-          <button type="button" aria-label="Next brands" className={arrowClass} onClick={() => sliderRef.current?.swiper.slideNext()}>
+          <button type="button" aria-label={t("Next brands")} className={arrowClass} onClick={() => sliderRef.current?.swiper.slideNext()}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 5l7 7-7 7" />
             </svg>

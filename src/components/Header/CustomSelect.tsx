@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useT } from "@/lib/i18n/client";
 
 type CategoryOption = {
   label: string;
@@ -64,6 +65,7 @@ const CategoryItem = ({
 };
 
 const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
+  const { t } = useT();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(options[0]);
@@ -110,14 +112,14 @@ const CustomSelect = ({ options }: { options: CategoryOption[] }) => {
         }`}
         onClick={toggleDropdown}
       >
-        {selectedOption.label}
+        {options.find((o) => o.value === selectedOption.value)?.label ?? selectedOption.label}
       </div>
       <div className={`select-items ${isOpen ? "" : "select-hide"}`}>
         <div
           className="select-item relative"
           onClick={() => { router.push("/shop"); setIsOpen(false); }}
         >
-          All Products
+          {t("All Products")}
         </div>
         {options.slice(1).map((option) => (
           <CategoryItem

@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { useT } from "@/lib/i18n/client";
 
 type Props = { slug: string; variantId?: number; label?: string };
 
 /** "Tell me when it is back" for an out-of-stock product or variant. */
 export default function NotifyMe({ slug, variantId, label }: Props) {
+  const { t } = useT();
   const [contact, setContact] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState("");
@@ -19,7 +21,7 @@ export default function NotifyMe({ slug, variantId, label }: Props) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!contact.trim()) {
-      setError("Enter your mobile number or email.");
+      setError(t("Enter your mobile number or email."));
       return;
     }
     setState("sending");
@@ -28,7 +30,7 @@ export default function NotifyMe({ slug, variantId, label }: Props) {
       await api.post(`/api/products/${slug}/notify/`, { contact: contact.trim(), variant_id: variantId ?? null });
       setState("done");
     } catch (err) {
-      setError((err as Error).message || "Could not save your request. Please try again.");
+      setError((err as Error).message || t("Could not save your request. Please try again."));
       setState("idle");
     }
   };
@@ -36,22 +38,22 @@ export default function NotifyMe({ slug, variantId, label }: Props) {
   if (state === "done") {
     return (
       <p role="status" className="mt-3 rounded-md border border-brand-accent/40 bg-brand-accent/10 px-3 py-2.5 text-sm text-white">
-        Done. We will contact you as soon as {label || "this item"} is back in stock.
+        {t("Done. We will contact you as soon as {item} is back in stock.", { item: label || t("this item") })}
       </p>
     );
   }
 
   return (
     <form onSubmit={submit} className="mt-3 rounded-lg border border-brand-border bg-brand-card p-3" noValidate>
-      <p className="text-sm font-medium text-white">Out of stock{label ? `: ${label}` : ""}</p>
-      <p className="mb-2 text-custom-xs text-brand-muted">Leave your mobile number or email and we will tell you when it is back.</p>
+      <p className="text-sm font-medium text-white">{t("Out of stock")}{label ? `: ${label}` : ""}</p>
+      <p className="mb-2 text-custom-xs text-brand-muted">{t("Leave your mobile number or email and we will tell you when it is back.")}</p>
       <div className="flex flex-wrap gap-2">
         <input
           value={contact}
           onChange={(e) => setContact(e.target.value)}
-          placeholder="01XXXXXXXXX or email"
+          placeholder={t("01XXXXXXXXX or email")}
           autoComplete="tel"
-          aria-label="Mobile number or email"
+          aria-label={t("Mobile number or email")}
           className="h-10 min-w-0 flex-1 rounded-md border border-brand-border bg-brand-surface px-3 text-sm text-white placeholder:text-brand-muted outline-none focus:border-brand-accent"
         />
         <button
@@ -59,7 +61,7 @@ export default function NotifyMe({ slug, variantId, label }: Props) {
           disabled={state === "sending"}
           className="h-10 rounded-md bg-brand-accent px-4 text-sm font-medium text-brand-dark hover:bg-brand-hover disabled:opacity-60"
         >
-          {state === "sending" ? "Saving…" : "Notify me"}
+          {state === "sending" ? t("Saving…") : t("Notify me")}
         </button>
       </div>
       {error && <p role="alert" className="mt-1.5 text-custom-xs text-red">{error}</p>}

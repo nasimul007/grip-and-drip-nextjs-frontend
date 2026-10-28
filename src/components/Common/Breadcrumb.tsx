@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import JsonLd from "./JsonLd";
 import { absoluteUrl } from "@/lib/site";
+import { useT } from "@/lib/i18n/client";
 
 export type BreadcrumbItem = { name: string; href?: string };
 
@@ -11,7 +13,8 @@ type Props = {
 };
 
 const Breadcrumb = ({ title, items }: Props) => {
-  const trail: BreadcrumbItem[] = [{ name: "Home", href: "/" }, ...items];
+  const { t } = useT();
+  const trail: BreadcrumbItem[] = [{ name: t("Home"), href: "/" }, ...items.map((i) => ({ ...i, name: t(i.name) }))];
   const schema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -31,10 +34,10 @@ const Breadcrumb = ({ title, items }: Props) => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {title && (
               <h1 className="font-semibold text-white text-xl sm:text-2xl xl:text-custom-2">
-                {title}
+                {t(title)}
               </h1>
             )}
-            <nav aria-label="Breadcrumb">
+            <nav aria-label={t("Breadcrumb")}>
               <ol className="flex flex-wrap items-center gap-1.5 text-custom-sm">
                 {trail.map((item, i) => {
                   const last = i === trail.length - 1;

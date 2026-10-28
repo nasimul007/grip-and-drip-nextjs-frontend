@@ -3,24 +3,27 @@ import { StatusBadge } from "./OrderProgress";
 import { formatPrice } from "@/lib/format";
 import { formatOrderDate } from "@/lib/orders";
 import type { OrderListItem } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 type Props = { order: OrderListItem; onOpen: () => void; onReorder: () => void; reordering?: boolean };
 
 /** One order as a row on desktop and a compact card on phones. */
-const SingleOrder = ({ order, onOpen, onReorder, reordering }: Props) => (
+const SingleOrder = ({ order, onOpen, onReorder, reordering }: Props) => {
+  const { t } = useT();
+  return (
   <li className="flex items-center hover:bg-brand-surface">
     <button
       type="button"
       onClick={onOpen}
-      aria-label={`View order ${order.order_number}`}
+      aria-label={`${t("View order")} ${order.order_number}`}
       className="grid min-w-0 flex-1 grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-3.5 pl-4 text-left sm:grid-cols-[1.5fr_1fr_1fr_90px] sm:pl-5"
     >
       <span className="min-w-0">
         <span className="block truncate font-medium text-white">#{order.order_number}</span>
         <span className="block text-custom-xs text-brand-muted sm:hidden">
-          {formatOrderDate(order.created_at)} · {order.item_count} {order.item_count === 1 ? "item" : "items"}
+          {formatOrderDate(order.created_at)} · {order.item_count} {order.item_count === 1 ? t("item") : t("items")}
         </span>
-        <span className="hidden text-custom-xs text-brand-muted sm:block">{order.item_count} {order.item_count === 1 ? "item" : "items"}</span>
+        <span className="hidden text-custom-xs text-brand-muted sm:block">{order.item_count} {order.item_count === 1 ? t("item") : t("items")}</span>
       </span>
       <span className="hidden text-sm text-brand-muted sm:block">{formatOrderDate(order.created_at)}</span>
       <span className="order-last justify-self-end sm:order-none sm:justify-self-start">
@@ -35,10 +38,11 @@ const SingleOrder = ({ order, onOpen, onReorder, reordering }: Props) => (
         disabled={reordering}
         className="mx-3 shrink-0 rounded-md border border-brand-border px-3 py-1.5 text-custom-xs font-medium text-white hover:border-brand-accent hover:text-brand-accent disabled:opacity-60 sm:mx-4"
       >
-        {reordering ? "Adding…" : "Reorder"}
+        {reordering ? t("Adding…") : t("Reorder")}
       </button>
     )}
   </li>
-);
+  );
+};
 
 export default SingleOrder;

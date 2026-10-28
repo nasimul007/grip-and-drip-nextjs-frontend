@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useT } from "@/lib/i18n/client";
 
 export type PaymentMethodValue = "cash" | "bkash" | "bank";
 
@@ -61,36 +62,37 @@ const PaymentMethod = ({
   onPayment,
   onBkashNumberChange,
   onTransactionIdChange,
-}: Props) => (
+}: Props) => {
+  const { t } = useT();
+  return (
   <section className="rounded-lg border border-brand-border bg-brand-card">
-    <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">Payment method</h2>
+    <h2 className="border-b border-brand-border px-4 py-3 text-base font-semibold text-white">{t("Payment method")}</h2>
     <div className="flex flex-col gap-2.5 p-4">
       <Option
         id="pay-cash"
         checked={payment === "cash"}
         onSelect={() => onPayment("cash")}
-        title="Cash on delivery"
-        note="Pay when you receive. Minimum advance ৳200 via bKash to confirm the order."
+        title={t("Cash on delivery")}
+        note={t("Pay when you receive. Minimum advance ৳200 via bKash to confirm the order.")}
       />
 
       {payment === "cash" && (
         <div className="rounded-md border border-brand-border bg-brand-surface p-3.5 text-custom-sm">
           <p className="text-white mb-2.5">
-            অর্ডার কনফার্ম করতে অনুগ্রহ করে নিচের বিকাশ মার্চেন্ট নাম্বারে ২০০ টাকা সেন্ড মানি করে, বিকাশ নাম্বার ও
-            ট্রান্সেকশন আইডি নিচের বক্সে লিখুন।
+            {t("To confirm your order, please send ৳200 by Send Money to the bKash merchant number below, then enter your bKash number and transaction ID in the boxes.")}
           </p>
           <p className="mb-3 flex items-center justify-between gap-3">
-            <span className="text-white font-medium">bKash merchant number</span>
+            <span className="text-white font-medium">{t("bKash merchant number")}</span>
             <span className="font-semibold text-brand-accent">{BKASH_NUMBER}</span>
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label htmlFor="bkashNumber" className="block mb-1.5 text-white">Your bKash number</label>
+              <label htmlFor="bkashNumber" className="block mb-1.5 text-white">{t("Your bKash number")}</label>
               <input id="bkashNumber" type="text" inputMode="tel" value={bkashNumber} onChange={(e) => onBkashNumberChange(e.target.value)} placeholder="01XXXXXXXXX" className={input} />
             </div>
             <div>
-              <label htmlFor="transactionId" className="block mb-1.5 text-white">Transaction ID</label>
-              <input id="transactionId" type="text" value={transactionId} onChange={(e) => onTransactionIdChange(e.target.value)} placeholder="Transaction ID" className={input} />
+              <label htmlFor="transactionId" className="block mb-1.5 text-white">{t("Transaction ID")}</label>
+              <input id="transactionId" type="text" value={transactionId} onChange={(e) => onTransactionIdChange(e.target.value)} placeholder={t("Transaction ID")} className={input} />
             </div>
           </div>
         </div>
@@ -101,11 +103,12 @@ const PaymentMethod = ({
         checked={payment === "bank"}
         disabled
         onSelect={() => onPayment("bank")}
-        title="Bank / card payment"
-        note="Coming soon"
+        title={t("Bank / card payment")}
+        note={t("Coming soon")}
       />
     </div>
   </section>
-);
+  );
+};
 
 export default PaymentMethod;

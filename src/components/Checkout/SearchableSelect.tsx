@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useT } from "@/lib/i18n/client";
 
 type Option = { id: string; displayName: string };
 
@@ -53,6 +54,7 @@ const SearchableSelect = ({
   labelKey = "displayName",
   onChange,
 }: SearchableSelectProps) => {
+  const { t } = useT();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(-1);
@@ -139,7 +141,7 @@ const SearchableSelect = ({
           id={id}
           name={name}
           value={display}
-          placeholder={loading ? "Loading..." : placeholder}
+          placeholder={loading ? t("Loading...") : placeholder}
           disabled={disabled}
           autoComplete="off"
           className={fieldClass(error)}
@@ -180,7 +182,7 @@ const SearchableSelect = ({
           <ul className="absolute z-20 mt-1 w-full max-h-56 overflow-y-auto rounded-md border border-brand-border bg-brand-card shadow-1">
             {filtered.length === 0 ? (
               <li className="px-3.5 py-2 text-brand-muted text-sm">
-                No matches
+                {t("No matches")}
               </li>
             ) : (
               filtered.map((opt, index) => (

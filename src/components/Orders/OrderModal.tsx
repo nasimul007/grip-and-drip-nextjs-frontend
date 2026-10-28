@@ -6,11 +6,13 @@ import { StatusBadge } from "./OrderProgress";
 import { api } from "@/lib/api";
 import { useReorder } from "@/lib/useReorder";
 import { formatOrderDate, fromOrderDetail, type TrackedOrder } from "@/lib/orders";
+import { useT } from "@/lib/i18n/client";
 
 type Props = { orderId: number; onClose: () => void };
 
 /** Details of one of the signed-in customer's orders; closes on ×, Escape or a click outside. */
 const OrderModal = ({ orderId, onClose }: Props) => {
+  const { t } = useT();
   const [order, setOrder] = useState<TrackedOrder | null>(null);
   const [failed, setFailed] = useState(false);
   const { reorder, busyId } = useReorder();
@@ -44,19 +46,19 @@ const OrderModal = ({ orderId, onClose }: Props) => {
       className="fixed inset-0 z-99999 flex items-start justify-center overflow-y-auto bg-[#000000CC] px-3 py-6 sm:py-12"
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Order details" className="relative w-full max-w-[600px] rounded-xl border border-brand-border bg-brand-card">
+      <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={t("Order details")} className="relative w-full max-w-[600px] rounded-xl border border-brand-border bg-brand-card">
         <div className="flex items-start justify-between gap-3 border-b border-brand-border px-4 py-3 sm:px-5">
           <div className="min-w-0">
-            <p className="text-custom-xs text-brand-muted">Order</p>
-            <p className="truncate font-semibold text-white">{order ? `#${order.order_number}` : "Loading…"}</p>
-            {order && <p className="mt-0.5 text-custom-xs text-brand-muted">Placed {formatOrderDate(order.created_at)}</p>}
+            <p className="text-custom-xs text-brand-muted">{t("Order")}</p>
+            <p className="truncate font-semibold text-white">{order ? `#${order.order_number}` : t("Loading…")}</p>
+            {order && <p className="mt-0.5 text-custom-xs text-brand-muted">{t("Placed")} {formatOrderDate(order.created_at)}</p>}
           </div>
           <div className="flex items-center gap-3">
             {order && <StatusBadge status={order.status} label={order.status_display} />}
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close order details"
+              aria-label={t("Close order details")}
               className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-surface text-xl leading-none text-brand-muted hover:text-white"
             >
               <span aria-hidden="true">×</span>
@@ -76,7 +78,7 @@ const OrderModal = ({ orderId, onClose }: Props) => {
               }}
               className="w-full rounded-md bg-brand-accent px-5 py-2.5 font-medium text-brand-dark hover:bg-brand-hover disabled:opacity-60 sm:w-auto"
             >
-              {busyId === orderId ? "Adding to cart…" : "Reorder these items"}
+              {busyId === orderId ? t("Adding to cart…") : t("Reorder these items")}
             </button>
           </div>
         )}
@@ -87,7 +89,7 @@ const OrderModal = ({ orderId, onClose }: Props) => {
             <div className="h-14 rounded bg-brand-surface" />
           </div>
         )}
-        {failed && <p className="p-5 text-sm text-red">We could not load this order. Please try again.</p>}
+        {failed && <p className="p-5 text-sm text-red">{t("We could not load this order. Please try again.")}</p>}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import { ChevronDownIcon } from '@/components/Common/icons';
+import { useT } from "@/lib/i18n/client";
 
 export const FALLBACK_MAX_PRICE = 100000;
 
@@ -19,13 +20,14 @@ const PriceDropdown = ({
   initialMin?: number;
   initialMax?: number;
 }) => {
+  const { t } = useT();
   const [open, setOpen] = useState(true);
   const sliderBox = useRef<HTMLDivElement>(null);
 
   // The slider library renders unlabeled thumbs; name them for screen readers.
   useEffect(() => {
     const thumbs = sliderBox.current?.querySelectorAll('[role="slider"]');
-    thumbs?.forEach((el, i) => el.setAttribute('aria-label', i === 0 ? 'Minimum price' : 'Maximum price'));
+    thumbs?.forEach((el, i) => el.setAttribute('aria-label', i === 0 ? t('Minimum price') : t('Maximum price')));
   }, [open]);
   const lo = Math.max(rangeMin, initialMin || rangeMin);
   const hi = Math.min(rangeMax, initialMax || rangeMax);
@@ -62,7 +64,7 @@ const PriceDropdown = ({
         aria-expanded={open}
         className="flex w-full items-center justify-between px-4 py-3 text-left text-white"
       >
-        Price
+        {t("Price")}
         <ChevronDownIcon className={`ease-out duration-200 ${open ? "rotate-180" : ""}`} size={18} />
       </button>
       {open && (
@@ -84,7 +86,7 @@ const PriceDropdown = ({
               <input
                 type="text"
                 inputMode="numeric"
-                aria-label="Minimum price"
+                aria-label={t("Minimum price")}
                 value={minStr}
                 onChange={(e) => setMinStr(e.target.value)}
                 onBlur={(e) => commitMin(e.target.value)}
@@ -98,7 +100,7 @@ const PriceDropdown = ({
               <input
                 type="text"
                 inputMode="numeric"
-                aria-label="Maximum price"
+                aria-label={t("Maximum price")}
                 value={maxStr}
                 onChange={(e) => setMaxStr(e.target.value)}
                 onBlur={(e) => commitMax(e.target.value)}

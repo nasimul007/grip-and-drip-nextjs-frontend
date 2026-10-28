@@ -17,6 +17,7 @@ import { formatPrice } from "@/lib/format";
 import { api } from "@/lib/api";
 import { saveLastOrder } from "@/lib/orders";
 import type { Order } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 // Maps an error key to the id of the field that should receive focus.
 const FIELD_IDS: Record<string, string> = {
@@ -30,6 +31,7 @@ const FIELD_IDS: Record<string, string> = {
 };
 
 const Checkout = () => {
+  const { t } = useT();
   const router = useRouter();
   const cartItems = useAppSelector((state) => state.cartReducer.items);
   const subtotal = useAppSelector(selectTotalPrice);
@@ -97,9 +99,9 @@ const Checkout = () => {
   const shippingCost = !shippingRate ? 0 : freeFrom && subtotal >= freeFrom ? 0 : Number(shippingRate.charge) || 0;
   const shippingLabel = formData.city_id
     ? insideDhaka
-      ? "Inside Dhaka"
-      : "Outside Dhaka"
-    : "Outside Dhaka · choose your city to update";
+      ? t("Inside Dhaka")
+      : t("Outside Dhaka")
+    : t("Outside Dhaka · choose your city to update");
   const total = subtotal + shippingCost;
 
   const focusField = (key: string) => {
@@ -114,15 +116,15 @@ const Checkout = () => {
     setSubmitError("");
 
     const newErrors: Record<string, string> = {};
-    if (!formData.fullName.trim()) newErrors.fullName = "Enter your full name.";
-    if (!formData.phone.trim()) newErrors.phone = "Enter a phone number we can call.";
+    if (!formData.fullName.trim()) newErrors.fullName = t("Enter your full name.");
+    if (!formData.phone.trim()) newErrors.phone = t("Enter a phone number we can call.");
     else if (!/^(\+?88)?01[3-9]\d{8}$/.test(formData.phone.replace(/[\s-]/g, "")))
-      newErrors.phone = "Enter a valid Bangladeshi mobile number (01XXXXXXXXX).";
-    if (!formData.division_id) newErrors.division = "Select a division.";
-    if (!formData.city_id) newErrors.city = "Select a city.";
-    if (!formData.area_id) newErrors.area = "Select an area.";
-    if (!formData.address.trim()) newErrors.address = "Enter your full address.";
-    if (!agree) newErrors.terms = "Please accept the terms and conditions.";
+      newErrors.phone = t("Enter a valid Bangladeshi mobile number (01XXXXXXXXX).");
+    if (!formData.division_id) newErrors.division = t("Select a division.");
+    if (!formData.city_id) newErrors.city = t("Select a city.");
+    if (!formData.area_id) newErrors.area = t("Select an area.");
+    if (!formData.address.trim()) newErrors.address = t("Enter your full address.");
+    if (!agree) newErrors.terms = t("Please accept the terms and conditions.");
 
     setErrors(newErrors);
     const firstError = Object.keys(newErrors)[0];
@@ -131,7 +133,7 @@ const Checkout = () => {
       return;
     }
     if (!shippingRate) {
-      setSubmitError("Delivery rates could not be loaded. Please refresh the page and try again.");
+      setSubmitError(t("Delivery rates could not be loaded. Please refresh the page and try again."));
       return;
     }
 
@@ -178,7 +180,7 @@ const Checkout = () => {
       await clearCart();
       router.push("/order-success");
     } catch (err) {
-      const message = (err as Error)?.message || "We could not place your order. Please try again.";
+      const message = (err as Error)?.message || t("We could not place your order. Please try again.");
       setSubmitError(message);
       toast.error(message);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -191,7 +193,7 @@ const Checkout = () => {
   if (cartItems.length === 0 && !loading) {
     return (
       <>
-        <Breadcrumb title="Checkout" items={[{ name: "Cart", href: "/cart" }, { name: "Checkout" }]} />
+        <Breadcrumb title={t("Checkout")} items={[{ name: t("Cart"), href: "/cart" }, { name: t("Checkout") }]} />
         <section className="bg-brand-dark py-8">
           <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
             <div className="rounded-lg border border-brand-border bg-brand-card">
@@ -205,7 +207,7 @@ const Checkout = () => {
 
   return (
     <>
-      <Breadcrumb title="Checkout" items={[{ name: "Cart", href: "/cart" }, { name: "Checkout" }]} />
+      <Breadcrumb title={t("Checkout")} items={[{ name: t("Cart"), href: "/cart" }, { name: t("Checkout") }]} />
       <section className="bg-brand-dark pt-4 pb-24 lg:pb-10">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <form id="checkout-form" onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
@@ -213,7 +215,7 @@ const Checkout = () => {
 
             {submitError && (
               <div role="alert" className="rounded-md border border-red bg-red-light-6/10 px-4 py-3 text-sm text-white">
-                <span className="font-medium text-red">Order not placed.</span> {submitError}
+                <span className="font-medium text-red">{t("Order not placed.")}</span> {submitError}
               </div>
             )}
 
@@ -256,13 +258,13 @@ const Checkout = () => {
                         className="mt-0.5 h-4 w-4 accent-brand-accent"
                       />
                       <span className="text-custom-xs text-brand-muted">
-                        I agree to the{" "}
+                        {t("I agree to the")}{" "}
                         <Link href="/terms" target="_blank" className="text-brand-accent underline underline-offset-2">
-                          terms and conditions
+                          {t("terms and conditions")}
                         </Link>
-                        , and the{" "}
+                        {t(", and the")}{" "}
                         <Link href="/return-policy" target="_blank" className="text-brand-accent underline underline-offset-2">
-                          return policy
+                          {t("return policy")}
                         </Link>
                         .
                       </span>
@@ -279,7 +281,7 @@ const Checkout = () => {
                     disabled={loading}
                     className="flex h-11 w-full items-center justify-center rounded-md bg-brand-accent font-medium text-brand-dark hover:bg-brand-hover disabled:opacity-60"
                   >
-                    {loading ? "Placing order…" : `Place order · ${formatPrice(total)}`}
+                    {loading ? t("Placing order…") : `${t("Place order")} · ${formatPrice(total)}`}
                   </button>
                 </OrderSummary>
               </div>
@@ -291,7 +293,7 @@ const Checkout = () => {
       {/* Phones: total and Place order stay in reach */}
       <div className="lg:hidden fixed inset-x-0 bottom-0 z-999 flex items-center gap-3 border-t border-brand-border bg-brand-surface px-4 py-3">
         <div className="min-w-0 flex-1">
-          <p className="text-custom-xs text-brand-muted">Total</p>
+          <p className="text-custom-xs text-brand-muted">{t("Total")}</p>
           <p className="font-semibold text-white">{formatPrice(total)}</p>
         </div>
         <button
@@ -300,7 +302,7 @@ const Checkout = () => {
           disabled={loading}
           className="h-10 rounded-md bg-brand-accent px-6 text-sm font-medium text-brand-dark disabled:opacity-60"
         >
-          {loading ? "Placing…" : "Place order"}
+          {loading ? t("Placing…") : t("Place order")}
         </button>
       </div>
     </>

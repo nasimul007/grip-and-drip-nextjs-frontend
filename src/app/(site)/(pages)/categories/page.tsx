@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import { getCategoryTree } from "@/lib/server-api";
+import { getT } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "All categories",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CategoriesPage() {
+  const { t } = await getT();
   const tree = await getCategoryTree();
 
   return (
@@ -19,7 +21,7 @@ export default async function CategoriesPage() {
       <section className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 py-8 lg:py-12">
         {tree.length === 0 ? (
           <p>
-            No categories yet. <Link href="/shop" className="text-brand-accent">Browse all products</Link>
+            {t("No categories yet.")} <Link href="/shop" className="text-brand-accent">{t("Browse all products")}</Link>
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

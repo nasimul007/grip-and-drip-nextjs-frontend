@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/client";
 
 type CategoryNode = {
   id: number;
@@ -119,6 +120,7 @@ const CategoryDropdown = ({
   selectedIds: string[];
   onSelectCategory?: (id: string) => void;
 }) => {
+  const { t } = useT();
   const [toggleDropdown, setToggleDropdown] = useState(true);
 
   return (
@@ -132,9 +134,9 @@ const CategoryDropdown = ({
           toggleDropdown && "shadow-filter"
         }`}
       >
-        <p className="text-white">Category</p>
+        <p className="text-white">{t("Category")}</p>
         <button
-          aria-label="button for category dropdown"
+          aria-label={t("Toggle category list")}
           className={`text-white ease-out duration-200 ${
             toggleDropdown && "rotate-180"
           }`}

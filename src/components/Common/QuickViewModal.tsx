@@ -17,10 +17,12 @@ import ProductGallery from "@/components/ShopDetails/ProductGallery";
 import QtyStepper from "@/components/Common/QtyStepper";
 import Stars from "@/components/Common/Stars";
 import WishlistButton from "@/components/Common/WishlistButton";
+import { useT } from "@/lib/i18n/client";
 
 const slugifyOption = (val: string) => val.toLowerCase().replace(/\s+/g, "-");
 
 const QuickViewModal = () => {
+  const { t } = useT();
   const { isModalOpen, closeModal } = useModalContext();
   const { openPreviewModal } = usePreviewSlider();
   const dispatch = useDispatch<AppDispatch>();
@@ -96,7 +98,7 @@ const QuickViewModal = () => {
   const stock = Number(matchedVariant?.stock ?? product?.stock ?? 0);
   const inStock = stock > 0;
   const badge = discountBadge(listPrice, salePrice);
-  const warranty = formatWarranty(product?.warrantyMonths);
+  const warranty = formatWarranty(product?.warrantyMonths, t);
   const href = product?.slug ? `/shop/${product.slug}` : "/shop";
 
   const keyDetails = useMemo(
@@ -149,12 +151,12 @@ const QuickViewModal = () => {
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
-        aria-label={loading ? "Quick view" : `${product.title} quick view`}
+        aria-label={loading ? t("Quick view") : `${product.title} ${t("quick view")}`}
         className="relative mx-auto w-full max-w-[1000px] rounded-xl border border-brand-border bg-brand-card p-4 sm:p-6"
       >
         <button
           onClick={closeModal}
-          aria-label="Close quick view"
+          aria-label={t("Close quick view")}
           className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-brand-surface text-xl leading-none text-brand-muted hover:text-white"
         >
           <span aria-hidden="true">×</span>
@@ -189,10 +191,10 @@ const QuickViewModal = () => {
 
               <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className={`font-medium ${inStock ? "text-green" : "text-red"}`}>
-                  {inStock ? "In stock" : "Out of stock"}
+                  {inStock ? t("In stock") : t("Out of stock")}
                 </span>
-                {product.brand && <span className="text-brand-muted">Brand: {product.brand}</span>}
-                {warranty && <span className="text-brand-muted">{warranty} warranty</span>}
+                {product.brand && <span className="text-brand-muted">{t("Brand")}: {product.brand}</span>}
+                {warranty && <span className="text-brand-muted">{warranty} {t("warranty")}</span>}
                 {product.reviews > 0 && product.ratingAverage != null && (
                   <span className="inline-flex items-center gap-1.5 text-brand-muted">
                     <Stars value={product.ratingAverage} size={14} /> ({product.reviews})
@@ -288,7 +290,7 @@ const QuickViewModal = () => {
                     inStock ? "" : "cursor-not-allowed opacity-40"
                   }`}
                 >
-                  {inStock ? "Add to cart" : "Out of stock"}
+                  {inStock ? t("Add to cart") : t("Out of stock")}
                 </button>
                 <WishlistButton
                   item={{
@@ -308,7 +310,7 @@ const QuickViewModal = () => {
                 onClick={closeModal}
                 className="mt-4 inline-block font-medium text-brand-accent hover:underline"
               >
-                View full product details →
+                {t("View full product details")} →
               </Link>
             </div>
           </div>

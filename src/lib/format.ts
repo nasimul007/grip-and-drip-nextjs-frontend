@@ -27,9 +27,12 @@ export function discountSaveText(list: number, sale: number): string {
 }
 
 /** 6 -> "6 months", 12 -> "1 year", 24 -> "2 years", 18 -> "18 months". */
-export function formatWarranty(months: number | null | undefined): string {
+type Translate = (text: string, vars?: Record<string, string | number>) => string;
+
+export function formatWarranty(months: number | null | undefined, t?: Translate): string {
   const m = Number(months);
   if (!m || m <= 0) return "";
-  if (m % 12 === 0) return m === 12 ? "1 year" : `${m / 12} years`;
-  return `${m} months`;
+  const tr: Translate = t || ((text, vars) => text.replace(/\{(\w+)\}/g, (_, k) => String(vars?.[k] ?? "")));
+  if (m % 12 === 0) return m === 12 ? tr("1 year") : tr("{n} years", { n: m / 12 });
+  return tr("{n} months", { n: m });
 }

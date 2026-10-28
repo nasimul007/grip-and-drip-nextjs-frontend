@@ -16,8 +16,10 @@ import Image from "next/image";
 import { api } from "@/lib/api";
 import { mapProductDetailForDisplay } from "@/lib/mappers";
 import type { ProductDetail } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 const SingleListItem = ({ item }: { item: Product }) => {
+  const { t } = useT();
   const { openModal } = useModalContext();
   const dispatch = useDispatch<AppDispatch>();
   const { addResolved } = useCart();
@@ -42,7 +44,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
   const image = item.imgs?.previews?.[0]?.trim();
   const outOfStock = item.stock !== undefined && item.stock <= 0;
   const badge = discountBadge(Number(item.price), Number(item.discountedPrice));
-  const warranty = formatWarranty(item.warrantyMonths);
+  const warranty = formatWarranty(item.warrantyMonths, t);
 
   return (
     <article className="group flex rounded-lg bg-brand-card border border-brand-border overflow-hidden">
@@ -50,7 +52,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
         {image ? (
           <Image src={image} alt={item.title} fill className="object-cover transition-transform duration-300 group-hover:scale-105" sizes="220px" />
         ) : (
-          <span className="w-full h-full flex items-center justify-center text-brand-muted text-sm">No image</span>
+          <span className="w-full h-full flex items-center justify-center text-brand-muted text-sm">{t("No image")}</span>
         )}
         {badge && !outOfStock && (
           <span className="absolute left-2 top-2 rounded bg-brand-accent px-1.5 py-0.5 text-custom-xs font-semibold text-brand-dark">{badge}</span>
@@ -66,7 +68,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
             <span className="text-white font-semibold text-lg">{formatPrice(item.discountedPrice)}</span>
             {Number(item.price) > Number(item.discountedPrice) && (
               <span className="text-brand-muted line-through text-custom-sm">
-                <span className="sr-only">Regular price </span>
+                <span className="sr-only">{t("Regular price")} </span>
                 {formatPrice(item.price)}
               </span>
             )}
@@ -74,10 +76,10 @@ const SingleListItem = ({ item }: { item: Product }) => {
           {warranty && (
             <p className="mt-1.5 inline-flex items-center gap-1 text-custom-xs font-medium text-white">
               <ShieldIcon className="text-brand-accent" size={13} />
-              {warranty} warranty
+              {warranty} {t("warranty")}
             </p>
           )}
-          {outOfStock && <p className="text-red text-custom-sm mt-1">Out of stock</p>}
+          {outOfStock && <p className="text-red text-custom-sm mt-1">{t("Out of stock")}</p>}
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -87,7 +89,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
             disabled={outOfStock}
             className="inline-flex font-medium text-custom-sm py-2 px-5 rounded-md bg-brand-accent text-brand-dark hover:bg-brand-hover disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Add to cart
+            {t("Add to cart")}
           </button>
           <button
             type="button"
@@ -96,7 +98,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
               openModal();
               handleQuickViewUpdate();
             }}
-            aria-label={`Quick view ${item.title}`}
+            aria-label={`${t("Quick view")} ${item.title}`}
             className="flex items-center justify-center w-9 h-9 rounded-[5px] border border-brand-border text-white bg-brand-card hover:text-brand-accent"
           >
             <SearchIcon size={16} />

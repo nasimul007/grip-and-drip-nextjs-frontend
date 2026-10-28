@@ -7,8 +7,10 @@ import { useCart } from "@/lib/useCart";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useT } from "@/lib/i18n/client";
 
 const SingleItem = ({ item }) => {
+  const { t } = useT();
   const dispatch = useDispatch<AppDispatch>();
   const { addResolved } = useCart();
 
@@ -25,7 +27,7 @@ const SingleItem = ({ item }) => {
       <div className="min-w-[83px]">
         <button
           onClick={() => handleRemoveFromWishlist()}
-          aria-label="button for remove product from wishlist"
+          aria-label={t("Remove from wishlist")}
           className="flex items-center justify-center rounded-lg max-w-[38px] w-full h-9.5 bg-brand-card border border-brand-border ease-out duration-200 hover:bg-red-light-6 hover:border-red-light-4 hover:text-red"
         >
           <svg
@@ -55,9 +57,9 @@ const SingleItem = ({ item }) => {
           <div className="w-full flex items-center gap-5.5">
             <div className="flex items-center justify-center rounded-[5px] bg-brand-card max-w-[80px] w-full h-17.5">
               {item.imgs?.thumbnails[0] ? (
-                <Image src={item.imgs.thumbnails[0]} alt="product" width={200} height={200} />
+                <Image src={item.imgs.thumbnails[0]} alt={item.title || ""} width={200} height={200} />
               ) : (
-                <div className="text-white text-xs">No Image</div>
+                <div className="text-white text-xs">{t("No image")}</div>
               )}
             </div>
 
@@ -99,7 +101,7 @@ const SingleItem = ({ item }) => {
             />
           </svg>
 
-          <span className="text-red"> Out of Stock </span>
+          <span className="text-red"> {t("Out of stock")} </span>
         </div>
       </div>
 
@@ -108,7 +110,7 @@ const SingleItem = ({ item }) => {
           onClick={() => handleAddToCart()}
           className="inline-flex text-white hover:text-brand-dark bg-brand-card border border-brand-border py-2.5 px-6 rounded-md ease-out duration-200 hover:bg-brand-accent hover:border-brand-border"
         >
-          Add to Cart
+          {t("Add to cart")}
         </button>
       </div>
     </div>

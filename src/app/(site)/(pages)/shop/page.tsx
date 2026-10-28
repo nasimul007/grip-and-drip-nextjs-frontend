@@ -4,6 +4,7 @@ import ShopWithSidebar from "@/components/ShopWithSidebar";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import { getCategoryTree, getFilterFacets, getProducts } from "@/lib/server-api";
 import { buildApiQuery, buildFacetQuery, hasFacetFilters, parseFilters } from "@/lib/shop-query";
+import { getT } from "@/lib/i18n";
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -27,6 +28,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function ShopPage({ searchParams }: Props) {
+  const { t } = await getT();
   const filters = parseFilters(await searchParams);
   const [categories, initial, facets] = await Promise.all([
     getCategoryTree(),
@@ -37,13 +39,12 @@ export default async function ShopPage({ searchParams }: Props) {
   return (
     <main id="main-content" tabIndex={-1} className="outline-none">
       <Breadcrumb
-        title={filters.q ? `Search: ${filters.q}` : "All products"}
+        title={filters.q ? `${t("Search")}: ${filters.q}` : t("All products")}
         items={[{ name: "Shop", href: filters.q ? "/shop" : undefined }, ...(filters.q ? [{ name: "Search" }] : [])]}
       />
       {!hasFacetFilters(filters) && filters.page === 1 && (
         <p className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pt-3 text-custom-sm">
-          Shop original chargers, earbuds, headphones, smartwatches, cables and mobile accessories.
-          Filter by brand, price and availability, pay with cash on delivery or bKash, and get delivery across Bangladesh.
+          {t("Shop original chargers, earbuds, headphones, smartwatches, cables and mobile accessories. Filter by brand, price and availability, pay with cash on delivery or bKash, and get delivery across Bangladesh.")}
         </p>
       )}
       <Suspense>

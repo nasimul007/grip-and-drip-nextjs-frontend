@@ -13,6 +13,7 @@ import { mapProductForDisplay } from "@/lib/mappers";
 import { formatPrice } from "@/lib/format";
 import { DEFAULT_SORT, PAGE_SIZE, SORT_OPTIONS, activeFilterCount, parseFilters } from "@/lib/shop-query";
 import type { ProductListItem } from "@/lib/types";
+import { useT } from "@/lib/i18n/client";
 
 type CategoryData = {
   id: number;
@@ -48,19 +49,23 @@ function flatten(nodes: CategoryData[]): CategoryData[] {
   return nodes.flatMap((n) => [n, ...flatten(n.children || [])]);
 }
 
-const Chip = ({ label, onRemove }: { label: string; onRemove: () => void }) => (
-  <button
-    type="button"
-    onClick={onRemove}
-    aria-label={`Remove filter ${label}`}
-    className="inline-flex items-center gap-1.5 rounded-full border border-brand-border bg-brand-card py-1 pl-3 pr-2 text-custom-sm text-white hover:border-brand-accent"
-  >
-    {label}
-    <CloseIcon size={14} />
-  </button>
-);
+const Chip = ({ label, onRemove }: { label: string; onRemove: () => void }) => {
+  const { t } = useT();
+  return (
+    <button
+      type="button"
+      onClick={onRemove}
+      aria-label={`${t("Remove filter")} ${label}`}
+      className="inline-flex items-center gap-1.5 rounded-full border border-brand-border bg-brand-card py-1 pl-3 pr-2 text-custom-sm text-white hover:border-brand-accent"
+    >
+      {label}
+      <CloseIcon size={14} />
+    </button>
+  );
+};
 
 const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategoryId }: Props) => {
+  const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -173,26 +178,26 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
 
           {/* Filters: slide-in panel on small screens, sticky column on desktop */}
           <aside
-            aria-label="Product filters"
+            aria-label={t("Product filters")}
             className={`fixed z-9999 left-0 top-0 h-full w-full max-w-[320px] flex flex-col bg-brand-surface ease-out duration-200 xl:static xl:z-auto xl:h-auto xl:max-w-[270px] xl:w-[270px] xl:shrink-0 xl:translate-x-0 xl:bg-transparent xl:block xl:sticky xl:top-[calc(var(--header-h,60px)+16px)] xl:self-start xl:max-h-[calc(100vh-var(--header-h,60px)-32px)] xl:overflow-y-auto no-scrollbar ${
               sidebarOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           >
             <div className="flex shrink-0 items-center justify-between px-4 py-3 xl:rounded-lg xl:border xl:border-brand-border xl:bg-brand-card xl:mb-2">
               <p className="text-white font-medium">
-                Filters{nFilters > 0 && <span className="ml-1.5 text-brand-accent">({nFilters})</span>}
+                {t("Filters")}{nFilters > 0 && <span className="ml-1.5 text-brand-accent">({nFilters})</span>}
               </p>
               <div className="flex items-center gap-3">
                 {nFilters > 0 && (
                   <button type="button" onClick={handleClearAll} className="text-custom-sm text-brand-accent hover:underline">
-                    Clear all
+                    {t("Clear all")}
                   </button>
                 )}
                 <button
                   type="button"
                   onClick={() => setSidebarOpen(false)}
                   className="xl:hidden text-white"
-                  aria-label="Close filters"
+                  aria-label={t("Close filters")}
                 >
                   <CloseIcon size={20} />
                 </button>
@@ -201,7 +206,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
 
             <form onSubmit={(e) => e.preventDefault()} className="flex-1 min-h-0 overflow-y-auto xl:overflow-visible px-3 pb-3 xl:px-0 xl:pb-0 flex flex-col gap-2">
               <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-brand-border bg-brand-card px-4 py-3 text-white select-none">
-                <span>In stock only</span>
+                <span>{t("In stock only")}</span>
                 <input
                   type="checkbox"
                   checked={stockOnly}
@@ -260,7 +265,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                 onClick={() => setSidebarOpen(false)}
                 className="h-11 w-full rounded-md bg-brand-accent font-medium text-brand-dark"
               >
-                {loading ? "Updating…" : `Show ${totalCount} product${totalCount === 1 ? "" : "s"}`}
+                {loading ? t("Updating…") : t(totalCount === 1 ? "Show {n} product" : "Show {n} products", { n: totalCount })}
               </button>
             </div>
           </aside>
@@ -272,7 +277,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                 <div className="flex flex-wrap items-center gap-4">
                   <CustomSelect
                     key={filters.sort}
-                    options={SORT_OPTIONS}
+                    options={SORT_OPTIONS.map((o) => ({ ...o, label: t(o.label) }))}
                     defaultValue={filters.sort}
                     onChange={(o) => {
                       try {
@@ -284,11 +289,11 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                   <p className="hidden sm:block" aria-live="polite">
                     {totalCount > 0 ? (
                       <>
-                        Showing <span className="text-white">{firstShown}–{lastShown}</span> of{" "}
-                        <span className="text-white">{totalCount}</span> products
+                        {t("Showing")} <span className="text-white">{firstShown}–{lastShown}</span> {t("of")}{" "}
+                        <span className="text-white">{totalCount}</span> {t("products")}
                       </>
                     ) : (
-                      "No products"
+                      t("No products")
                     )}
                   </p>
                 </div>
@@ -297,11 +302,11 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                   <button
                     type="button"
                     onClick={() => setSidebarOpen(true)}
-                    aria-label={`Open filters${nFilters ? `, ${nFilters} applied` : ""}`}
+                    aria-label={nFilters ? t("Open filters, {n} applied", { n: nFilters }) : t("Open filters")}
                     aria-expanded={sidebarOpen}
                     className="xl:hidden flex items-center gap-2 h-9 px-3 rounded-[5px] border border-brand-border bg-brand-card text-white text-custom-sm hover:border-brand-accent"
                   >
-                    Filters
+                    {t("Filters")}
                     {nFilters > 0 && (
                       <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-brand-accent px-1 text-custom-xs font-semibold text-brand-dark">
                         {nFilters}
@@ -313,7 +318,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                       key={style}
                       type="button"
                       onClick={() => setProductStyle(style)}
-                      aria-label={style === "grid" ? "Grid view" : "List view"}
+                      aria-label={style === "grid" ? t("Grid view") : t("List view")}
                       aria-pressed={productStyle === style}
                       className={`${
                         productStyle === style
@@ -342,8 +347,8 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
 
             {/* Active filters */}
             {nFilters > 0 && (
-              <div className="mb-3 flex flex-wrap items-center gap-2" aria-label="Active filters">
-                {filters.q && <Chip label={`Search: ${filters.q}`} onRemove={() => update({ q: null })} />}
+              <div className="mb-3 flex flex-wrap items-center gap-2" aria-label={t("Active filters")}>
+                {filters.q && <Chip label={`${t("Search")}: ${filters.q}`} onRemove={() => update({ q: null })} />}
                 {filters.brand && <Chip label={filters.brand} onRemove={() => update({ brand: null })} />}
                 {(filters.min > 0 || filters.max > 0) && (
                   <Chip
@@ -354,17 +359,17 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                     }}
                   />
                 )}
-                {filters.stock && <Chip label="In stock" onRemove={() => update({ stock: null })} />}
+                {filters.stock && <Chip label={t("In stock")} onRemove={() => update({ stock: null })} />}
                 {!lockedCategoryId &&
                   filters.categories.map((id) => (
                     <Chip
                       key={id}
-                      label={categoryNames.get(id) || "Category"}
+                      label={categoryNames.get(id) || t("Category")}
                       onRemove={() => update({ category: filters.categories.filter((c) => c !== id) })}
                     />
                   ))}
                 <button type="button" onClick={handleClearAll} className="ml-1 text-custom-sm text-brand-accent hover:underline">
-                  Clear all
+                  {t("Clear all")}
                 </button>
               </div>
             )}
@@ -380,19 +385,19 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
               {products.length === 0 && !loading && (
                 <div className="col-span-full py-10 text-center">
                   <p className="text-white mb-3">
-                    {filters.q ? `No products found for "${filters.q}".` : "No products match these filters."}
+                    {filters.q ? t("No products found for \"{q}\".", { q: filters.q }) : t("No products match these filters.")}
                   </p>
                   {filters.q && (
-                    <p className="mb-3 text-custom-sm text-brand-muted">Check the spelling, or try fewer or more general words.</p>
+                    <p className="mb-3 text-custom-sm text-brand-muted">{t("Check the spelling, or try fewer or more general words.")}</p>
                   )}
                   {nFilters > 0 && (
                     <button type="button" onClick={handleClearAll} className="text-brand-accent hover:underline">
-                      Clear filters
+                      {t("Clear filters")}
                     </button>
                   )}
                   {categories.length > 0 && !lockedCategoryId && (
                     <div className="mt-5">
-                      <p className="mb-2 text-custom-sm">Or browse a category</p>
+                      <p className="mb-2 text-custom-sm">{t("Or browse a category")}</p>
                       <ul className="flex flex-wrap justify-center gap-2">
                         {categories.slice(0, 8).map((c) => (
                           <li key={c.id}>
@@ -419,14 +424,14 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
             </div>
 
             {totalPages > 1 && (
-              <nav aria-label="Pagination" className="flex justify-center mt-10">
+              <nav aria-label={t("Pagination")} className="flex justify-center mt-10">
                 <ul className="flex items-center bg-brand-card border border-brand-border rounded-md p-2">
                   <li>
                     {filters.page > 1 ? (
                       <Link
                         href={hrefWith({ page: filters.page - 1 > 1 ? String(filters.page - 1) : null }, true)}
                         rel="prev"
-                        aria-label="Previous page"
+                        aria-label={t("Previous page")}
                         className="flex items-center justify-center w-8 h-9 rounded-[3px] text-white hover:bg-brand-hover"
                       >
                         ‹
@@ -459,7 +464,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                       <Link
                         href={hrefWith({ page: String(filters.page + 1) }, true)}
                         rel="next"
-                        aria-label="Next page"
+                        aria-label={t("Next page")}
                         className="flex items-center justify-center w-8 h-9 rounded-[3px] text-white hover:bg-brand-hover"
                       >
                         ›
