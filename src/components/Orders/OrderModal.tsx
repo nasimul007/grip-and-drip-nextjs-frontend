@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDialogFocus } from "@/lib/useDialogFocus";
 import OrderView from "./OrderView";
 import { StatusBadge } from "./OrderProgress";
 import { api } from "@/lib/api";
@@ -13,6 +14,8 @@ const OrderModal = ({ orderId, onClose }: Props) => {
   const [order, setOrder] = useState<TrackedOrder | null>(null);
   const [failed, setFailed] = useState(false);
   const { reorder, busyId } = useReorder();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef);
 
   useEffect(() => {
     let live = true;
@@ -41,7 +44,7 @@ const OrderModal = ({ orderId, onClose }: Props) => {
       className="fixed inset-0 z-99999 flex items-start justify-center overflow-y-auto bg-[#000000CC] px-3 py-6 sm:py-12"
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div role="dialog" aria-modal="true" aria-label="Order details" className="relative w-full max-w-[600px] rounded-xl border border-brand-border bg-brand-card">
+      <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Order details" className="relative w-full max-w-[600px] rounded-xl border border-brand-border bg-brand-card">
         <div className="flex items-start justify-between gap-3 border-b border-brand-border px-4 py-3 sm:px-5">
           <div className="min-w-0">
             <p className="text-custom-xs text-brand-muted">Order</p>

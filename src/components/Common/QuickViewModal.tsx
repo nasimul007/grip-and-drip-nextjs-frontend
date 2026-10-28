@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useDialogFocus } from "@/lib/useDialogFocus";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 
@@ -26,6 +27,8 @@ const QuickViewModal = () => {
 
   const product = useAppSelector((state) => state.quickViewReducer.value);
   const loading = !product?.id;
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef, isModalOpen);
 
   const [quantity, setQuantity] = useState(1);
   const [activePreview, setActivePreview] = useState(0);
@@ -141,6 +144,8 @@ const QuickViewModal = () => {
       onMouseDown={(e) => e.target === e.currentTarget && closeModal()}
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={loading ? "Quick view" : `${product.title} quick view`}

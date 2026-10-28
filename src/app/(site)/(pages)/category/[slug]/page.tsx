@@ -82,7 +82,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   };
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <JsonLd data={collectionSchema} />
       <Breadcrumb title={category.name} items={crumbs} />
       {category.description && filters.page === 1 && (

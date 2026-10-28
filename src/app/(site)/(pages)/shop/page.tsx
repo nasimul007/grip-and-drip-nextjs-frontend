@@ -35,7 +35,7 @@ export default async function ShopPage({ searchParams }: Props) {
   ]);
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <Breadcrumb
         title={filters.q ? `Search: ${filters.q}` : "All products"}
         items={[{ name: "Shop", href: filters.q ? "/shop" : undefined }, ...(filters.q ? [{ name: "Search" }] : [])]}

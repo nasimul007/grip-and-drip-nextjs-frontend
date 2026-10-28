@@ -188,7 +188,7 @@ const Signin = () => {
                   Don&apos;t have an account?
                   <Link
                     href="/signup"
-                    className="text-brand-accent ease-out duration-200 hover:text-brand-hover pl-2"
+                    className="text-brand-accent underline ease-out duration-200 hover:text-brand-hover pl-2"
                   >
                     Sign Up Now!
                   </Link>

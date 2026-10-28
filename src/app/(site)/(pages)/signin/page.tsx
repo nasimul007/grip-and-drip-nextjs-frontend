@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const SigninPage = () => {
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <Signin />
     </main>
   );

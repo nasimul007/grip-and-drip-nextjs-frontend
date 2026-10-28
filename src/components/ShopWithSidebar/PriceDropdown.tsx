@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 import { ChevronDownIcon } from '@/components/Common/icons';
@@ -20,6 +20,13 @@ const PriceDropdown = ({
   initialMax?: number;
 }) => {
   const [open, setOpen] = useState(true);
+  const sliderBox = useRef<HTMLDivElement>(null);
+
+  // The slider library renders unlabeled thumbs; name them for screen readers.
+  useEffect(() => {
+    const thumbs = sliderBox.current?.querySelectorAll('[role="slider"]');
+    thumbs?.forEach((el, i) => el.setAttribute('aria-label', i === 0 ? 'Minimum price' : 'Maximum price'));
+  }, [open]);
   const lo = Math.max(rangeMin, initialMin || rangeMin);
   const hi = Math.min(rangeMax, initialMax || rangeMax);
   const [price, setPrice] = useState({ from: lo, to: Math.max(lo, hi) });
@@ -60,6 +67,7 @@ const PriceDropdown = ({
       </button>
       {open && (
         <div className="border-t border-brand-border px-4 py-4">
+          <div ref={sliderBox}>
           <RangeSlider
             id="range-slider-gradient"
             className="margin-lg"
@@ -69,6 +77,7 @@ const PriceDropdown = ({
             value={[price.from, price.to]}
             onInput={(e) => apply(Math.floor(e[0]), Math.ceil(e[1]))}
           />
+          </div>
           <div className="flex items-center justify-between pt-4 gap-2">
             <div className={box}>
               <span className="shrink-0 pl-2 text-white">৳</span>

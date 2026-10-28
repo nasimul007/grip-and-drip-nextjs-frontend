@@ -14,7 +14,7 @@ export default async function CategoriesPage() {
   const tree = await getCategoryTree();
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <Breadcrumb title="All categories" items={[{ name: "Categories" }]} />
       <section className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 py-8 lg:py-12">
         {tree.length === 0 ? (

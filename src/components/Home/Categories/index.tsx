@@ -82,7 +82,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
             </div>
 
             <div className="flex items-center gap-3">
-              <button onClick={handlePrev} className="category-nav-prev">
+              <button type="button" onClick={handlePrev} aria-label="Previous categories" className="category-nav-prev">
                 <svg
                   className="fill-current"
                   width="24"
@@ -100,7 +100,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                 </svg>
               </button>
 
-              <button onClick={handleNext} className="category-nav-next">
+              <button type="button" onClick={handleNext} aria-label="Next categories" className="category-nav-next">
                 <svg
                   className="fill-current"
                   width="24"

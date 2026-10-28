@@ -1,5 +1,6 @@
 "use client";
 import { mediaPath } from "@/lib/media";
+import { announce } from "@/lib/announce";
 import { useCallback, useMemo } from "react";
 import { useDispatch, useStore } from "react-redux";
 import type { RootState } from "@/redux/store";
@@ -201,6 +202,7 @@ export function useCart() {
         }
         const clamped = after - before < quantity;
         notifyAdded(label, openCartModal, clamped ? `Only ${after} available` : undefined);
+        announce(`Added ${label} to cart`);
         return { ok: true, clamped };
       }
 
@@ -217,6 +219,7 @@ export function useCart() {
       }
       const warning = (cart as APICart | undefined)?.warning;
       notifyAdded(label, openCartModal, warning);
+      announce(`Added ${label} to cart`);
       return { ok: true, clamped: !!warning, message: warning };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -241,6 +244,7 @@ export function useCart() {
       const line = findLine(lineKey);
       if (!line) return;
       dispatch(updateCartItemQuantity({ lineKey, quantity }));
+      announce(`${line.title} quantity ${findLine(lineKey)?.quantity ?? quantity}`);
       if (!isAuthed() || !line.cartItemId) return;
       const wanted = findLine(lineKey)?.quantity ?? quantity;
       const { cart, error } = await runOnServer(() =>
@@ -257,6 +261,7 @@ export function useCart() {
     async (lineKey: string) => {
       const line = findLine(lineKey);
       dispatch(removeItemFromCart(lineKey));
+      if (line) announce(`Removed ${line.title} from cart`);
       if (!isAuthed() || !line?.cartItemId) return;
       const { error } = await runOnServer(() =>
         api.delete<APICart>(`/api/cart/items/${line.cartItemId}/remove/`)

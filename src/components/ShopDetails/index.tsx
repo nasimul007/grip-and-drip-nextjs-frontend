@@ -195,7 +195,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 {product.categoryName && product.categorySlug && (
                   <span>
                     Category:{" "}
-                    <Link href={`/category/${product.categorySlug}`} className="text-white hover:text-brand-accent">
+                    <Link href={`/category/${product.categorySlug}`} className="text-white underline hover:text-brand-accent">
                       {product.categoryName}
                     </Link>
                   </span>
@@ -388,7 +388,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                       href={whatsappOrder}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] h-10 px-4 text-sm font-medium text-white hover:opacity-90"
+                      className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-md bg-[#0B7A3E] h-10 px-4 text-sm font-medium text-white hover:opacity-90"
                     >
                       <WhatsAppIcon size={18} /> Order on WhatsApp
                     </a>

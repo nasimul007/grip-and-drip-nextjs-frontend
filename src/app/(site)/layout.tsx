@@ -7,6 +7,7 @@ import ScrollToTop from "@/components/Common/ScrollToTop";
 import MobileBottomNav from "@/components/Common/MobileBottomNav";
 import WhatsAppFloat from "@/components/Common/WhatsAppFloat";
 import JsonLd from "@/components/Common/JsonLd";
+import Announcer from "@/components/Common/Announcer";
 import Providers from "./providers";
 import {
   DEFAULT_OG_IMAGE,
@@ -98,7 +99,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100000] focus:rounded-md focus:bg-brand-accent focus:px-4 focus:py-2 focus:font-medium focus:text-brand-dark"
+        >
+          Skip to main content
+        </a>
         <JsonLd data={siteSchema} />
+        <Announcer />
         <Providers>
           <Header />
           {children}

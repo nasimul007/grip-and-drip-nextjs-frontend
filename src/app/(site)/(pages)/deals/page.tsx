@@ -35,7 +35,7 @@ export default async function DealsPage() {
   };
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <JsonLd data={schema} />
       <Breadcrumb title="Hot deals" items={[{ name: "Deals" }]} />
       {deals.length > 0 ? (

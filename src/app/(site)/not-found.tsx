@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function NotFound() {
   const categories = (await getCategoryTree()).slice(0, 8);
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <Error categories={categories} />
     </main>
   );

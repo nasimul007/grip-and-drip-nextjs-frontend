@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const TrackOrderPage = () => (
-  <main>
+  <main id="main-content" tabIndex={-1} className="outline-none">
     <TrackOrder />
   </main>
 );

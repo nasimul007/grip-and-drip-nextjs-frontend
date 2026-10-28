@@ -131,7 +131,7 @@ export default async function ProductPage({ params }: Props) {
   };
 
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <JsonLd data={productSchema} />
       <Breadcrumb items={crumbs} />
       <ShopDetails product={display} shippingRates={shippingRates} />

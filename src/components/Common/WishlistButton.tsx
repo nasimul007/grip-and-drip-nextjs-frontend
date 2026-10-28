@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { announce } from "@/lib/announce";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import {
@@ -30,8 +31,10 @@ const WishlistButton = ({ item, className = "" }: WishlistButtonProps) => {
   const handleToggle = () => {
     if (isInWishlist) {
       dispatch(removeItemFromWishlist(item.id));
+      announce(`Removed ${item.title} from wishlist`);
       return;
     }
+    announce(`Added ${item.title} to wishlist`);
     dispatch(
       addItemToWishlist({
         id: item.id,

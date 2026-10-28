@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const OrderSuccessPage = () => {
   return (
-    <main>
+    <main id="main-content" tabIndex={-1} className="outline-none">
       <OrderSuccess />
     </main>
   );

@@ -79,7 +79,7 @@ const OrderSuccess = () => {
 
           <div className="mt-6 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             {whatsapp && (
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#25D366] px-5 py-2.5 font-medium text-white hover:opacity-90">
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#0B7A3E] px-5 py-2.5 font-medium text-white hover:opacity-90">
                 Confirm on WhatsApp
               </a>
             )}
