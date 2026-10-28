@@ -4,12 +4,14 @@ import Link from "next/link";
 import SingleOrder from "./SingleOrder";
 import OrderModal from "./OrderModal";
 import { api } from "@/lib/api";
+import { useReorder } from "@/lib/useReorder";
 import type { OrderListItem, PaginatedResponse } from "@/lib/types";
 
 const Orders = () => {
   const [orders, setOrders] = useState<OrderListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [openId, setOpenId] = useState<number | null>(null);
+  const { reorder, busyId } = useReorder();
 
   useEffect(() => {
     api
@@ -39,12 +41,12 @@ const Orders = () => {
         </div>
       ) : (
         <>
-          <div className="hidden grid-cols-[1.5fr_1fr_1fr_90px_24px] gap-x-3 border-b border-brand-border px-5 py-2.5 text-custom-xs uppercase tracking-wide text-brand-muted sm:grid">
-            <span>Order</span><span>Date</span><span>Status</span><span className="text-right">Total</span><span />
+          <div className="hidden grid-cols-[1.5fr_1fr_1fr_90px] gap-x-3 border-b border-brand-border pl-5 pr-[110px] py-2.5 text-custom-xs uppercase tracking-wide text-brand-muted sm:grid">
+            <span>Order</span><span>Date</span><span>Status</span><span className="text-right">Total</span>
           </div>
           <ul className="divide-y divide-brand-border">
             {orders.map((order) => (
-              <SingleOrder key={order.id} order={order} onOpen={() => setOpenId(order.id)} />
+              <SingleOrder key={order.id} order={order} onOpen={() => setOpenId(order.id)} onReorder={() => reorder(order.id)} reordering={busyId === order.id} />
             ))}
           </ul>
         </>

@@ -11,7 +11,7 @@ import SingleListItem from "../Shop/SingleListItem";
 import { CloseIcon } from "../Common/icons";
 import { mapProductForDisplay } from "@/lib/mappers";
 import { formatPrice } from "@/lib/format";
-import { PAGE_SIZE, SORT_OPTIONS, activeFilterCount, parseFilters } from "@/lib/shop-query";
+import { DEFAULT_SORT, PAGE_SIZE, SORT_OPTIONS, activeFilterCount, parseFilters } from "@/lib/shop-query";
 import type { ProductListItem } from "@/lib/types";
 
 type CategoryData = {
@@ -69,13 +69,32 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
   // Products come from the server page; changing the URL re-renders it with new data.
   const data = initialData;
   const [loading, startTransition] = useTransition();
-  const [productStyle, setProductStyle] = useState<"grid" | "list">("grid");
+  const [productStyle, setProductStyleState] = useState<"grid" | "list">("grid");
+  const setProductStyle = (style: "grid" | "list") => {
+    setProductStyleState(style);
+    try {
+      localStorage.setItem("shop_view", style);
+    } catch {}
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [resetCounter, setResetCounter] = useState(0);
   const priceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   // Local copy so the checkbox responds instantly while the URL/page update.
   const [stockOnly, setStockOnly] = useState(filters.stock);
   useEffect(() => setStockOnly(filters.stock), [filters.stock]);
+
+  // Remember the shopper's last view and sort. An explicit sort in the URL always wins.
+  useEffect(() => {
+    try {
+      const view = localStorage.getItem("shop_view");
+      if (view === "grid" || view === "list") setProductStyleState(view);
+      const saved = localStorage.getItem("shop_sort");
+      if (saved && !searchParams.get("sort") && saved !== DEFAULT_SORT && SORT_OPTIONS.some((o) => o.value === saved)) {
+        update({ sort: saved });
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const rangeMin = facets?.price ? facets.price.min : 0;
   const rangeMax = facets?.price && facets.price.max > facets.price.min ? facets.price.max : facets?.price ? facets.price.min + 1 : FALLBACK_MAX_PRICE;
@@ -255,7 +274,12 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                     key={filters.sort}
                     options={SORT_OPTIONS}
                     defaultValue={filters.sort}
-                    onChange={(o) => update({ sort: o.value === "-created_at" ? null : o.value })}
+                    onChange={(o) => {
+                      try {
+                        localStorage.setItem("shop_sort", o.value);
+                      } catch {}
+                      update({ sort: o.value === DEFAULT_SORT ? null : o.value });
+                    }}
                   />
                   <p className="hidden sm:block" aria-live="polite">
                     {totalCount > 0 ? (
@@ -358,6 +382,9 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                   <p className="text-white mb-3">
                     {filters.q ? `No products found for "${filters.q}".` : "No products match these filters."}
                   </p>
+                  {filters.q && (
+                    <p className="mb-3 text-custom-sm text-brand-muted">Check the spelling, or try fewer or more general words.</p>
+                  )}
                   {nFilters > 0 && (
                     <button type="button" onClick={handleClearAll} className="text-brand-accent hover:underline">
                       Clear filters

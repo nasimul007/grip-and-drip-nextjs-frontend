@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import CustomSelect from "./CustomSelect";
 import SearchSuggestions from "./SearchSuggestions";
+import { addRecentSearch } from "@/lib/recent-searches";
 import Dropdown from "./Dropdown";
 import { menuData } from "./menuData";
 import type { Menu } from "@/types/Menu";
@@ -127,6 +128,7 @@ const Header = () => {
     e.preventDefault();
     const q = searchQuery.trim();
     if (!q) return;
+    addRecentSearch(q);
     setShowSuggestions(false);
     setMobileSearchOpen(false);
     router.push(`/shop?q=${encodeURIComponent(q)}`);
@@ -183,6 +185,7 @@ const Header = () => {
         query={searchQuery}
         isOpen={showSuggestions}
         onClose={() => setShowSuggestions(false)}
+        popular={categoryOptions.slice(1, 7).map((c) => ({ label: c.label, href: `/category/${c.slug}` }))}
       />
     </div>
   );

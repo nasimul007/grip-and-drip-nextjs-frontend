@@ -23,6 +23,9 @@ import { BadgeIcon, PhoneIcon, ShieldIcon, TruckIcon, WhatsAppIcon } from "@/com
 import WishlistButton from "@/components/Common/WishlistButton";
 import ProductGallery from "./ProductGallery";
 import ProductSections from "./ProductSections";
+import NotifyMe from "./NotifyMe";
+import RecentlyViewed from "@/components/Common/RecentlyViewed";
+import { recordView } from "@/lib/recently-viewed";
 import type { Product, VariantItem } from "@/types/product";
 import type { ShippingRate } from "@/lib/types";
 
@@ -98,6 +101,18 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
     setQuantity(1);
   }, [matchedVariant?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Remember this product for the "Recently viewed" strips.
+  useEffect(() => {
+    recordView({
+      slug: product.slug,
+      title: product.title,
+      price: Number(product.price),
+      discountedPrice: Number(product.discountedPrice),
+      image: product.imgs?.previews?.[0] || "",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.slug]);
+
   const keyDetails = useMemo(
     () => getKeyDetails(product.attributes, product.description),
     [product.attributes, product.description]
@@ -164,8 +179,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
               </h1>
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3 text-[13px]">
-                <span className={`font-medium ${inStock ? "text-green" : "text-red"}`}>
-                  {inStock ? (stock <= 5 ? `Only ${stock} left` : "In stock") : "Out of stock"}
+                <span className={`font-medium ${!inStock ? "text-red" : stock <= 5 ? "text-yellow" : "text-green"}`}>
+                  {inStock ? (stock <= 5 ? `Only ${stock} left, order soon` : "In stock") : "Out of stock"}
                 </span>
                 {sku && (
                   <span>
@@ -353,6 +368,19 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 </div>
               </form>
 
+              {!inStock && (
+                <NotifyMe slug={product.slug} variantId={matchedVariant?.id} label={matchedVariant?.name || undefined} />
+              )}
+              {inStock && shippingRates.length > 0 && (
+                <p className="mt-3 flex items-center gap-2 text-sm text-brand-muted">
+                  <TruckIcon className="shrink-0 text-brand-accent" size={16} />
+                  <span>
+                    Delivery in <span className="text-white">{DELIVERY_TIME.insideDhaka}</span> (Dhaka) ·{" "}
+                    <span className="text-white">{DELIVERY_TIME.outsideDhaka}</span> (outside)
+                  </span>
+                </p>
+              )}
+
               {(CONTACT.phone || whatsappOrder) && (
                 <div className="mt-3 flex flex-wrap gap-2.5">
                   {whatsappOrder && (
@@ -436,6 +464,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
         sku={product.sku}
         categoryName={product.categoryName}
       />
+
+      <RecentlyViewed excludeSlug={product.slug} className="bg-brand-dark pb-24 pt-6 lg:pb-10" />
 
       {/* Sticky add-to-cart for small screens */}
       <div className="lg:hidden fixed bottom-0 inset-x-0 z-999 bg-brand-surface border-t border-brand-border px-4 py-3 flex items-center gap-3">

@@ -1,3 +1,5 @@
+import { DELIVERY_TIME } from "@/lib/site";
+
 export type StatusStep = { key: string; label: string };
 
 export type TrackedOrder = {
@@ -54,9 +56,9 @@ export const PAYMENT_LABEL: Record<string, string> = {
 
 /** Working-day delivery window shown to the customer. */
 export function deliveryEstimate(area: string | undefined): string {
-  if (area === "inside_dhaka") return "1–2 working days";
-  if (area === "outside_dhaka") return "3–5 working days";
-  return "2–5 working days";
+  if (area === "inside_dhaka") return DELIVERY_TIME.insideDhaka;
+  if (area === "outside_dhaka") return DELIVERY_TIME.outsideDhaka;
+  return `${DELIVERY_TIME.insideDhaka} – ${DELIVERY_TIME.outsideDhaka}`;
 }
 
 export function formatOrderDate(iso: string): string {

@@ -1,4 +1,5 @@
 "use client";
+import RecentlyViewed from "@/components/Common/RecentlyViewed";
 import React from "react";
 import Link from "next/link";
 import OrderSummary from "./OrderSummary";
@@ -71,6 +72,7 @@ const Cart = () => {
           )}
         </div>
       </section>
+      <RecentlyViewed className="bg-brand-dark pb-10" />
     </>
   );
 };

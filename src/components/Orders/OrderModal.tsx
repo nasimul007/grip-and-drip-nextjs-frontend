@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import OrderView from "./OrderView";
 import { StatusBadge } from "./OrderProgress";
 import { api } from "@/lib/api";
+import { useReorder } from "@/lib/useReorder";
 import { formatOrderDate, fromOrderDetail, type TrackedOrder } from "@/lib/orders";
 
 type Props = { orderId: number; onClose: () => void };
@@ -11,6 +12,7 @@ type Props = { orderId: number; onClose: () => void };
 const OrderModal = ({ orderId, onClose }: Props) => {
   const [order, setOrder] = useState<TrackedOrder | null>(null);
   const [failed, setFailed] = useState(false);
+  const { reorder, busyId } = useReorder();
 
   useEffect(() => {
     let live = true;
@@ -60,6 +62,21 @@ const OrderModal = ({ orderId, onClose }: Props) => {
         </div>
 
         {order && <OrderView order={order} />}
+        {order && order.status !== "cancelled" && (
+          <div className="border-t border-brand-border px-4 py-3 sm:px-5">
+            <button
+              type="button"
+              disabled={busyId === orderId}
+              onClick={async () => {
+                await reorder(orderId);
+                onClose();
+              }}
+              className="w-full rounded-md bg-brand-accent px-5 py-2.5 font-medium text-brand-dark hover:bg-brand-hover disabled:opacity-60 sm:w-auto"
+            >
+              {busyId === orderId ? "Adding to cart…" : "Reorder these items"}
+            </button>
+          </div>
+        )}
         {!order && !failed && (
           <div className="animate-pulse space-y-3 p-5" aria-busy="true">
             <div className="h-6 rounded bg-brand-surface" />
