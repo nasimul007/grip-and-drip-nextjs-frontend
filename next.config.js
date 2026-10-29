@@ -1,3 +1,7 @@
+// next/image only resizes pictures from our own API, so the optimizer cannot be
+// used to fetch and cache images from arbitrary sites.
+const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
@@ -6,17 +10,13 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "**",
+        protocol: apiUrl.protocol.replace(":", ""),
+        hostname: apiUrl.hostname,
+        ...(apiUrl.port ? { port: apiUrl.port } : {}),
+        pathname: "/media/**",
       },
-      {
-        protocol: "http",
-        hostname: "localhost",
-      },
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
-      },
+      { protocol: "http", hostname: "localhost" },
+      { protocol: "http", hostname: "127.0.0.1" },
     ],
   },
   async redirects() {

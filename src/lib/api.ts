@@ -20,22 +20,44 @@ function clearTokens() {
   localStorage.removeItem("refresh_token");
 }
 
-async function tryRefresh(): Promise<boolean> {
+// Refresh tokens are single-use (the server rotates them), so parallel 401s
+// must share one refresh call instead of each spending the same token.
+let refreshing: Promise<boolean> | null = null;
+
+function tryRefresh(): Promise<boolean> {
+  refreshing ??= (async () => {
+    const { refresh } = getTokens();
+    if (!refresh) return false;
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh }),
+      });
+      if (!res.ok) return false;
+      const data = await res.json();
+      setTokens(data.access, data.refresh ?? refresh);
+      return true;
+    } catch {
+      return false;
+    }
+  })().finally(() => {
+    refreshing = null;
+  });
+  return refreshing;
+}
+
+/** Tells the server to retire the refresh token, then forgets both tokens. */
+function revokeTokens() {
   const { refresh } = getTokens();
-  if (!refresh) return false;
-  try {
-    const res = await fetch(`${API_BASE}/api/auth/token/refresh/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh }),
-    });
-    if (!res.ok) return false;
-    const data = await res.json();
-    localStorage.setItem("access_token", data.access);
-    return true;
-  } catch {
-    return false;
-  }
+  clearTokens();
+  if (!refresh) return;
+  fetch(`${API_BASE}/api/auth/logout/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh }),
+    keepalive: true,
+  }).catch(() => {});
 }
 
 async function request<T>(
@@ -108,4 +130,4 @@ export function buildImageUrl(path: string | null | undefined): string | null {
   return `${API_BASE}${path}`;
 }
 
-export { setTokens, clearTokens, getTokens };
+export { setTokens, clearTokens, getTokens, revokeTokens };

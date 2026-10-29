@@ -130,6 +130,7 @@ export const BN: Record<string, string> = {
   "Create an account": "অ্যাকাউন্ট তৈরি করুন",
   "Creating account...": "অ্যাকাউন্ট তৈরি হচ্ছে...",
   "Current password": "বর্তমান পাসওয়ার্ড",
+  "Enter your current password to change your email.": "ইমেইল পরিবর্তন করতে বর্তমান পাসওয়ার্ড দিন।",
   "Date": "তারিখ",
   "Deals": "ডিলস",
   "Decrease quantity": "পরিমাণ কমান",

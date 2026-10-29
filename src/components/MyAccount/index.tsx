@@ -12,7 +12,7 @@ import { PasswordInput } from "@/components/ui/PasswordInput";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import { setUser } from "@/redux/features/auth-slice";
 import { createAddress, updateAddress, deleteAddress, setDefaultShipping, fetchAddresses } from "@/redux/features/address-slice";
-import { api } from "@/lib/api";
+import { api, setTokens } from "@/lib/api";
 import { useLogout } from "@/lib/useLogout";
 import { useT } from "@/lib/i18n/client";
 import type { User, Address, AddressFormData } from "@/lib/types";
@@ -31,6 +31,8 @@ function AccountDetails() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.authReducer.user);
   const [form, setForm] = useState({ full_name: "", email: "", phone_number: "" });
+  const [currentPassword, setCurrentPassword] = useState("");
+  const emailChanged = !!user && form.email.trim().toLowerCase() !== (user.email || "").toLowerCase();
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [message, setMessage] = useState("");
   const [pw, setPw] = useState({ old: "", next: "", confirm: "" });
@@ -47,10 +49,18 @@ function AccountDetails() {
     if (form.phone_number.trim() && !/^(?:\+?88)?01[3-9]\d{8}$/.test(form.phone_number.replace(/[\s-]/g, ""))) {
       return (setStatus("error"), setMessage(t("Enter a valid Bangladeshi mobile number (01XXXXXXXXX).")));
     }
+    if (emailChanged && !currentPassword) {
+      return (setStatus("error"), setMessage(t("Enter your current password to change your email.")));
+    }
     setStatus("saving");
     try {
-      const updated = await api.patch<User>("/api/auth/profile/", { ...form, phone_number: form.phone_number.replace(/[\s-]/g, "") });
+      const updated = await api.patch<User>("/api/auth/profile/", {
+        ...form,
+        phone_number: form.phone_number.replace(/[\s-]/g, ""),
+        ...(emailChanged ? { current_password: currentPassword } : {}),
+      });
       dispatch(setUser(updated));
+      setCurrentPassword("");
       setStatus("saved");
       setMessage(t("Your details were saved."));
     } catch (err) {
@@ -66,7 +76,9 @@ function AccountDetails() {
     if (pw.next !== pw.confirm) return (setPwStatus("error"), setPwMessage(t("Passwords do not match.")));
     setPwStatus("saving");
     try {
-      await api.post("/api/auth/password/change/", { old_password: pw.old, new_password: pw.next, confirm_new_password: pw.confirm });
+      // Other devices are signed out; this one gets a fresh token pair.
+      const res = await api.post<{ access: string; refresh: string }>("/api/auth/password/change/", { old_password: pw.old, new_password: pw.next, confirm_new_password: pw.confirm });
+      if (res?.access && res?.refresh) setTokens(res.access, res.refresh);
       setPw({ old: "", next: "", confirm: "" });
       setPwStatus("saved");
       setPwMessage(t("Password changed."));
@@ -89,6 +101,9 @@ function AccountDetails() {
         <h2 className="text-base font-semibold text-white">{t("Your details")}</h2>
         <TextField id="full_name" label={t("Full name")} autoComplete="name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} required />
         <TextField id="email" type="email" label={t("Email")} autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+        {emailChanged && (
+          <PasswordInput id="current_password" name="current_password" label={t("Current password")} autoComplete="current-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} variant="account" />
+        )}
         <TextField id="phone_number" type="tel" label={t("Mobile number")} placeholder="01XXXXXXXXX" autoComplete="tel" inputMode="tel" value={form.phone_number} onChange={(e) => setForm({ ...form, phone_number: e.target.value })} />
         {note(status, message)}
         <button type="submit" disabled={status === "saving"} className="h-10 self-start rounded-md bg-brand-accent px-6 text-sm font-medium text-brand-dark hover:bg-brand-hover disabled:opacity-60">

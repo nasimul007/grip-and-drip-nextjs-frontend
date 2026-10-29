@@ -1,13 +1,13 @@
 "use client";
 import { useDispatch } from "react-redux";
-import { clearTokens } from "@/lib/api";
+import { revokeTokens } from "@/lib/api";
 import { logout } from "@/redux/features/auth-slice";
 import { removeAllItemsFromCart, clearLocalCart } from "@/redux/features/cart-slice";
 
 export function useLogout() {
   const dispatch = useDispatch();
   return () => {
-    clearTokens();
+    revokeTokens();
     dispatch(logout());
     dispatch(removeAllItemsFromCart());
     clearLocalCart();
