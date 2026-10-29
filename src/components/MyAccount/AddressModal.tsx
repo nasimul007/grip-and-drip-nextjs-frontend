@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Modal from "@/components/Common/Modal";
 import { LocationSelectors } from "@/components/Common/LocationSelectors";
+import { TextAreaField, TextField } from "@/components/ui/Field";
+import { useT } from "@/lib/i18n/client";
 import type { AddressFormData } from "@/lib/types";
 
 interface AddressModalProps {
@@ -10,243 +13,97 @@ interface AddressModalProps {
   initialData?: AddressFormData;
   onSubmit: (data: AddressFormData) => Promise<void>;
   loading?: boolean;
+  /** Prefill for new addresses (the customer's own name and phone). */
+  defaults?: { recipient_name?: string; phone?: string };
 }
 
-const inputClass =
-  "rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 text-white";
+const EMPTY: AddressFormData = {
+  address_name: "", recipient_name: "", phone: "",
+  division_id: "", division_name: "", city_id: "", city_name: "", area_id: "", area_name: "",
+  address: "", is_default_shipping: false,
+};
 
-const fieldClass = (error?: string) =>
-  `${inputClass} border ${error ? "border-red" : "border-brand-border"}`;
-
-const AddressModal = ({
-  isOpen,
-  onClose,
-  mode = "add",
-  initialData,
-  onSubmit,
-  loading = false,
-}: AddressModalProps) => {
-  const [formData, setFormData] = useState<AddressFormData>({
-    address_name: "",
-    division_id: "",
-    division_name: "",
-    city_id: "",
-    city_name: "",
-    area_id: "",
-    area_name: "",
-    address: "",
-    is_default_shipping: false,
-  });
-  const [errors, setErrors] = useState<Partial<Record<keyof AddressFormData, string>>>({});
+const AddressModal = ({ isOpen, onClose, mode = "add", initialData, onSubmit, loading = false, defaults }: AddressModalProps) => {
+  const { t } = useT();
+  const [form, setForm] = useState<AddressFormData>(EMPTY);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
-    if (initialData && mode === "edit") {
-      setFormData({
-        address_name: initialData.address_name || "",
-        division_id: initialData.division_id || "",
-        division_name: initialData.division_name || "",
-        city_id: initialData.city_id || "",
-        city_name: initialData.city_name || "",
-        area_id: initialData.area_id || "",
-        area_name: initialData.area_name || "",
-        address: initialData.address || "",
-        is_default_shipping: initialData.is_default_shipping || false,
-      });
-    } else {
-      setFormData({
-        address_name: "",
-        division_id: "",
-        division_name: "",
-        city_id: "",
-        city_name: "",
-        area_id: "",
-        area_name: "",
-        address: "",
-        is_default_shipping: false,
-      });
-    }
+    if (!isOpen) return;
+    setForm(
+      mode === "edit" && initialData
+        ? { ...EMPTY, ...initialData }
+        : { ...EMPTY, recipient_name: defaults?.recipient_name || "", phone: defaults?.phone || "" }
+    );
     setErrors({});
     setSubmitError("");
-  }, [initialData, isOpen, mode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, mode, initialData]);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const modalContent = document.querySelector(".modal-content");
-      if (modalContent && !modalContent.contains(event.target as Node)) {
-        onClose();
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
-
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof AddressFormData, string>> = {};
-    if (!formData.address_name.trim()) newErrors.address_name = "Address name is required";
-    if (!formData.division_id) newErrors.division_id = "Division is required";
-    if (!formData.city_id) newErrors.city_id = "City is required";
-    if (!formData.area_id) newErrors.area_id = "Area is required";
-    if (!formData.address.trim()) newErrors.address = "Address is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const setField = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const handleChange = (field: string, value: string, displayName?: string) => {
-    setFormData((prev) => {
-      const updated = { ...prev, [field]: value } as Record<string, unknown>;
-      if (displayName !== undefined) {
-        const displayField = field.replace("_id", "_name") as keyof AddressFormData;
-        updated[displayField] = displayName;
-      }
-      if (field.endsWith("_name")) {
-        const idField = field.replace("_name", "_id") as keyof AddressFormData;
-        updated[idField] = "";
-      }
-      return updated as AddressFormData;
+  const handleLocation = (field: string, value: string, displayName?: string) => {
+    setForm((prev) => {
+      const next = { ...prev, [field]: value } as Record<string, unknown>;
+      if (displayName !== undefined) next[field.replace("_id", "_name")] = displayName;
+      return next as AddressFormData;
     });
-    if (errors[field as keyof AddressFormData]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof AddressFormData]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
-  };
-
-  const handleDefaultShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, is_default_shipping: e.target.checked }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const err: Record<string, string> = {};
+    if (!form.address_name.trim()) err.address_name = t("Give this address a name, for example Home.");
+    if (!form.recipient_name?.trim()) err.recipient_name = t("Enter the receiver's name.");
+    if (!/^(?:\+?88)?01[3-9]\d{8}$/.test((form.phone || "").replace(/[\s-]/g, ""))) err.phone = t("Enter a valid Bangladeshi mobile number (01XXXXXXXXX).");
+    if (!form.division_id) err.division_id = t("Select a division.");
+    if (!form.city_id) err.city_id = t("Select a city.");
+    if (!form.area_id) err.area_id = t("Select an area.");
+    if (!form.address.trim()) err.address = t("Enter your full address.");
+    setErrors(err);
     setSubmitError("");
-    if (!validateForm()) return;
-
+    if (Object.keys(err).length) return;
     try {
-      await onSubmit(formData);
-    } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "Failed to save address");
+      await onSubmit({ ...form, phone: (form.phone || "").replace(/[\s-]/g, "") });
+    } catch (e2) {
+      setSubmitError((e2 as Error).message || t("Could not save the address."));
     }
   };
-
-  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 overflow-y-auto no-scrollbar bg-brand-dark/70 sm:px-8 px-4 z-99999">
-      <div className="min-h-full flex items-center justify-center py-8 sm:py-12">
-        <div className="w-full max-w-2xl rounded-xl shadow-3 bg-brand-card border border-brand-border relative modal-content flex flex-col max-h-[calc(100vh-4rem)]">
-          <button
-            onClick={onClose}
-            aria-label="Close modal"
-            className="absolute top-3 right-3 z-10 flex items-center justify-center w-10 h-10 rounded-full ease-in duration-150 bg-brand-surface text-brand-muted hover:text-white hover:bg-brand-hover"
-            disabled={loading}
-          >
-            <svg className="fill-current" width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" clipRule="evenodd" d="M14.3108 13L19.2291 8.08167C19.5866 7.72417 19.5866 7.12833 19.2291 6.77083C19.0543 6.59895 18.8189 6.50262 18.5737 6.50262C18.3285 6.50262 18.0932 6.59895 17.9183 6.77083L13 11.6892L8.08164 6.77083C7.90679 6.59895 7.67142 6.50262 7.42623 6.50262C7.18104 6.50262 6.94566 6.59895 6.77081 6.77083C6.41331 7.12833 6.41331 7.72417 6.77081 8.08167L11.6891 13L6.77081 17.9183C6.41331 18.2758 6.41331 18.8717 6.77081 19.2292C7.12831 19.5867 7.72414 19.5867 8.08164 19.2292L13 14.3108L17.9183 19.2292C18.2758 19.5867 18.8716 19.5867 19.2291 19.2292C19.5866 18.8717 19.5866 18.2758 19.2291 17.9183L14.3108 13Z" fill="" />
-            </svg>
-          </button>
-
-          <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
-            <div className="flex-1 overflow-y-auto px-7.5 pt-7.5">
-              <h3 className="font-medium text-xl text-white mb-6">
-                {mode === "edit" ? "Edit Address" : "Add New Address"}
-              </h3>
-
-              {submitError && (
-                <div className="mb-5 p-3 rounded-md bg-red/10 text-red text-sm">
-                  {submitError}
-                </div>
-              )}
-
-              <div className="mb-5">
-                <label htmlFor="address_name" className="block mb-2.5 text-white">
-                  Address Name <span className="text-red">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="address_name"
-                  id="address_name"
-                  value={formData.address_name}
-                  onChange={(e) => handleChange("address_name", e.target.value)}
-                  placeholder="e.g., Home, Office, Parents' House"
-                  className={fieldClass(errors.address_name)}
-                  disabled={loading}
-                />
-                {errors.address_name && <p className="text-red text-custom-sm mt-1">{errors.address_name}</p>}
-              </div>
-
-              <LocationSelectors
-                formData={formData}
-                onChange={handleChange}
-                errors={errors}
-                disabled={loading}
-              />
-
-              <div className="mb-5">
-                <label htmlFor="address" className="block mb-2.5 text-white">
-                  Address <span className="text-red">*</span>
-                </label>
-                <textarea
-                  name="address"
-                  id="address"
-                  value={formData.address}
-                  onChange={handleAddressChange}
-                  placeholder="House number, road, block, etc."
-                  rows={3}
-                  className={fieldClass(errors.address)}
-                  disabled={loading}
-                />
-                {errors.address && <p className="text-red text-custom-sm mt-1">{errors.address}</p>}
-              </div>
-
-              <div className="mb-6 flex items-center">
-                <input
-                  type="checkbox"
-                  name="is_default_shipping"
-                  id="is_default_shipping"
-                  checked={formData.is_default_shipping}
-                  onChange={handleDefaultShippingChange}
-                  className="w-4 h-4 rounded border-brand-border text-brand-accent focus:ring-brand-accent/20"
-                  disabled={loading}
-                />
-                <label htmlFor="is_default_shipping" className="ml-2 text-brand-muted text-sm">
-                  Set as default shipping address
-                </label>
-              </div>
-            </div>
-
-            <div className="flex gap-3 justify-end border-t border-brand-border p-7.5">
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={loading}
-                className="inline-flex font-medium text-brand-muted bg-brand-surface py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover hover:text-white disabled:opacity-60"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex font-medium text-brand-dark bg-brand-accent py-3 px-7 rounded-md ease-out duration-200 hover:bg-brand-hover disabled:opacity-60"
-              >
-                {loading ? "Saving..." : mode === "edit" ? "Save Changes" : "Add Address"}
-              </button>
-            </div>
-          </form>
+    <Modal open={isOpen} onClose={onClose} title={mode === "edit" ? t("Edit address") : t("Add new address")} wide busy={loading}>
+      <form onSubmit={submit} noValidate className="flex flex-col gap-4">
+        {submitError && (
+          <p role="alert" className="rounded-md border border-red bg-red-light-6/10 px-3.5 py-2.5 text-sm text-white">
+            {submitError}
+          </p>
+        )}
+        <TextField id="address_name" label={t("Address name")} placeholder={t("Home, Office, Parents' house")} value={form.address_name} onChange={(e) => setField("address_name", e.target.value)} error={errors.address_name} disabled={loading} required />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <TextField id="recipient_name" label={t("Receiver's name")} autoComplete="name" value={form.recipient_name || ""} onChange={(e) => setField("recipient_name", e.target.value)} error={errors.recipient_name} disabled={loading} required />
+          <TextField id="phone" type="tel" label={t("Phone")} placeholder="01XXXXXXXXX" autoComplete="tel" inputMode="tel" value={form.phone || ""} onChange={(e) => setField("phone", e.target.value)} error={errors.phone} disabled={loading} required />
         </div>
-      </div>
-    </div>
+        <LocationSelectors formData={form} onChange={handleLocation} errors={errors} disabled={loading} />
+        <TextAreaField id="address" label={t("Full address")} placeholder={t("House, road, landmark")} rows={3} value={form.address} onChange={(e) => setField("address", e.target.value)} error={errors.address} disabled={loading} required />
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-white">
+          <input type="checkbox" checked={form.is_default_shipping} onChange={(e) => setForm((p) => ({ ...p, is_default_shipping: e.target.checked }))} disabled={loading} className="h-4 w-4 accent-brand-accent" />
+          {t("Use as my default delivery address")}
+        </label>
+        <div className="flex justify-end gap-3 border-t border-brand-border pt-4">
+          <button type="button" onClick={onClose} disabled={loading} className="h-10 rounded-md border border-brand-border px-5 text-sm font-medium text-white hover:border-brand-accent disabled:opacity-60">
+            {t("Cancel")}
+          </button>
+          <button type="submit" disabled={loading} className="h-10 rounded-md bg-brand-accent px-6 text-sm font-medium text-brand-dark hover:bg-brand-hover disabled:opacity-60">
+            {loading ? t("Saving…") : mode === "edit" ? t("Save changes") : t("Save address")}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 };
 

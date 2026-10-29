@@ -13,7 +13,7 @@ const Login = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
     {!isAuthenticated && (
       <p className="text-brand-muted">
         {t("Have an account?")}{" "}
-        <Link href="/signin" className="font-medium text-white hover:text-brand-accent">
+        <Link href="/signin?next=/checkout" className="font-medium text-white hover:text-brand-accent">
           {t("Sign in")}
         </Link>{" "}
         {t("for faster checkout")}

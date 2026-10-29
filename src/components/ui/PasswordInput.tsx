@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useState } from "react";
+import { useT } from "@/lib/i18n/client";
 
 type Variant = "auth" | "account";
 
@@ -14,21 +15,23 @@ interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement>
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ label, placeholder, error, variant = "auth", className, ...props }, ref) => {
     const [show, setShow] = useState(false);
+    const { t } = useT();
 
     const authClasses =
-      "pr-12 rounded-lg border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-3 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20";
+      "pr-12 rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-3.5 text-white outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20";
     const accountClasses =
       "pr-12 rounded-md border border-brand-border bg-brand-surface placeholder:text-brand-muted w-full py-2.5 px-5 outline-none duration-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 text-white";
 
     return (
       <div className="relative">
-        <label className="block mb-2.5">{label}</label>
+        <label htmlFor={props.id} className="block mb-1.5 text-custom-sm text-white">{label}</label>
         <div className="relative">
           <input
             ref={ref}
             type={show ? "text" : "password"}
             autoComplete="current-password"
             placeholder={placeholder}
+            aria-invalid={error ? true : undefined}
             className={`${variant === "auth" ? authClasses : accountClasses} ${className || ""}`}
             {...props}
           />
@@ -36,7 +39,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             type="button"
             onClick={() => setShow(!show)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-white"
-            aria-label={show ? "Hide password" : "Show password"}
+            aria-label={show ? t("Hide password") : t("Show password")}
+            aria-pressed={show}
           >
             {show ? (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +69,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             )}
           </button>
         </div>
-        {error && <p className="text-red text-custom-sm mt-1">{error}</p>}
+        {error && <p role="alert" className="text-red text-custom-xs mt-1">{error}</p>}
       </div>
     );
   }

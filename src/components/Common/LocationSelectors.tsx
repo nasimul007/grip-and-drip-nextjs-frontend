@@ -6,6 +6,7 @@ import {
   getCities,
   getAreas,
 } from "@/lib/location-data";
+import { useT } from "@/lib/i18n/client";
 
 interface LocationSelectorsProps {
   formData: {
@@ -31,6 +32,7 @@ export const LocationSelectors = ({
   errors = {},
   disabled = false,
 }: LocationSelectorsProps) => {
+  const { t } = useT();
   const divisions = getDivisions();
 
   const cities = useMemo(
@@ -81,12 +83,12 @@ export const LocationSelectors = ({
       <SearchableSelect
         name="division_name"
         id="division_name"
-        label="Division"
+        label={t("Division")}
         required
         value={formData.division_id}
         options={divisions}
         disabled={disabled}
-        placeholder="Select Division"
+        placeholder={t("Select division")}
         error={errors.division_id}
         wrapperClassName="mb-0"
         valueKey="id"
@@ -97,12 +99,12 @@ export const LocationSelectors = ({
       <SearchableSelect
         name="city_name"
         id="city_name"
-        label="City"
+        label={t("City")}
         required
         value={formData.city_id}
         options={cities}
         disabled={disabled || !formData.division_id}
-        placeholder={formData.division_id ? "Select City" : "Select Division first"}
+        placeholder={formData.division_id ? t("Select city") : t("Select division first")}
         error={errors.city_id}
         wrapperClassName="mb-0"
         valueKey="id"
@@ -113,12 +115,12 @@ export const LocationSelectors = ({
       <SearchableSelect
         name="area_name"
         id="area_name"
-        label="Area"
+        label={t("Area")}
         required
         value={formData.area_id}
         options={areas}
         disabled={disabled || !formData.city_id}
-        placeholder={formData.city_id ? "Select Area" : "Select City first"}
+        placeholder={formData.city_id ? t("Select area") : t("Select city first")}
         error={errors.area_id}
         wrapperClassName="mb-0"
         valueKey="id"
