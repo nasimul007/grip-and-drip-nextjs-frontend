@@ -6,6 +6,7 @@ import CustomSelect from "./CustomSelect";
 import CategoryDropdown from "./CategoryDropdown";
 import PriceDropdown, { FALLBACK_MAX_PRICE } from "./PriceDropdown";
 import BrandDropdown from "./BrandDropdown";
+import { ProductSkeletons } from "@/components/Common/ProductSkeleton";
 import ProductItem from "../Common/ProductItem";
 import SingleListItem from "../Shop/SingleListItem";
 import { CloseIcon } from "../Common/icons";
@@ -376,7 +377,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
 
             <div
               aria-busy={loading}
-              className={`transition-opacity ${loading ? "opacity-50 pointer-events-none" : ""} ${
+              className={`${loading ? "pointer-events-none" : ""} ${
                 productStyle === "grid"
                   ? "grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3"
                   : "flex flex-col gap-4"
@@ -414,7 +415,8 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                   )}
                 </div>
               )}
-              {products.map((item, i) =>
+              {loading && <ProductSkeletons count={8} list={productStyle === "list"} />}
+              {!loading && products.map((item, i) =>
                 productStyle === "grid" ? (
                   <ProductItem item={item} key={item.id} priority={i < 4 && filters.page === 1} />
                 ) : (

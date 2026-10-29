@@ -15,6 +15,7 @@ export type Product = {
   /** Number of approved reviews. */
   reviews: number;
   ratingAverage?: number | null;
+  videoUrl?: string;
   price: number;
   discountedPrice: number;
   id: number;

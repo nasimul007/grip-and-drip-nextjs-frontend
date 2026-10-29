@@ -173,6 +173,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
               selected={previewImg}
               onSelect={setPreviewImg}
               onZoom={openZoom}
+              videoUrl={product.videoUrl || undefined}
             />
 
             {/* Summary: compact type scale so more information fits above the fold */}

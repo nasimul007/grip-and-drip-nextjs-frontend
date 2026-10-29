@@ -73,6 +73,7 @@ export function mapProductDetailForDisplay(item: ProductDetail) {
     title: item.name,
     reviews: item.review_count ?? 0,
     ratingAverage: item.rating_average ?? null,
+    videoUrl: item.video_url || "",
     price: Number(item.compare_price) || Number(item.effective_price),
     discountedPrice: Number(item.effective_price),
     id: item.id,

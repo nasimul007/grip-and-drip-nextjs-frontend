@@ -5,6 +5,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import Breadcrumb from "../Common/Breadcrumb";
 import CartEmpty from "../Common/CartEmpty";
+import SavedAddresses from "./SavedAddresses";
 import Login from "./Login";
 import PaymentMethod, { type PaymentMethodValue } from "./PaymentMethod";
 import Billing from "./Billing";
@@ -16,7 +17,7 @@ import { useShippingRates } from "@/lib/useShippingRates";
 import { formatPrice } from "@/lib/format";
 import { api } from "@/lib/api";
 import { saveLastOrder } from "@/lib/orders";
-import type { Order } from "@/lib/types";
+import type { Address, Order } from "@/lib/types";
 import { useT } from "@/lib/i18n/client";
 
 // Maps an error key to the id of the field that should receive focus.
@@ -73,8 +74,53 @@ const Checkout = () => {
     }));
   }, [user]);
 
+  // Saved addresses (signed-in customers): the default one is picked once they load.
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addressId, setAddressId] = useState<number | null>(null);
+  const [saveAddress, setSaveAddress] = useState(true);
+
+  const applyAddress = (a: Address | null) => {
+    setAddressId(a ? a.id : null);
+    setFormData((prev) =>
+      a
+        ? {
+            ...prev,
+            fullName: a.recipient_name || prev.fullName || user?.full_name || "",
+            phone: a.phone || prev.phone || user?.phone_number || "",
+            division_id: a.division_id,
+            division_name: a.division_name,
+            city_id: a.city_id,
+            city_name: a.city_name,
+            area_id: a.area_id,
+            area_name: a.area_name,
+            address: a.address,
+          }
+        : { ...prev, division_id: "", division_name: "", city_id: "", city_name: "", area_id: "", area_name: "", address: "" }
+    );
+    if (a) setErrors({});
+  };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setAddresses([]);
+      setAddressId(null);
+      return;
+    }
+    api
+      .getAddresses()
+      .then((data) => {
+        const list = Array.isArray(data) ? data : data.results || [];
+        setAddresses(list);
+        const preferred = list.find((a) => a.is_default_shipping) || list[0];
+        if (preferred) applyAddress(preferred);
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
   const handleChange = (e: { target: { name: string; value: string } }, displayName?: string) => {
     const { name, value } = e.target;
+    if (addressId !== null && ["address", "division_id", "city_id", "area_id"].includes(name)) setAddressId(null);
     setFormData((prev) => {
       const next = { ...prev, [name]: value };
       if (displayName !== undefined) next[name.replace("_id", "_name") as keyof typeof prev] = displayName;
@@ -177,6 +223,25 @@ const Checkout = () => {
         phone: formData.phone.trim(),
         item_count: placed.items?.length ?? cartItems.length,
       });
+      if (isAuthenticated && addressId === null && saveAddress) {
+        try {
+          await api.createAddress({
+            address_name: formData.area_name || formData.city_name || "Home",
+            recipient_name: formData.fullName.trim(),
+            phone: formData.phone.trim(),
+            division_id: formData.division_id,
+            division_name: formData.division_name,
+            city_id: formData.city_id,
+            city_name: formData.city_name,
+            area_id: formData.area_id,
+            area_name: formData.area_name,
+            address: formData.address.trim(),
+            is_default_shipping: addresses.length === 0,
+          });
+        } catch {
+          /* the order is placed; a failed save is not worth interrupting it */
+        }
+      }
       await clearCart();
       router.push("/order-success");
     } catch (err) {
@@ -221,7 +286,14 @@ const Checkout = () => {
 
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
               <div className="min-w-0 flex-1 flex flex-col gap-4">
+                {isAuthenticated && <SavedAddresses addresses={addresses} selectedId={addressId} onSelect={applyAddress} />}
                 <Billing formData={formData} onChange={handleChange} errors={errors} />
+                {isAuthenticated && addressId === null && (
+                  <label className="flex cursor-pointer items-center gap-2 text-sm text-white">
+                    <input type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} className="h-4 w-4 accent-brand-accent" />
+                    {t("Save this address for next time")}
+                  </label>
+                )}
                 <PaymentMethod
                   payment={payment}
                   bkashNumber={bkashNumber}

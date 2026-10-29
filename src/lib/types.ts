@@ -99,6 +99,7 @@ export type ProductDetail = {
   total_stock?: number;
   rating_average?: number | null;
   review_count?: number;
+  video_url?: string;
   warranty_months?: number | null;
   is_active: boolean;
   is_featured: boolean;
@@ -216,6 +217,8 @@ export type TokenResponse = {
 export type Address = {
   id: number;
   address_name: string;
+  recipient_name?: string;
+  phone?: string;
   division_id: string;
   division_name: string;
   city_id: string;
@@ -230,6 +233,8 @@ export type Address = {
 
 export type AddressFormData = {
   address_name: string;
+  recipient_name?: string;
+  phone?: string;
   division_id: string;
   division_name: string;
   city_id: string;

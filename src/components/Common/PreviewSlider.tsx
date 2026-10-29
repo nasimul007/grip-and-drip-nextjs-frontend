@@ -3,16 +3,20 @@ import { useCallback, useEffect, useRef } from "react";
 import FallbackImage from "./FallbackImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
+import { Zoom } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/zoom";
 
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { useAppSelector } from "@/redux/store";
 import { CloseIcon } from "./icons";
+import { useT } from "@/lib/i18n/client";
 
 const arrowClass =
   "absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-11 h-11 rounded-full bg-brand-card/90 border border-brand-border text-white hover:text-brand-accent hover:border-brand-accent";
 
 const PreviewSliderModal = () => {
+  const { t } = useT();
   const { closePreviewModal, isModalPreviewOpen, startIndex } = usePreviewSlider();
   const product = useAppSelector((state) => state.productDetailsReducer.value);
   const swiperRef = useRef<SwiperType | null>(null);
@@ -45,7 +49,7 @@ const PreviewSliderModal = () => {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${title} images`}
+      aria-label={`${title} ${t("images")}`}
       className="fixed inset-0 z-999999 flex items-center justify-center bg-[#000000F2]"
       onClick={(e) => {
         // Click on the dark backdrop (not on an image or button) closes.
@@ -57,7 +61,7 @@ const PreviewSliderModal = () => {
       <button
         type="button"
         onClick={closePreviewModal}
-        aria-label="Close image preview"
+        aria-label={t("Close image preview")}
         className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 flex items-center justify-center w-11 h-11 rounded-full text-white hover:text-brand-accent"
       >
         <CloseIcon size={28} />
@@ -65,10 +69,10 @@ const PreviewSliderModal = () => {
 
       {images.length > 1 && (
         <>
-          <button type="button" onClick={handlePrev} aria-label="Previous image" className={`${arrowClass} left-2 sm:left-6`}>
+          <button type="button" onClick={handlePrev} aria-label={t("Previous image")} className={`${arrowClass} left-2 sm:left-6`}>
             <span aria-hidden="true">‹</span>
           </button>
-          <button type="button" onClick={handleNext} aria-label="Next image" className={`${arrowClass} right-2 sm:right-6`}>
+          <button type="button" onClick={handleNext} aria-label={t("Next image")} className={`${arrowClass} right-2 sm:right-6`}>
             <span aria-hidden="true">›</span>
           </button>
         </>
@@ -80,6 +84,8 @@ const PreviewSliderModal = () => {
           s.slideTo(startIndex, 0);
         }}
         initialSlide={startIndex}
+        modules={[Zoom]}
+        zoom={{ maxRatio: 3, toggle: true }}
         slidesPerView={1}
         spaceBetween={20}
         className="w-full h-full"
@@ -90,7 +96,7 @@ const PreviewSliderModal = () => {
               data-backdrop="true"
               className="relative w-full h-[100dvh] flex items-center justify-center p-4 sm:p-16"
             >
-              <div className="relative w-full h-full max-w-[1000px]">
+              <div className="swiper-zoom-container relative w-full h-full max-w-[1000px]">
                 {/* Spinner sits behind the image until it has loaded. */}
                 <span
                   aria-hidden="true"
@@ -98,7 +104,7 @@ const PreviewSliderModal = () => {
                 />
                 <FallbackImage
                   src={src}
-                  alt={`${title} – image ${i + 1} of ${images.length}`}
+                  alt={`${title} – ${t("Show image {n} of {total}", { n: i + 1, total: images.length })}`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 1000px"
                   className="object-contain"
@@ -112,7 +118,7 @@ const PreviewSliderModal = () => {
 
       {images.length > 1 && (
         <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-custom-sm text-white/80" aria-hidden="true">
-          Swipe or use arrow keys
+          {t("Swipe, pinch or double-tap to zoom")}
         </p>
       )}
     </div>

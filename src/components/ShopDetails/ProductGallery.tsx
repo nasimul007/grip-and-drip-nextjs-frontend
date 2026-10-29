@@ -2,6 +2,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import FallbackImage from "@/components/Common/FallbackImage";
 import { ChevronDownIcon } from "@/components/Common/icons";
+import VideoPlayer, { PlayIcon } from "./VideoPlayer";
+import { useT } from "@/lib/i18n/client";
 
 type Props = {
   images: string[];
@@ -9,6 +11,8 @@ type Props = {
   selected: number;
   onSelect: (index: number) => void;
   onZoom: () => void;
+  /** Optional product video, shown as the last gallery item. */
+  videoUrl?: string;
 };
 
 const THUMB = 64; // px
@@ -19,10 +23,15 @@ const VISIBLE = 5; // thumbnails visible at once in the vertical strip
  * Left vertical thumbnail slider (up/down arrows) + fixed 400x400 main image.
  * On phones the thumbnails become a swipeable row below the image.
  */
-export default function ProductGallery({ images, alt, selected, onSelect, onZoom }: Props) {
+export default function ProductGallery({ images, alt, selected, onSelect, onZoom, videoUrl }: Props) {
+  const { t } = useT();
+  const videoIndex = videoUrl ? images.length : -1;
+  const total = images.length + (videoUrl ? 1 : 0);
+  const onVideo = selected === videoIndex;
+  const swipe = useRef<{ x: number; y: number } | null>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState({ start: true, end: true });
-  const needsArrows = images.length > VISIBLE;
+  const needsArrows = total > VISIBLE;
 
   const updateEdges = useCallback(() => {
     const el = stripRef.current;
@@ -42,7 +51,7 @@ export default function ProductGallery({ images, alt, selected, onSelect, onZoom
       el?.removeEventListener("scroll", updateEdges);
       window.removeEventListener("resize", updateEdges);
     };
-  }, [updateEdges, images.length]);
+  }, [updateEdges, total]);
 
   // Keep the selected thumbnail visible; scroll only the strip, never the page.
   useEffect(() => {
@@ -65,14 +74,14 @@ export default function ProductGallery({ images, alt, selected, onSelect, onZoom
 
   return (
     <div className="w-full lg:w-auto lg:shrink-0 flex flex-col sm:flex-row gap-3 lg:self-start">
-      {images.length > 1 && (
+      {total > 1 && (
         <div className="order-last sm:order-first sm:w-16 sm:h-[400px] flex flex-col shrink-0">
           {needsArrows && (
             <button
               type="button"
               onClick={() => step(-1)}
               disabled={edge.start}
-              aria-label="Show previous thumbnails"
+              aria-label={t("Show previous thumbnails")}
               className={arrow}
             >
               <ChevronDownIcon className="rotate-180" size={18} />
@@ -89,7 +98,7 @@ export default function ProductGallery({ images, alt, selected, onSelect, onZoom
                 type="button"
                 key={`${src}-${i}`}
                 onClick={() => onSelect(i)}
-                aria-label={`Show image ${i + 1} of ${images.length}`}
+                aria-label={t("Show image {n} of {total}", { n: i + 1, total: images.length })}
                 aria-pressed={i === selected}
                 className={`relative w-16 h-16 shrink-0 overflow-hidden rounded-md bg-brand-surface border-2 ease-out duration-200 hover:border-brand-accent ${
                   i === selected ? "border-brand-accent" : "border-brand-border"
@@ -98,13 +107,26 @@ export default function ProductGallery({ images, alt, selected, onSelect, onZoom
                 <FallbackImage src={src} alt="" fallbackLabel="" fill sizes="64px" className="object-contain p-1" />
               </button>
             ))}
+            {videoUrl && (
+              <button
+                type="button"
+                onClick={() => onSelect(videoIndex)}
+                aria-label={t("Show product video")}
+                aria-pressed={onVideo}
+                className={`relative flex w-16 h-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-brand-surface border-2 text-brand-accent ease-out duration-200 hover:border-brand-accent ${
+                  onVideo ? "border-brand-accent" : "border-brand-border"
+                }`}
+              >
+                <PlayIcon size={28} />
+              </button>
+            )}
           </div>
           {needsArrows && (
             <button
               type="button"
               onClick={() => step(1)}
               disabled={edge.end}
-              aria-label="Show next thumbnails"
+              aria-label={t("Show next thumbnails")}
               className={arrow}
             >
               <ChevronDownIcon size={18} />
@@ -113,12 +135,29 @@ export default function ProductGallery({ images, alt, selected, onSelect, onZoom
         </div>
       )}
 
-      <div className="relative shrink-0 w-full max-w-[400px] sm:w-[400px] aspect-square sm:h-[400px] rounded-lg border border-brand-border bg-brand-surface">
-        {images.length > 0 && (
+      <div
+        className="relative shrink-0 w-full max-w-[400px] sm:w-[400px] aspect-square sm:h-[400px] rounded-lg border border-brand-border bg-brand-surface touch-pan-y select-none"
+        onPointerDown={(e) => {
+          if (e.pointerType === "mouse") return;
+          swipe.current = { x: e.clientX, y: e.clientY };
+        }}
+        onPointerUp={(e) => {
+          const start = swipe.current;
+          swipe.current = null;
+          if (!start || total < 2 || onVideo) return;
+          const dx = e.clientX - start.x;
+          const dy = e.clientY - start.y;
+          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            onSelect(dx < 0 ? (selected + 1) % total : (selected - 1 + total) % total);
+          }
+        }}
+        onPointerCancel={() => (swipe.current = null)}
+      >
+        {images.length > 0 && !onVideo && (
           <button
             type="button"
             onClick={onZoom}
-            aria-label="Zoom product images"
+            aria-label={t("Zoom product images")}
             className="absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-[5px] border border-brand-border bg-brand-card text-white ease-out duration-200 hover:text-brand-accent"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -127,7 +166,9 @@ export default function ProductGallery({ images, alt, selected, onSelect, onZoom
             </svg>
           </button>
         )}
-        {images[selected] ? (
+        {onVideo && videoUrl ? (
+          <VideoPlayer key={videoUrl} url={videoUrl} title={alt} />
+        ) : images[selected] ? (
           <div className="absolute inset-4 sm:inset-6">
             <FallbackImage
               src={images[selected]}
@@ -140,7 +181,7 @@ export default function ProductGallery({ images, alt, selected, onSelect, onZoom
           </div>
         ) : (
           <span className="absolute inset-0 flex items-center justify-center text-brand-muted">
-            No image available
+            {t("No image available")}
           </span>
         )}
       </div>
