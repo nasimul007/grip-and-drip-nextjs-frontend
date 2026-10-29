@@ -81,6 +81,7 @@ export type ProductListItem = {
   is_featured: boolean;
   brand: string;
   created_at: string;
+  updated_at?: string;
 };
 
 export type ProductDetail = {

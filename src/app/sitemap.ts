@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, mediaUrl } from "@/lib/site";
 import { POLICIES } from "@/lib/policies";
+import { getAllBrands, brandSlug } from "@/lib/brands";
 import { getCategoryTree, serverGet, type CategoryNode } from "@/lib/server-api";
 import type { PaginatedResponse, ProductListItem } from "@/lib/types";
 
@@ -25,7 +26,7 @@ function flatten(nodes: CategoryNode[]): CategoryNode[] {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, tree] = await Promise.all([allProducts(), getCategoryTree()]);
+  const [products, tree, brands] = await Promise.all([allProducts(), getCategoryTree(), getAllBrands()]);
   const now = new Date();
 
   return [
@@ -45,11 +46,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
-    ...products.map((p) => ({
-      url: `${SITE_URL}/shop/${p.slug}`,
-      lastModified: new Date(p.created_at),
+    ...brands.map((b) => ({
+      url: `${SITE_URL}/brand/${brandSlug(b.name)}`,
+      lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
+    ...products.map((p) => {
+      const image = mediaUrl(p.primary_image?.image);
+      return {
+        url: `${SITE_URL}/shop/${p.slug}`,
+        lastModified: new Date(p.updated_at || p.created_at),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+        ...(image && { images: [image] }),
+      };
+    }),
   ];
 }

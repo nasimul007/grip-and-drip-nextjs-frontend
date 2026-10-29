@@ -34,6 +34,8 @@ type Props = {
   facets?: Facets;
   /** Category page: products are always limited to this category (and its children). */
   lockedCategoryId?: number;
+  /** Brand pages: the brand is fixed by the URL, so hide the brand filter. */
+  lockedBrand?: string;
 };
 
 function pageList(page: number, total: number): (number | "...")[] {
@@ -65,7 +67,7 @@ const Chip = ({ label, onRemove }: { label: string; onRemove: () => void }) => {
   );
 };
 
-const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategoryId }: Props) => {
+const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategoryId, lockedBrand }: Props) => {
   const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
@@ -251,7 +253,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
                 </nav>
               )}
 
-              {brands.length > 0 && (
+              {brands.length > 0 && !lockedBrand && (
                 <BrandDropdown
                   brands={brands}
                   selectedBrand={filters.brand}

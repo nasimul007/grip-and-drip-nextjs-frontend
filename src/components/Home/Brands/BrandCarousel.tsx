@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { SwiperRef } from "swiper/react";
+import { brandSlug } from "@/lib/brand-slug";
 import type { BrandCount } from "@/lib/brands";
 
 import "swiper/css";
@@ -58,7 +59,7 @@ const BrandCarousel = ({ brands }: { brands: BrandCount[] }) => {
         {slides.map((b, i) => (
           <SwiperSlide key={`${b.name}-${i}`}>
             <Link
-              href={`/shop?brand=${encodeURIComponent(b.name)}`}
+              href={`/brand/${brandSlug(b.name)}`}
               className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-brand-border bg-brand-card px-4 py-4 text-center ease-out duration-200 hover:border-brand-accent"
             >
               {b.logo ? (

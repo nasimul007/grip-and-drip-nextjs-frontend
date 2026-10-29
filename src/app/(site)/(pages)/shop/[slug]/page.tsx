@@ -41,8 +41,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return { title: "Product not found", robots: { index: false } };
 
   // A CMS meta title is used verbatim; otherwise the layout template appends the brand.
-  const title = product.meta_title ? { absolute: product.meta_title } : product.name;
-  const socialTitle = product.meta_title || product.name;
+  const fallbackTitle = `${product.name} Price in Bangladesh`;
+  const title = product.meta_title ? { absolute: product.meta_title } : fallbackTitle;
+  const socialTitle = product.meta_title || fallbackTitle;
   const description = describe(product);
   const image = mediaUrl(product.og_image) || productImages(product)[0];
   const url = `/shop/${product.slug}`;
@@ -82,27 +83,56 @@ export default async function ProductPage({ params }: Props) {
   const url = absoluteUrl(`/shop/${product.slug}`);
   const images = productImages(product);
   const variants = (product.variants || []).filter((v) => v.is_active);
-  const prices = variants.length
-    ? variants.map((v) => Number(v.price_override ?? product.effective_price))
-    : [Number(product.effective_price)];
+  const priceOf = (v?: { price_override: number | null }) =>
+    Number(v?.price_override ?? product.effective_price);
+  const prices = variants.length ? variants.map(priceOf) : [priceOf()];
   const inStock = variants.length
     ? variants.some((v) => v.stock > 0)
     : product.stock > 0;
+  const validUntil = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString().slice(0, 10);
 
-  const offerBase = {
+  const warrantyPromise = product.warranty_months
+    ? {
+        warranty: {
+          "@type": "WarrantyPromise",
+          durationOfWarranty: { "@type": "QuantitativeValue", value: product.warranty_months, unitCode: "MON" },
+          warrantyScope: "https://schema.org/RepairAndReplace",
+        },
+      }
+    : {};
+
+  const offerCommon = {
     priceCurrency: "BDT",
-    availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
     itemCondition: "https://schema.org/NewCondition",
     url,
+    priceValidUntil: validUntil,
     seller: { "@id": absoluteUrl("/#organization") },
+    hasMerchantReturnPolicy: {
+      "@type": "MerchantReturnPolicy",
+      applicableCountry: "BD",
+      returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+      merchantReturnDays: 7,
+      merchantReturnLink: absoluteUrl("/return-policy"),
+    },
+    shippingDetails: {
+      "@type": "OfferShippingDetails",
+      shippingDestination: { "@type": "DefinedRegion", addressCountry: "BD" },
+      deliveryTime: {
+        "@type": "ShippingDeliveryTime",
+        handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
+        transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 4, unitCode: "DAY" },
+      },
+    },
+    ...warrantyPromise,
   };
-  const productSchema = {
+  const availability = (ok: boolean) =>
+    ok ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+
+  const common = {
     "@context": "https://schema.org",
-    "@type": "Product",
     "@id": `${url}#product`,
     name: product.name,
     description: truncate(stripHtml(product.description) || describe(product), 5000),
-    sku: product.sku,
     ...(images.length && { image: images }),
     ...(product.brand && { brand: { "@type": "Brand", name: product.brand } }),
     ...(product.category_name && { category: product.category_name }),
@@ -114,17 +144,59 @@ export default async function ProductPage({ params }: Props) {
         bestRating: "5",
       },
     }),
-    offers:
-      Math.min(...prices) === Math.max(...prices)
-        ? { "@type": "Offer", price: prices[0].toFixed(2), ...offerBase }
-        : {
-            "@type": "AggregateOffer",
-            lowPrice: Math.min(...prices).toFixed(2),
-            highPrice: Math.max(...prices).toFixed(2),
-            offerCount: prices.length,
-            ...offerBase,
-          },
   };
+
+  const attrKeys = Array.from(new Set(variants.flatMap((v) => Object.keys(v.attributes || {}))));
+  const variesBy = attrKeys
+    .map((k) =>
+      /colou?r/i.test(k) ? "https://schema.org/color" : /size|length|capacity/i.test(k) ? "https://schema.org/size" : null
+    )
+    .filter(Boolean);
+
+  const productSchema =
+    variants.length > 1
+      ? {
+          ...common,
+          "@type": "ProductGroup",
+          productGroupID: product.sku,
+          ...(variesBy.length && { variesBy }),
+          hasVariant: variants.map((v) => {
+            const attrs = v.attributes || {};
+            const colorKey = attrKeys.find((k) => /colou?r/i.test(k));
+            const sizeKey = attrKeys.find((k) => /size|length|capacity/i.test(k));
+            const vImage = mediaUrl(v.image);
+            return {
+              "@type": "Product",
+              sku: v.sku,
+              name: `${product.name} – ${v.name}`,
+              ...(vImage ? { image: [vImage] } : images.length ? { image: images } : {}),
+              ...(colorKey && attrs[colorKey] && { color: attrs[colorKey] }),
+              ...(sizeKey && attrs[sizeKey] && { size: attrs[sizeKey] }),
+              offers: {
+                "@type": "Offer",
+                price: priceOf(v).toFixed(2),
+                availability: availability(v.stock > 0),
+                ...offerCommon,
+              },
+            };
+          }),
+        }
+      : {
+          ...common,
+          "@type": "Product",
+          sku: variants[0]?.sku || product.sku,
+          offers:
+            Math.min(...prices) === Math.max(...prices)
+              ? { "@type": "Offer", price: prices[0].toFixed(2), availability: availability(inStock), ...offerCommon }
+              : {
+                  "@type": "AggregateOffer",
+                  lowPrice: Math.min(...prices).toFixed(2),
+                  highPrice: Math.max(...prices).toFixed(2),
+                  offerCount: prices.length,
+                  availability: availability(inStock),
+                  ...offerCommon,
+                },
+        };
 
   const crumbs: BreadcrumbItem[] = [
     { name: "Shop", href: "/shop" },

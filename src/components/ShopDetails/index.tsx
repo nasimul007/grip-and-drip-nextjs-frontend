@@ -1,4 +1,5 @@
 "use client";
+import { brandSlug } from "@/lib/brand-slug";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, slugifyAttr, variantMatches } from "@/lib/variants";
 import { cartImgs } from "@/lib/media";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -200,7 +201,10 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                 )}
                 {product.brand && (
                   <span>
-                    {t("Brand")}: <span className="text-white">{product.brand}</span>
+                    {t("Brand")}:{" "}
+                    <Link href={`/brand/${brandSlug(product.brand)}`} className="text-white hover:text-brand-accent">
+                      {product.brand}
+                    </Link>
                   </span>
                 )}
                 {product.categoryName && product.categorySlug && (

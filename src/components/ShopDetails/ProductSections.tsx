@@ -25,10 +25,13 @@ function DescriptionBlock({ html }: { html: string }) {
   const [tall, setTall] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useLayoutEffect(() => {
+  const measure = () => {
     const el = ref.current;
     if (el) setTall(el.scrollHeight > COLLAPSED_PX + 80);
-  }, [html]);
+  };
+  useLayoutEffect(measure, [html]);
+  // Lazy-loaded description images change the height once they arrive.
+  const lazyHtml = html.replace(/<img\b(?![^>]*\bloading=)/gi, '<img loading="lazy" decoding="async"');
 
   const collapsed = tall && !open;
   return (
@@ -38,7 +41,8 @@ function DescriptionBlock({ html }: { html: string }) {
         id="description-content"
         className="product-description text-sm relative overflow-hidden [&_img]:my-3 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-md"
         style={collapsed ? { maxHeight: COLLAPSED_PX } : undefined}
-        dangerouslySetInnerHTML={{ __html: html }}
+        onLoadCapture={measure}
+        dangerouslySetInnerHTML={{ __html: lazyHtml }}
       />
       {collapsed && (
         <div className="-mt-16 h-16 relative pointer-events-none bg-gradient-to-t from-brand-dark to-transparent" aria-hidden="true" />

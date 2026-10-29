@@ -131,7 +131,7 @@ export async function getRecentProducts(pages = 3): Promise<ProductListItem[]> {
 }
 
 export type FilterFacets = {
-  brands: { name: string; count: number; logo?: string | null }[];
+  brands: { name: string; count: number; logo?: string | null; description?: string }[];
   price: { min: number; max: number };
   count: number;
 };

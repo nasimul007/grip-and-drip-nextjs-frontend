@@ -1,6 +1,19 @@
 import { getFilterFacets, getRecentProducts } from "./server-api";
+import { brandSlug } from "./brand-slug";
 
-export type BrandCount = { name: string; count: number; logo?: string | null };
+export { brandSlug };
+
+export type BrandCount = { name: string; count: number; logo?: string | null; description?: string };
+
+/** Every brand in the catalogue (most products first). */
+export async function getAllBrands(): Promise<BrandCount[]> {
+  return getTopBrands(500);
+}
+
+export async function findBrandBySlug(slug: string): Promise<BrandCount | null> {
+  const brands = await getAllBrands();
+  return brands.find((b) => brandSlug(b.name) === slug) ?? null;
+}
 
 /** Most common brands in the whole catalogue. */
 export async function getTopBrands(limit = 8): Promise<BrandCount[]> {
