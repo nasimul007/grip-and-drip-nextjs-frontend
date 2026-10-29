@@ -1,4 +1,5 @@
 "use client";
+import { track } from "@/lib/track";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
@@ -14,7 +15,18 @@ const OrderSuccess = () => {
   const [copied, setCopied] = useState(false);
 
   // sessionStorage is only readable in the browser, so load it after mount.
-  useEffect(() => setOrder(loadLastOrder()), []);
+  useEffect(() => {
+    const last = loadLastOrder();
+    setOrder(last);
+    if (!last) return;
+    // Report each order once, even if the page is reloaded.
+    const key = `tracked-order-${last.order_number}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch {}
+    track("purchase", { value: Number(last.total), transaction_id: last.order_number, items: [] });
+  }, []);
 
   const copy = async () => {
     if (!order) return;

@@ -1,5 +1,6 @@
 "use client";
 import { brandSlug } from "@/lib/brand-slug";
+import { track } from "@/lib/track";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, slugifyAttr, variantMatches } from "@/lib/variants";
 import { cartImgs } from "@/lib/media";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -98,6 +99,21 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
     if (vImg && !list.includes(vImg)) list.push(vImg);
     return list;
   }, [product.imgs, matchedVariant]);
+
+  // Shopping-feed links carry ?variant=<sku>; select that variant after mount
+  // (kept client-side so the product page stays statically cached).
+  useEffect(() => {
+    const sku = new URLSearchParams(window.location.search).get("variant");
+    const target = sku ? variants.find((v) => v.sku === sku) : undefined;
+    if (target) setSelectedAttrs(attrsOf(target));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    track("view_item", {
+      value: Number(product.discountedPrice),
+      items: [{ id: product.id, name: product.title, price: Number(product.discountedPrice), brand: product.brand }],
+    });
+  }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const vImg = matchedVariant?.image;

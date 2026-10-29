@@ -82,6 +82,20 @@ export type ProductListItem = {
   brand: string;
   created_at: string;
   updated_at?: string;
+  /** Extra fields returned only for `?include=variants` (shopping feed). */
+  gtin?: string;
+  mpn?: string;
+  description?: string;
+  images?: string[];
+  variants?: {
+    id: number;
+    sku: string;
+    name: string;
+    attributes: Record<string, string>;
+    price_override: number | null;
+    stock: number;
+    image: string | null;
+  }[];
 };
 
 export type ProductDetail = {

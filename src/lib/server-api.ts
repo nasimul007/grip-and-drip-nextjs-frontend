@@ -26,6 +26,7 @@ export type CategoryDetail = {
   breadcrumb: { name: string; slug: string }[];
   subcategories: CategoryNode[];
   product_count: number;
+  faqs?: { question: string; answer: string }[];
 };
 
 export type RelatedProduct = Pick<

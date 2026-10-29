@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import Link from "next/link";
 import ShopDetails from "@/components/ShopDetails";
+import { brandSlug } from "@/lib/brand-slug";
 import Breadcrumb, { type BreadcrumbItem } from "@/components/Common/Breadcrumb";
 import ProductGrid from "@/components/Common/ProductGrid";
 import JsonLd from "@/components/Common/JsonLd";
@@ -10,6 +12,15 @@ import { SITE_NAME, absoluteUrl, mediaUrl, stripHtml, truncate } from "@/lib/sit
 import type { PaginatedResponse, ProductDetail, ProductListItem, ShippingRate } from "@/lib/types";
 
 type Props = { params: Promise<{ slug: string }> };
+
+/** Loads a product; a renamed product's old URL redirects (301) to its current slug. */
+async function loadProduct(slug: string) {
+  const product = await getProduct(slug);
+  if (product) return product;
+  const moved = await serverGet<{ slug: string }>(`/api/products/redirect/${encodeURIComponent(slug)}/`, 300);
+  if (moved?.slug && moved.slug !== slug) permanentRedirect(`/shop/${moved.slug}`);
+  return null;
+}
 
 function productImages(product: ProductDetail): string[] {
   const sorted = [...product.images].sort(
@@ -37,7 +48,7 @@ function describe(product: ProductDetail): string {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const product = await loadProduct(slug);
   if (!product) return { title: "Product not found", robots: { index: false } };
 
   // A CMS meta title is used verbatim; otherwise the layout template appends the brand.
@@ -71,7 +82,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const product = await loadProduct(slug);
   if (!product) notFound();
 
   const [related, rates] = await Promise.all([
@@ -219,6 +230,20 @@ export default async function ProductPage({ params }: Props) {
         title="You may also like"
         products={related.map((p) => mapProductForDisplay(p as ProductListItem))}
       />
+      {(product.brand || product.category_slug) && (
+        <nav aria-label="More products" className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pb-12 flex flex-wrap gap-3 text-custom-sm">
+          {product.brand && (
+            <Link href={`/brand/${brandSlug(product.brand)}`} className="rounded-full border border-brand-border px-4 py-1.5 text-white hover:border-brand-accent hover:text-brand-accent">
+              More from {product.brand}
+            </Link>
+          )}
+          {product.category_slug && (
+            <Link href={`/category/${product.category_slug}`} className="rounded-full border border-brand-border px-4 py-1.5 text-white hover:border-brand-accent hover:text-brand-accent">
+              More in {product.category_name}
+            </Link>
+          )}
+        </nav>
+      )}
     </main>
   );
 }

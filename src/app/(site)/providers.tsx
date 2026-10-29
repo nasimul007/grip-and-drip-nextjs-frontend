@@ -4,12 +4,15 @@ import { ReduxProvider } from "@/redux/provider";
 import { ModalProvider } from "../context/QuickViewModalContext";
 import { CartModalProvider } from "../context/CartSidebarModalContext";
 import { PreviewSliderProvider } from "../context/PreviewSliderContext";
-import QuickViewModal from "@/components/Common/QuickViewModal";
-import CartSidebarModal from "@/components/Common/CartSidebarModal";
-import PreviewSliderModal from "@/components/Common/PreviewSlider";
+import dynamic from "next/dynamic";
 import CartInit from "@/components/Providers/CartInit";
 import AuthInit from "@/components/Providers/AuthInit";
 import StoreHydrator from "@/components/Providers/StoreHydrator";
+
+// Modals are only needed after a click, so keep them out of the first-load JS bundle.
+const QuickViewModal = dynamic(() => import("@/components/Common/QuickViewModal"), { ssr: false });
+const CartSidebarModal = dynamic(() => import("@/components/Common/CartSidebarModal"), { ssr: false });
+const PreviewSliderModal = dynamic(() => import("@/components/Common/PreviewSlider"), { ssr: false });
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (

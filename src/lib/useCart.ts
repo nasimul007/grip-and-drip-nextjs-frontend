@@ -1,4 +1,5 @@
 "use client";
+import { track } from "@/lib/track";
 import { mediaPath } from "@/lib/media";
 import { announce } from "@/lib/announce";
 import { useCallback, useMemo } from "react";
@@ -191,6 +192,11 @@ export function useCart() {
         notifyCartError(tt("{name} is out of stock.", { name: item.title }));
         return { ok: false, message: "out of stock" };
       }
+
+      track("add_to_cart", {
+        value: item.discountedPrice * quantity,
+        items: [{ id: item.id, name: item.title, price: item.discountedPrice, quantity, variant: item.variantName }],
+      });
 
       if (!isAuthed()) {
         const lineKey = makeLineKey(item);

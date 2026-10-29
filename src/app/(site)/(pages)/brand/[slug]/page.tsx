@@ -7,7 +7,8 @@ import JsonLd from "@/components/Common/JsonLd";
 import { findBrandBySlug, brandSlug } from "@/lib/brands";
 import { getCategoryTree, getFilterFacets, getProducts } from "@/lib/server-api";
 import { PAGE_SIZE, buildApiQuery, buildFacetQuery, hasFacetFilters, parseFilters } from "@/lib/shop-query";
-import { SITE_NAME, absoluteUrl, truncate } from "@/lib/site";
+import { absoluteUrl, truncate } from "@/lib/site";
+import { brandIntro } from "@/lib/seo-copy";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -15,10 +16,7 @@ type Props = {
 };
 
 function intro(name: string, count: number, description?: string): string {
-  if (description?.trim()) return description.trim();
-  return `Buy original ${name} products in Bangladesh at ${SITE_NAME}. Browse ${count} ${name} ${
-    count === 1 ? "product" : "products"
-  } with genuine quality, warranty where applicable, cash on delivery and fast delivery across Bangladesh.`;
+  return description?.trim() ? description.trim() : brandIntro(name, count);
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {

@@ -1,4 +1,5 @@
 "use client";
+import { track } from "@/lib/track";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -62,6 +63,17 @@ const Checkout = () => {
     email: "",
     notes: "",
   });
+
+  // One begin_checkout event per visit, once the cart has loaded.
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (checkoutTracked.current || cartItems.length === 0) return;
+    checkoutTracked.current = true;
+    track("begin_checkout", {
+      value: cartItems.reduce((n, i) => n + i.discountedPrice * i.quantity, 0),
+      items: cartItems.map((i) => ({ id: i.id, name: i.title, price: i.discountedPrice, quantity: i.quantity, variant: i.variantName })),
+    });
+  }, [cartItems]);
 
   // Prefill contact details for signed-in customers (never overwrite typing).
   useEffect(() => {

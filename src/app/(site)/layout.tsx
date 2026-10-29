@@ -1,3 +1,4 @@
+import Analytics from "@/components/Common/Analytics";
 import type { Metadata, Viewport } from "next";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
@@ -20,6 +21,7 @@ import {
   SITE_NAME,
   SITE_TAGLINE,
   SITE_URL,
+  API_URL,
   absoluteUrl,
 } from "@/lib/site";
 
@@ -64,6 +66,12 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
   formatDetection: { telephone: false },
+  verification: {
+    ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION && { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }),
+    ...(process.env.NEXT_PUBLIC_BING_VERIFICATION && {
+      other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION },
+    }),
+  },
   icons: { apple: "/icons/apple-touch-icon.png" },
   appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "black-translucent" },
 };
@@ -106,6 +114,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const lang = await getLang();
   return (
     <html lang={lang} className="dark" suppressHydrationWarning>
+      <head>
+        {/* Product images and API calls come from this origin. */}
+        <link rel="preconnect" href={API_URL} crossOrigin="" />
+      </head>
       <body>
         <a
           href="#main-content"
@@ -114,6 +126,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {lang === "bn" ? "মূল বিষয়বস্তুতে যান" : "Skip to main content"}
         </a>
         <JsonLd data={siteSchema} />
+        <Analytics />
         <Announcer />
         <LocaleProvider lang={lang}>
           <Providers>

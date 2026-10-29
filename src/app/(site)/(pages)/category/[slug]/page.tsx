@@ -4,6 +4,10 @@ import { Suspense } from "react";
 import ShopWithSidebar from "@/components/ShopWithSidebar";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import JsonLd from "@/components/Common/JsonLd";
+import FaqSection from "@/components/Common/FaqSection";
+import Link from "next/link";
+import { brandSlug } from "@/lib/brand-slug";
+import { categoryIntro } from "@/lib/seo-copy";
 import { getCategory, getFilterFacets, getProducts } from "@/lib/server-api";
 import { PAGE_SIZE, buildApiQuery, buildFacetQuery, hasFacetFilters, parseFilters } from "@/lib/shop-query";
 import { absoluteUrl, mediaUrl, stripHtml, truncate } from "@/lib/site";
@@ -28,9 +32,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const description =
     category.meta_description ||
     truncate(stripHtml(category.description)) ||
-    truncate(
-      `Buy ${category.name.toLowerCase()} online in Bangladesh. ${category.product_count} products with genuine quality, best prices and cash on delivery.`
-    );
+    truncate(categoryIntro(category.name, category.product_count));
   const path = `/category/${category.slug}`;
   const image = mediaUrl(category.og_image);
 
@@ -54,6 +56,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     getFilterFacets(buildFacetQuery(filters, category.id)),
   ]);
   const intro = stripHtml(category.description);
+  const brandLinks = (facets?.brands || []).slice(0, 10);
 
   const crumbs = [
     { name: "Shop", href: "/shop" },
@@ -85,12 +88,18 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     <main id="main-content" tabIndex={-1} className="outline-none">
       <JsonLd data={collectionSchema} />
       <Breadcrumb title={category.name} items={crumbs} />
-      {category.description && filters.page === 1 && (
+      {filters.page === 1 && (
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pt-7.5">
-          <div
-            className="product-description max-w-[870px] xl:ml-auto text-custom-sm"
-            dangerouslySetInnerHTML={{ __html: category.description }}
-          />
+          {category.description ? (
+            <div
+              className="product-description max-w-[870px] xl:ml-auto text-custom-sm"
+              dangerouslySetInnerHTML={{ __html: category.description }}
+            />
+          ) : (
+            <p className="max-w-[870px] xl:ml-auto text-custom-sm">
+              {categoryIntro(category.name, category.product_count)}
+            </p>
+          )}
         </div>
       )}
       <Suspense>
@@ -101,6 +110,24 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           initialData={initial ? { results: initial.results, count: initial.count } : null}
         />
       </Suspense>
+      {brandLinks.length > 0 && !hasFacetFilters(filters) && filters.page === 1 && (
+        <nav aria-label={`${category.name} by brand`} className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pb-10">
+          <h2 className="mb-3 text-lg font-semibold text-white">Shop {category.name} by brand</h2>
+          <ul className="flex flex-wrap gap-2">
+            {brandLinks.map((b) => (
+              <li key={b.name}>
+                <Link
+                  href={`/brand/${brandSlug(b.name)}`}
+                  className="inline-block rounded-full border border-brand-border px-4 py-1.5 text-custom-sm text-white hover:border-brand-accent hover:text-brand-accent"
+                >
+                  {b.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      {!hasFacetFilters(filters) && filters.page === 1 && <FaqSection faqs={category.faqs || []} />}
     </main>
   );
 }
