@@ -7,6 +7,9 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // The dev server only serves its scripts to localhost by default; without
+  // this, opening http://127.0.0.1:3000 leaves the page non-interactive.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   images: {
     remotePatterns: [
       {
