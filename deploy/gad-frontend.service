@@ -1,0 +1,15 @@
+[Unit]
+Description=Grip and Drip storefront (Next.js)
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=__APP_DIR__
+Environment=NODE_ENV=production
+Environment=NODE_OPTIONS=--max-old-space-size=1024
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -p 3000 -H 127.0.0.1
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
