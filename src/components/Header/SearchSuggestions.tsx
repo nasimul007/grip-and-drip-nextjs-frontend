@@ -116,7 +116,7 @@ const SearchSuggestions = ({ query, isOpen, onClose, popular = [] }: Props) => {
   if (!isOpen) return null;
 
   const rowClass = (active: boolean) =>
-    `flex items-center gap-3 px-4 py-2.5 ease-out duration-150 ${active ? "bg-brand-hover text-white" : "text-brand-muted hover:bg-brand-hover hover:text-white"}`;
+    `flex items-center gap-3 px-4 py-2.5 ease-out duration-150 ${active ? "bg-brand-hover text-brand-dark" : "text-brand-muted hover:bg-brand-hover hover:text-brand-dark"}`;
 
   const popularChips = popular.length > 0 && (
     <div className="px-4 pb-3">

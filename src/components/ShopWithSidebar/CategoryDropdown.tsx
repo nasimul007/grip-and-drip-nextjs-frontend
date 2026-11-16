@@ -82,7 +82,7 @@ const CategoryItem = ({
             >
               <path
                 d="M8.33317 2.5L3.74984 7.08333L1.6665 5"
-                stroke="#0A0A0F"
+                className="stroke-brand-dark"
                 strokeWidth="1.94437"
                 strokeLinecap="round"
                 strokeLinejoin="round"

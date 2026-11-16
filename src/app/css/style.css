@@ -3,6 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  /* Theme tokens as "R G B" so Tailwind opacity modifiers keep working.
+     Light is the default; the "dark" class on <html> switches to dark. */
+  :root {
+    --c-bg: 255 255 255;
+    --c-surface: 243 244 246;
+    --c-card: 255 255 255;
+    --c-accent: 60 80 224;
+    --c-hover: 28 63 183;
+    --c-muted: 108 111 147;
+    --c-border: 229 231 235;
+    --c-fg: 28 39 76;
+    --c-faint: 187 190 201;
+    --c-star: 251 191 36;
+    color-scheme: light;
+  }
+  :root.dark {
+    --c-bg: 10 10 15;
+    --c-surface: 26 26 30;
+    --c-card: 36 36 40;
+    --c-accent: 0 212 170;
+    --c-hover: 0 184 148;
+    --c-muted: 160 160 168;
+    --c-border: 42 42 48;
+    --c-fg: 255 255 255;
+    --c-faint: 75 75 85;
+    --c-star: 255 166 69;
+    color-scheme: dark;
+  }
+
   html {
     @apply scroll-smooth;
   }
@@ -13,7 +42,7 @@
 
   /* Visible keyboard focus everywhere; mouse clicks stay clean. */
   :focus-visible {
-    outline: 2px solid #00d4aa;
+    outline: 2px solid rgb(var(--c-accent));
     outline-offset: 2px;
   }
   input:focus-visible,
@@ -24,6 +53,11 @@
 }
 
 @layer components {
+  /* The logo artwork has white lettering; flip it to dark on the light theme, keeping hues. */
+  :root:not(.dark) .site-logo {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
   .dropdown {
     @apply flex-col gap-0 min-w-max xl:w-[193px] mt-2 lg:mt-0 bg-brand-card shadow-2 ease-in duration-200 py-2.5 rounded-md border border-brand-border left-0 hidden
     xl:translate-y-10 xl:opacity-0 xl:invisible xl:absolute xl:flex
@@ -124,7 +158,7 @@ input[type='search']::-webkit-search-results-decoration {
 
 /* Style the arrow inside the select element: */
 .select-selected:after {
-  content: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.00005 5.54998C4.88755 5.54998 4.7938 5.51248 4.70005 5.43748L0.387549 1.19998C0.218799 1.03123 0.218799 0.768726 0.387549 0.599976C0.556299 0.431226 0.818799 0.431226 0.987549 0.599976L5.00005 4.51873L9.01255 0.562476C9.1813 0.393726 9.4438 0.393726 9.61255 0.562476C9.7813 0.731226 9.7813 0.993726 9.61255 1.16248L5.30005 5.39998C5.2063 5.49373 5.11255 5.54998 5.00005 5.54998Z' fill='%23A0A0A8'/%3E%3C/svg%3E%0A");
+  content: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.00005 5.54998C4.88755 5.54998 4.7938 5.51248 4.70005 5.43748L0.387549 1.19998C0.218799 1.03123 0.218799 0.768726 0.387549 0.599976C0.556299 0.431226 0.818799 0.431226 0.987549 0.599976L5.00005 4.51873L9.01255 0.562476C9.1813 0.393726 9.4438 0.393726 9.61255 0.562476C9.7813 0.731226 9.7813 0.993726 9.61255 1.16248L5.30005 5.39998C5.2063 5.49373 5.11255 5.54998 5.00005 5.54998Z' fill='%238A90A0'/%3E%3C/svg%3E%0A");
   @apply absolute top-1/2 -translate-y-1/2 right-4.5 ease-out duration-200;
 }
 
@@ -157,7 +191,7 @@ input[type='search']::-webkit-search-results-decoration {
   @apply bg-brand-card rounded-md !border-r text-brand-muted py-1.5 pl-3 pr-9;
 }
 .custom-select-2 .select-selected:after {
-  content: url("data:image/svg+xml,%3Csvg width='14' height='8' viewBox='0 0 14 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.41444 1.03563L1.41443 1.03565L1.41725 1.0384L6.76725 6.2634L7.00126 6.49194L7.23418 6.26229L12.5842 0.987287L12.5842 0.987293L12.5858 0.985629C12.6807 0.890804 12.8196 0.890804 12.9144 0.985629C13.009 1.08018 13.0093 1.21861 12.9153 1.31341C12.915 1.31368 12.9147 1.31395 12.9144 1.31422L7.16652 6.96217L7.16651 6.96216L7.16444 6.96422C7.06814 7.06053 7.02327 7.06659 7.00015 7.06659C6.94122 7.06659 6.89018 7.05216 6.8204 6.99902L1.08502 1.36339C0.991024 1.26859 0.991301 1.13018 1.08585 1.03563C1.18067 0.940804 1.31962 0.940804 1.41444 1.03563Z' fill='%23A0A0A8' stroke='%23A0A0A8' stroke-width='0.666667'/%3E%3C/svg%3E%0A");
+  content: url("data:image/svg+xml,%3Csvg width='14' height='8' viewBox='0 0 14 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.41444 1.03563L1.41443 1.03565L1.41725 1.0384L6.76725 6.2634L7.00126 6.49194L7.23418 6.26229L12.5842 0.987287L12.5842 0.987293L12.5858 0.985629C12.6807 0.890804 12.8196 0.890804 12.9144 0.985629C13.009 1.08018 13.0093 1.21861 12.9153 1.31341C12.915 1.31368 12.9147 1.31395 12.9144 1.31422L7.16652 6.96217L7.16651 6.96216L7.16444 6.96422C7.06814 7.06053 7.02327 7.06659 7.00015 7.06659C6.94122 7.06659 6.89018 7.05216 6.8204 6.99902L1.08502 1.36339C0.991024 1.26859 0.991301 1.13018 1.08585 1.03563C1.18067 0.940804 1.31962 0.940804 1.41444 1.03563Z' fill='%238A90A0' stroke='%238A90A0' stroke-width='0.666667'/%3E%3C/svg%3E%0A");
   @apply right-3.5;
 }
 
@@ -165,7 +199,7 @@ input[type='search']::-webkit-search-results-decoration {
   @apply bg-brand-card rounded-md !border-r text-brand-muted py-3 pl-5 pr-9 duration-200 focus:border-transparent;
 }
 .custom-select-common .select-selected:after {
-  content: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.41469 5.03569L2.41467 5.03571L2.41749 5.03846L7.76749 10.2635L8.0015 10.492L8.23442 10.2623L13.5844 4.98735L13.5844 4.98735L13.5861 4.98569C13.6809 4.89086 13.8199 4.89087 13.9147 4.98569C14.0092 5.08024 14.0095 5.21864 13.9155 5.31345C13.9152 5.31373 13.915 5.31401 13.9147 5.31429L8.16676 10.9622L8.16676 10.9622L8.16469 10.9643C8.06838 11.0606 8.02352 11.0667 8.00039 11.0667C7.94147 11.0667 7.89042 11.0522 7.82064 10.9991L2.08526 5.36345C1.99127 5.26865 1.99154 5.13024 2.08609 5.03569C2.18092 4.94086 2.31986 4.94086 2.41469 5.03569Z' fill='%23A0A0A8' stroke='%23A0A0A8' stroke-width='0.666667'/%3E%3C/svg%3E%0A");
+  content: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.41469 5.03569L2.41467 5.03571L2.41749 5.03846L7.76749 10.2635L8.0015 10.492L8.23442 10.2623L13.5844 4.98735L13.5844 4.98735L13.5861 4.98569C13.6809 4.89086 13.8199 4.89087 13.9147 4.98569C14.0092 5.08024 14.0095 5.21864 13.9155 5.31345C13.9152 5.31373 13.915 5.31401 13.9147 5.31429L8.16676 10.9622L8.16676 10.9622L8.16469 10.9643C8.06838 11.0606 8.02352 11.0667 8.00039 11.0667C7.94147 11.0667 7.89042 11.0522 7.82064 10.9991L2.08526 5.36345C1.99127 5.26865 1.99154 5.13024 2.08609 5.03569C2.18092 4.94086 2.31986 4.94086 2.41469 5.03569Z' fill='%238A90A0' stroke='%238A90A0' stroke-width='0.666667'/%3E%3C/svg%3E%0A");
   @apply right-4 block mt-1;
 }
 .custom-select-common .select-selected.select-arrow-active:after {
@@ -174,7 +208,7 @@ input[type='search']::-webkit-search-results-decoration {
 
 
 .hero-carousel .swiper-pagination-bullet {
-  @apply h-1 w-4 rounded-[11px] bg-[#444];
+  @apply h-1 w-4 rounded-[11px] bg-brand-border;
 }
 
 .hero-carousel .swiper-pagination-bullet-active {
@@ -192,7 +226,7 @@ input[type='search']::-webkit-search-results-decoration {
 
 .common-carousel .swiper-button-next,
 .common-carousel .swiper-button-prev {
-  @apply !static h-9 w-9 rounded-lg bg-brand-card text-brand-muted border border-brand-border m-0 ease-out duration-200 hover:bg-brand-accent hover:text-white hover:border-brand-accent;
+  @apply !static h-9 w-9 rounded-lg bg-brand-card text-brand-muted border border-brand-border m-0 ease-out duration-200 hover:bg-brand-accent hover:text-brand-dark hover:border-brand-accent;
 }
 
 .common-carousel .swiper-button-next svg,

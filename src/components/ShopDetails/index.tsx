@@ -419,7 +419,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                       href={whatsappOrder}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-md bg-[#0B7A3E] h-10 px-4 text-sm font-medium text-white hover:opacity-90"
+                      className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-md bg-[#0B7A3E] h-10 px-4 text-sm font-medium text-on-solid hover:opacity-90"
                     >
                       <WhatsAppIcon size={18} /> {t("Order on WhatsApp")}
                     </a>

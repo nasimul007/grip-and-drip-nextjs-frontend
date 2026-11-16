@@ -61,7 +61,7 @@ export default function ReviewForm({ slug, defaultOrder = "", onDone }: Props) {
               aria-checked={rating === n}
               aria-label={`${n} ${n > 1 ? t("stars") : t("star")}`}
               onClick={() => setRating(n)}
-              className={`text-2xl leading-none ${n <= rating ? "text-[#FFA645]" : "text-[#4B4B55] hover:text-[#FFA645]"}`}
+              className={`text-2xl leading-none ${n <= rating ? "text-brand-star" : "text-brand-faint hover:text-brand-star"}`}
             >
               ★
             </button>

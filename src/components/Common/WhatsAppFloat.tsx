@@ -17,7 +17,7 @@ export default function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("Chat with us on WhatsApp")}
-      className="fixed left-4 lg:left-auto lg:right-8 bottom-24 lg:bottom-20 z-999 flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366] text-white shadow-lg hover:scale-105 transition"
+      className="fixed left-4 lg:left-auto lg:right-8 bottom-24 lg:bottom-20 z-999 flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366] text-on-solid shadow-lg hover:scale-105 transition"
     >
       <WhatsAppIcon size={26} />
     </a>

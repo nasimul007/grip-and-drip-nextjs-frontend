@@ -21,7 +21,7 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, title, message, loadin
         <button type="button" onClick={onClose} disabled={loading} className="h-10 rounded-md border border-brand-border px-5 text-sm font-medium text-white hover:border-brand-accent disabled:opacity-60">
           {t("Cancel")}
         </button>
-        <button type="button" onClick={onConfirm} disabled={loading} className="h-10 rounded-md bg-red px-5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60">
+        <button type="button" onClick={onConfirm} disabled={loading} className="h-10 rounded-md bg-red px-5 text-sm font-medium text-on-solid hover:opacity-90 disabled:opacity-60">
           {loading ? t("Deleting…") : t("Delete")}
         </button>
       </div>

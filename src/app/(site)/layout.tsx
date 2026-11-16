@@ -12,6 +12,7 @@ import MobileBottomNav from "@/components/Common/MobileBottomNav";
 import WhatsAppFloat from "@/components/Common/WhatsAppFloat";
 import JsonLd from "@/components/Common/JsonLd";
 import Announcer from "@/components/Common/Announcer";
+import { themeInitScript } from "@/lib/theme";
 import Providers from "./providers";
 import { LocaleProvider } from "@/lib/i18n/client";
 import { getLang } from "@/lib/i18n";
@@ -77,7 +78,6 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0A0A0F",
   width: "device-width",
   initialScale: 1,
 };
@@ -113,8 +113,10 @@ const siteSchema = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const lang = await getLang();
   return (
-    <html lang={lang} className="dark" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#FFFFFF" />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {/* Product images and API calls come from this origin. */}
         <link rel="preconnect" href={API_URL} crossOrigin="" />
       </head>

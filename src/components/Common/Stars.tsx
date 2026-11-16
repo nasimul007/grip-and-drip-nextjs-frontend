@@ -16,8 +16,8 @@ export default function Stars({ value, size = 14, className = "" }: { value: num
           <svg key={i} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
             <defs>
               <linearGradient id={`star-${size}-${i}-${Math.round(fill * 100)}`}>
-                <stop offset={`${fill * 100}%`} stopColor="#FFA645" />
-                <stop offset={`${fill * 100}%`} stopColor="#4B4B55" />
+                <stop offset={`${fill * 100}%`} stopColor="rgb(var(--c-star))" />
+                <stop offset={`${fill * 100}%`} stopColor="rgb(var(--c-faint))" />
               </linearGradient>
             </defs>
             <path d={STAR} fill={`url(#star-${size}-${i}-${Math.round(fill * 100)})`} />

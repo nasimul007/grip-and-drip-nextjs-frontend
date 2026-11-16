@@ -208,7 +208,7 @@ const QuickViewModal = () => {
                   <>
                     <span className="text-brand-muted line-through">{formatPrice(listPrice)}</span>
                     {badge && (
-                      <span className="rounded bg-green px-2 py-0.5 text-custom-xs font-medium text-white">{badge}</span>
+                      <span className="rounded bg-green px-2 py-0.5 text-custom-xs font-medium text-on-solid">{badge}</span>
                     )}
                   </>
                 )}

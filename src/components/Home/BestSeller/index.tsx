@@ -14,7 +14,7 @@ const BestSeller = async ({ items }: { items: Product[] }) => {
           <div>
             <span className="flex items-center gap-2.5 font-medium text-brand-accent mb-1.5">
               <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.5 0.5L10.163 5.837L15.5 7.5L10.163 9.163L8.5 14.5L6.837 9.163L1.5 7.5L6.837 5.837L8.5 0.5Z" fill="#00D4AA"/>
+                <path d="M8.5 0.5L10.163 5.837L15.5 7.5L10.163 9.163L8.5 14.5L6.837 9.163L1.5 7.5L6.837 5.837L8.5 0.5Z" fill="currentColor"/>
               </svg>
               {t("This Month")}
             </span>

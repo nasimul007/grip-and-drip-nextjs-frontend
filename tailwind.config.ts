@@ -24,7 +24,8 @@ const config: Config = {
     colors: {
       current: "currentColor",
       transparent: "transparent",
-      white: "#FFFFFF",
+      white: "rgb(var(--c-fg) / <alpha-value>)",
+      "on-solid": "#FFFFFF",
       body: "#6C6F93",
       meta: {
         DEFAULT: "#F7F9FC",
@@ -97,13 +98,15 @@ const config: Config = {
         dark: "#E1580E",
       },
       brand: {
-        dark: "#0A0A0F",
-        surface: "#1A1A1E",
-        card: "#242428",
-        accent: "#00D4AA",
-        hover: "#00B894",
-        muted: "#A0A0A8",
-        border: "#2A2A30",
+        dark: "rgb(var(--c-bg) / <alpha-value>)",
+        surface: "rgb(var(--c-surface) / <alpha-value>)",
+        card: "rgb(var(--c-card) / <alpha-value>)",
+        accent: "rgb(var(--c-accent) / <alpha-value>)",
+        hover: "rgb(var(--c-hover) / <alpha-value>)",
+        muted: "rgb(var(--c-muted) / <alpha-value>)",
+        border: "rgb(var(--c-border) / <alpha-value>)",
+        faint: "rgb(var(--c-faint) / <alpha-value>)",
+        star: "rgb(var(--c-star) / <alpha-value>)",
       },
     },
     screens: {

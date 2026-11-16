@@ -35,7 +35,7 @@ function OrderResult({ order }: { order: TrackedOrder }) {
 
       <div className="flex flex-wrap gap-3 border-t border-brand-border px-4 py-4 text-sm sm:px-5">
         {help && (
-          <a href={help} target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#0B7A3E] px-4 py-2 font-medium text-white hover:opacity-90">
+          <a href={help} target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#0B7A3E] px-4 py-2 font-medium text-on-solid hover:opacity-90">
             {t("Ask about this order on WhatsApp")}
           </a>
         )}

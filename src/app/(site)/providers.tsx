@@ -30,9 +30,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             <Toaster
               toastOptions={{
                 style: {
-                  background: "#242428",
-                  color: "#FFFFFF",
-                  border: "1px solid #2A2A30",
+                  background: "rgb(var(--c-card))",
+                  color: "rgb(var(--c-fg))",
+                  border: "1px solid rgb(var(--c-border))",
                 },
               }}
             />

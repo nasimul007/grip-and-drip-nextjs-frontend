@@ -66,7 +66,7 @@ const HeroCarousal = ({ links }: { links: Links }) => {
               </Link>
             </h1>
 
-            <p className="hidden sm:block text-[#A0A0A8]">
+            <p className="hidden sm:block text-brand-muted">
               {t("Bangladesh's premier destination for authentic tech accessories. Chargers, earbuds, smartwatches and more — genuine products, warranty and cash on delivery.")}
             </p>
 
@@ -110,7 +110,7 @@ const HeroCarousal = ({ links }: { links: Links }) => {
               </Link>
             </h2>
 
-            <p className="hidden sm:block text-[#A0A0A8]">
+            <p className="hidden sm:block text-brand-muted">
               {t("Fast charging solutions for all your devices. From Apple to Samsung, Anker to Soundcore — we've got you covered.")}
             </p>
 
@@ -153,7 +153,7 @@ const HeroCarousal = ({ links }: { links: Links }) => {
               </Link>
             </h2>
 
-            <p className="hidden sm:block text-[#A0A0A8]">
+            <p className="hidden sm:block text-brand-muted">
               {t("Discover premium sound with JBL, Sony, Soundcore, and CMF earphones & headphones. Experience music like never before.")}
             </p>
 

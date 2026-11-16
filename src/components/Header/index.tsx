@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import CustomSelect from "./CustomSelect";
 import SearchSuggestions from "./SearchSuggestions";
 import LanguageToggle from "@/components/Common/LanguageToggle";
+import ThemeToggle from "@/components/Common/ThemeToggle";
 import { addRecentSearch } from "@/lib/recent-searches";
 import Dropdown from "./Dropdown";
 import { menuData } from "./menuData";
@@ -242,7 +243,7 @@ const Header = () => {
               width={250}
               height={48}
               priority
-              className="h-8 w-auto lg:h-11"
+              className="site-logo h-8 w-auto lg:h-11"
             />
           </Link>
 
@@ -337,6 +338,9 @@ const Header = () => {
               <LanguageToggle />
             </li>
             <li>
+              <ThemeToggle />
+            </li>
+            <li>
               <Link href="/wishlist" className="flex items-center gap-1.5 text-white hover:text-brand-accent">
                 <HeartIcon size={16} /> {t("Wishlist")}
               </Link>
@@ -359,6 +363,10 @@ const Header = () => {
             <div className="mb-4 flex items-center justify-between">
               <span className="text-custom-sm text-brand-muted">{t("Language")}</span>
               <LanguageToggle />
+            </div>
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-custom-sm text-brand-muted">{t("Theme")}</span>
+              <ThemeToggle />
             </div>
             <ul className="flex flex-col divide-y divide-brand-border border-y border-brand-border">
               {menuData.map((item) => (
