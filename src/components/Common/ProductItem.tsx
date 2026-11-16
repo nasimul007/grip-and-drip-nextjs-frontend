@@ -67,7 +67,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
               alt={item.title}
               fill
               priority={priority}
-              className={`object-cover transition-transform duration-300 group-hover:scale-105 ${outOfStock ? "opacity-50" : ""}`}
+              className={`object-cover mix-blend-multiply dark:mix-blend-normal transition-transform duration-300 group-hover:scale-105 ${outOfStock ? "opacity-50" : ""}`}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
