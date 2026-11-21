@@ -10,6 +10,7 @@ export type CategoryNode = {
   name: string;
   slug: string;
   description?: string;
+  image?: string | null;
   is_active?: boolean;
   sort_order?: number;
   children?: CategoryNode[];

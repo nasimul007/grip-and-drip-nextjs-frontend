@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import ShopWithSidebar from "@/components/ShopWithSidebar";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import JsonLd from "@/components/Common/JsonLd";
+import SubcategoryTiles from "@/components/Category/SubcategoryTiles";
+import { getT } from "@/lib/i18n";
 import FaqSection from "@/components/Common/FaqSection";
 import Link from "next/link";
 import { brandSlug } from "@/lib/brand-slug";
@@ -11,6 +13,9 @@ import { categoryIntro } from "@/lib/seo-copy";
 import { getCategory, getFilterFacets, getProducts } from "@/lib/server-api";
 import { PAGE_SIZE, buildApiQuery, buildFacetQuery, hasFacetFilters, parseFilters } from "@/lib/shop-query";
 import { absoluteUrl, mediaUrl, stripHtml, truncate } from "@/lib/site";
+
+// Parent categories shown as a tile hub (sub-category tiles above the product grid).
+const HUB_SLUGS = new Set(["cases-protection"]);
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -49,6 +54,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const [{ slug }, sp] = await Promise.all([params, searchParams]);
   const category = await getCategory(slug);
   if (!category) notFound();
+  const { t } = await getT();
+  const showHub = HUB_SLUGS.has(category.slug) && category.subcategories.length > 0;
+  // The hub and every category under it use the roomier 3-per-row product cards.
+  const roomy = category.breadcrumb.some((c) => HUB_SLUGS.has(c.slug));
 
   const filters = parseFilters(sp);
   const [initial, facets] = await Promise.all([
@@ -88,8 +97,20 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     <main id="main-content" tabIndex={-1} className="outline-none">
       <JsonLd data={collectionSchema} />
       <Breadcrumb title={category.name} items={crumbs} />
+      {showHub && filters.page === 1 && !hasFacetFilters(filters) && (
+        <SubcategoryTiles items={category.subcategories} heading={t("Shop by type")} />
+      )}
+      <Suspense>
+        <ShopWithSidebar
+          categories={category.subcategories}
+          facets={facets}
+          lockedCategoryId={category.id}
+          roomy={roomy}
+          initialData={initial ? { results: initial.results, count: initial.count } : null}
+        />
+      </Suspense>
       {filters.page === 1 && (
-        <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pt-7.5">
+        <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 py-8">
           {category.description ? (
             <div
               className="product-description max-w-[870px] xl:ml-auto text-custom-sm"
@@ -102,14 +123,6 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           )}
         </div>
       )}
-      <Suspense>
-        <ShopWithSidebar
-          categories={category.subcategories}
-          facets={facets}
-          lockedCategoryId={category.id}
-          initialData={initial ? { results: initial.results, count: initial.count } : null}
-        />
-      </Suspense>
       {brandLinks.length > 0 && !hasFacetFilters(filters) && filters.page === 1 && (
         <nav aria-label={`${category.name} by brand`} className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pb-10">
           <h2 className="mb-3 text-lg font-semibold text-white">Shop {category.name} by brand</h2>

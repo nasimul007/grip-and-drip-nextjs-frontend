@@ -36,6 +36,8 @@ type Props = {
   lockedCategoryId?: number;
   /** Brand pages: the brand is fixed by the URL, so hide the brand filter. */
   lockedBrand?: string;
+  /** Roomier cards: 3 per row on desktop with taller images. */
+  roomy?: boolean;
 };
 
 function pageList(page: number, total: number): (number | "...")[] {
@@ -67,7 +69,7 @@ const Chip = ({ label, onRemove }: { label: string; onRemove: () => void }) => {
   );
 };
 
-const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategoryId, lockedBrand }: Props) => {
+const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategoryId, lockedBrand, roomy = false }: Props) => {
   const { t } = useT();
   const router = useRouter();
   const pathname = usePathname();
@@ -381,7 +383,9 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
               aria-busy={loading}
               className={`${loading ? "pointer-events-none" : ""} ${
                 productStyle === "grid"
-                  ? "grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3"
+                  ? roomy
+                    ? "grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4"
+                    : "grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3"
                   : "flex flex-col gap-4"
               }`}
             >
@@ -420,7 +424,7 @@ const ShopWithSidebar = ({ categories, initialData, facets = null, lockedCategor
               {loading && <ProductSkeletons count={8} list={productStyle === "list"} />}
               {!loading && products.map((item, i) =>
                 productStyle === "grid" ? (
-                  <ProductItem item={item} key={item.id} priority={i < 4 && filters.page === 1} />
+                  <ProductItem item={item} key={item.id} priority={i < 4 && filters.page === 1} tall={roomy} />
                 ) : (
                   <SingleListItem item={item} key={item.id} />
                 )

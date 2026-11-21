@@ -18,7 +18,7 @@ import { CartIcon, SearchIcon, ShieldIcon } from "@/components/Common/icons";
 import type { ProductDetail } from "@/lib/types";
 import { useT } from "@/lib/i18n/client";
 
-const ProductItem = ({ item, priority = false }: { item: Product; priority?: boolean }) => {
+const ProductItem = ({ item, priority = false, tall = false }: { item: Product; priority?: boolean; tall?: boolean }) => {
   const { t } = useT();
   const { openModal } = useModalContext();
   const { addResolved } = useCart();
@@ -53,7 +53,7 @@ const ProductItem = ({ item, priority = false }: { item: Product; priority?: boo
 
   return (
     <article className="group flex flex-col h-full bg-brand-card border border-brand-border rounded-lg overflow-hidden">
-      <div className="relative aspect-square overflow-hidden bg-brand-surface">
+      <div className={`relative ${tall ? "aspect-[4/5]" : "aspect-square"} overflow-hidden bg-brand-surface`}>
         <Link
           href={href}
           className="block w-full h-full"

@@ -220,6 +220,7 @@ export const BN: Record<string, string> = {
   "Key details": "মূল তথ্য",
   "Language": "ভাষা",
   "Theme": "থিম",
+  "Shop by type": "ধরন অনুযায়ী কিনুন",
   "Latest": "নতুন",
   "Leave your mobile number or email and we will tell you when it is back.": "আপনার মোবাইল নম্বর বা ইমেইল দিন, স্টকে ফিরলে আমরা জানাব।",
   "List view": "লিস্ট ভিউ",
