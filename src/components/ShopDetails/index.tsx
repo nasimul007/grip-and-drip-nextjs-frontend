@@ -1,4 +1,5 @@
 "use client";
+import { colorBackground } from "@/lib/colors";
 import { brandSlug } from "@/lib/brand-slug";
 import { track } from "@/lib/track";
 import { attrsOf, defaultVariant, isOptionAvailable, pickVariantFor, slugifyAttr, variantMatches } from "@/lib/variants";
@@ -300,7 +301,8 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                           {options.map((opt) => {
                             const checked = selectedAttrs[attrKey] === opt.id;
                             const available = isOptionAvailable(variants, selectedAttrs, attrKey, opt.id);
-                            const isColor = attrKey.toLowerCase() === "color";
+                            const swatch = attrKey.toLowerCase() === "color" ? colorBackground(opt.title) : null;
+                            const isColor = swatch !== null;
                             return (
                               <label
                                 key={opt.id}
@@ -319,7 +321,7 @@ const ShopDetails = ({ product, shippingRates = [] }: Props) => {
                                   <span
                                     className={`flex items-center justify-center w-6 h-6 rounded-full border-2 peer-focus-visible:ring-2 ring-brand-accent ${checked ? "border-brand-accent" : "border-transparent"}`}
                                   >
-                                    <span className="block w-4 h-4 rounded-full border border-brand-border" style={{ backgroundColor: opt.title }} />
+                                    <span className="block w-4 h-4 rounded-full border border-brand-border" style={{ background: swatch ?? undefined }} />
                                     <span className="sr-only">{opt.title}</span>
                                   </span>
                                 ) : (

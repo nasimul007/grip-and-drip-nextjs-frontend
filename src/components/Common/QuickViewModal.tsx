@@ -1,4 +1,5 @@
 "use client";
+import { colorBackground } from "@/lib/colors";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDialogFocus } from "@/lib/useDialogFocus";
 import Link from "next/link";
@@ -252,13 +253,13 @@ const QuickViewModal = () => {
                                 checked={selected}
                                 onChange={() => selectOption(attrKey, opt.id)}
                               />
-                              {attrKey.toLowerCase() === "color" ? (
+                              {attrKey.toLowerCase() === "color" && colorBackground(opt.title) ? (
                                 <span
                                   className={`flex h-6 w-6 items-center justify-center rounded-full ${selected ? "border" : ""}`}
-                                  style={{ borderColor: opt.title }}
+                                  style={{ borderColor: selected ? "rgb(var(--c-accent))" : "transparent" }}
                                   title={opt.title}
                                 >
-                                  <span className="block h-3.5 w-3.5 rounded-full" style={{ backgroundColor: opt.title }} />
+                                  <span className="block h-3.5 w-3.5 rounded-full" style={{ background: colorBackground(opt.title) ?? undefined }} />
                                 </span>
                               ) : (
                                 <span
